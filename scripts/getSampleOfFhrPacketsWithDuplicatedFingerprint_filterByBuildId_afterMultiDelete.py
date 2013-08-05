@@ -6,8 +6,8 @@ import random
 
 
 
-sampleRate = 0.01
-minBuildId = "20130501000000"
+sampleRate = 0.001
+minBuildId = "20130701000000"
 
 
 
@@ -117,6 +117,9 @@ def map(fhrDocId, rawJsonIn, context):
 
     try:
         numAppSessionsPreviousOnThisPingDate=len(payload["data"]["days"][thisPingDate]['org.mozilla.appSessions.previous']["main"])
+    except TypeError:
+        # was getting "TypeError: unicode indices must be integers"
+        return
     except KeyError:
         numAppSessionsPreviousOnThisPingDate = 0
 
@@ -124,6 +127,7 @@ def map(fhrDocId, rawJsonIn, context):
         currentSessionTime=payload["data"]["last"]['org.mozilla.appSessions.current']["totalTime"]
     except KeyError:
         currentSessionTime = 0
+
 
 
 
