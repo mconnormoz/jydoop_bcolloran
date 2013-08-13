@@ -138,12 +138,12 @@ def map(key, value, context):
 def addHistogramListsReducer(k,valIter,context):
     outHistDict=dict()
     for histTupList in valIter:
-        print histTupList
+        # print histTupList
         for histTup in histTupList:
-            print histTup
+            # print histTup
             searchesPerDay=histTup[0]
             numRecords=histTup[1]
-            print searchesPerDay
+            # print searchesPerDay
             try:
                 outHistDict[searchesPerDay]+=numRecords
             except KeyError:
@@ -165,7 +165,7 @@ def output(path,reducerOutput):
     All lists/tuples are unwrapped.
     """
     f = open(path, 'w')
-    w = csv.writer(f)
+    w = csv.writer(f,quoting=csv.QUOTE_ALL)
     for k, v in reducerOutput:
         l = []
         jydoop.unwrap(l, k)
