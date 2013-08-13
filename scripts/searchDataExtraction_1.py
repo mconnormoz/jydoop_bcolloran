@@ -2,7 +2,7 @@ import json
 import jydoop
 import healthreportutils
 import random
-
+import csv
 
 
 setupjob = healthreportutils.setupjob
@@ -74,6 +74,10 @@ def map(key, value, context):
     except KeyError:
         country="no_country"
 
+    if country not in ["BR","CN","DE","ES","FR","ID","IN","IT","JP","MX","PL","RU","TR","US"]:
+        country="OTHER"
+
+
 
     try:
         dataDays = payload["data"]["days"].keys()
@@ -122,7 +126,8 @@ def map(key, value, context):
                   updateChannel,
                   country,
                   searchProvider)
-                  ,[(float(numSearches)/float(len(fhrActiveDataDaysList)),1)] )
+                  ,[( round(float(numSearches)/float(len(fhrActiveDataDaysList)),2)
+                    ,1)] )
 
 
 
@@ -153,7 +158,19 @@ def addHistogramListsReducer(k,valIter,context):
 combine = addHistogramListsReducer#jydoop.sumreducer
 reduce = addHistogramListsReducer#jydoop.sumreducer
 
+def output(path,reducerOutput):
+    """
+    Output key/values into a reasonable CSV.
 
+    All lists/tuples are unwrapped.
+    """
+    f = open(path, 'w')
+    w = csv.writer(f)
+    for k, v in reducerOutput:
+        l = []
+        jydoop.unwrap(l, k)
+        # unwrap(l, v)
+        w.writerow(l+[str(dict(v))])
 
 
 
