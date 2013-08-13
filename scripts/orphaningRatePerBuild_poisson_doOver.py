@@ -8,31 +8,6 @@ import random
 setupjob = healthreportutils.setupjob
 
 
-
-class AutoVivification(dict):
-    """Implementation of perl's autovivification feature."""
-    def __getitem__(self, item):
-        try:
-            return dict.__getitem__(self, item)
-        except KeyError:
-            value = self[item] = type(self)()
-            return value
-
-
-# def dictToOrderedStringOfTups(itemIn):
-#     if type(itemIn)==type({}):
-#         return [ (keyValTup[0],dictToOrderedStringOfTups(keyValTup[1])) for keyValTup in sorted(itemIn.items(), key= lambda tup: tup[0]) ]
-#     else:
-#         return itemIn
-
-
-def dictToOrderedTups(dictIn):
-    return [ (keyValTup[0],dictToOrderedStringOfTups(keyValTup[1])) if type(keyValTup[1])==type({}) else keyValTup for keyValTup in sorted(dictIn.items(), key= lambda tup: tup[0]) ]
-
-
-
-
-
 minimalActiveFhrDaysEntrySet = set(["org.mozilla.crashes.crashes","org.mozilla.appSessions.previous"])
 
 def map(key, value, context):
