@@ -5,7 +5,29 @@ import random
 import csv
 
 
-setupjob = healthreportutils.setupjob
+#setupjob = healthreportutils.setupjob
+
+def setupjob(job, args):
+    """
+Set up a job to run on a list of paths. Jobs expect at least one path,
+but you may specify as many as you like.
+"""
+
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat as MyInputFormat
+
+    if len(args) < 1:
+        raise Exception("Usage: path [ path2 ] [ path3 ] [ ... ]")
+
+    job.setInputFormatClass(MyInputFormat)
+    FileInputFormat.setInputPaths(job, ",".join(args));
+    """Indicate to HadoopDriver which Mapper we want to use."""
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
+
+
+
+
+
 
 
 minimalActiveFhrDaysEntrySet = set(["org.mozilla.crashes.crashes","org.mozilla.appSessions.previous"])
