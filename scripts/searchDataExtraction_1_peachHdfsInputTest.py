@@ -1,11 +1,14 @@
 import json
 import jydoop
 import healthreportutils
+import sequencefileutils
 import random
 import csv
 
 
 #setupjob = healthreportutils.setupjob
+
+setupjob = sequencefileutils.setupjob
 
 def setupjob(job, args):
     """
