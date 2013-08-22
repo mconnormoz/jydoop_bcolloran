@@ -1,18 +1,11 @@
 import json
 import jydoop
 import healthreportutils
-import sequencefileutils
 import random
 import csv
 
 
-#setupjob = healthreportutils.setupjob
-
-setupjob = sequencefileutils.setupjob
-
-
-
-
+setupjob = healthreportutils.setupjob
 
 
 minimalActiveFhrDaysEntrySet = set(["org.mozilla.crashes.crashes","org.mozilla.appSessions.previous"])
@@ -30,8 +23,6 @@ def totalSearchDictFromSearchDaysData(searchDaysData):
             totalSearchDict[provider]=count
     return totalSearchDict
 
-startDate = "2013-05-01"
-endDate = "2013-08-01"
 
 
 def map(key, value, context):
@@ -113,43 +104,42 @@ def map(key, value, context):
     else:
         return
 
-    activeDaysInRange = [date for date in fhrActiveDataDaysList if (date>=fhrActivationDate and startDate<=date and date<endDate)]
-
-    numActiveDaysInRange = len(activeDaysInRange)
 
     #find the days active since FHR code became active.
-    daysWithSearchesInRange = [payload['data']['days'][date]['org.mozilla.searches.counts'] for date in activeDaysInRange if date>=fhrActivationDate and 'org.mozilla.searches.counts' in payload['data']['days'][date].keys()]
+    daysWithSearches = [payload['data']['days'][date]['org.mozilla.searches.counts'] for date in dataDays if date>=fhrActivationDate and 'org.mozilla.searches.counts' in payload['data']['days'][date].keys()]
 
-    # totalSearchesOnDaysWithSearches = [sum(listOfSearchCountsOnDayWithSearch(searchCountDict)) for searchCountDict in daysWithSearches]
+    totalSearchesOnDaysWithSearches = [sum(listOfSearchCountsOnDayWithSearch(searchCountDict)) for searchCountDict in daysWithSearches]
 
-    totalSearchesByProvider = totalSearchDictFromSearchDaysData(daysWithSearchesInRange)
+    numActiveDays = float(len(fhrActiveDataDaysList))
 
-    
+    totalSearchesByProvider = totalSearchDictFromSearchDaysData(daysWithSearches)
+    # print totalSearchesByProvider
 
+    # avgNumSearchesPerActiveDay = sum(totalSearchesOnDaysWithSearches)/float(len(fhrActiveDataDaysList))
 
-    #desired output variables: [numberInFacet, numberOfSearchesInFacet, numberOfActiveDaysInFacet]
+    context.write( (os,
+                  updateChannel,
+                  country,
+                  "facetCount")
+                  ,[(0,1)] )
 
-    #if this record HAD ACTIVITY within the specified time range, add it to the general count:
-    if numActiveDaysInRange>0:
-        totalNumSearches = sum(totalSearchesByProvider.values())
-        context.write( (os,
-                      updateChannel,
-                      country,
-                      "ACTIVE_IN_RANGE")
-                      ,(1,totalNumSearches,numActiveDaysInRange) )
-        if totalNumSearches>0:
-            context.write( (os,
-                          updateChannel,
-                          country,
-                          "ANY_SEARCH_PROVIDER")
-                          ,(1,totalNumSearches,numActiveDaysInRange) )
+    totalSearchesThisRecord = 0
 
     for searchProvider,numSearches in totalSearchesByProvider.items():
+        totalSearchesThisRecord+=numSearches
         context.write( (os,
                   updateChannel,
                   country,
                   searchProvider)
-                  ,(1,numSearches,numActiveDaysInRange) )
+                ,[( round(float(numSearches)/numActiveDays,2)
+                    ,1)] )
+
+    context.write( (os,
+                  updateChannel,
+                  country,
+                  "ANY_SEARCH_PROVIDER")
+                ,[( round(float(totalSearchesThisRecord)/numActiveDays,2)
+                    ,1)] )
 
 
 
@@ -158,37 +148,42 @@ def map(key, value, context):
 
 
 
-
-def tupleSummer(k,valIter,context):
+def addHistogramListsReducer(k,valIter,context):
     outHistDict=dict()
-    outList =[0,0,0]
-    for tup in valIter:
-        outList[0]+=tup[0]
-        outList[1]+=tup[1]
-        outList[2]+=tup[2]
+    for histTupList in valIter:
+        # print histTupList
+        for histTup in histTupList:
+            # print histTup
+            searchesPerDay=histTup[0]
+            numRecords=histTup[1]
+            # print searchesPerDay
+            try:
+                outHistDict[searchesPerDay]+=numRecords
+            except KeyError:
+                outHistDict[searchesPerDay]=numRecords
 
-    context.write(k,tuple(outList))
+    context.write(k,outHistDict.items())
 
 
 
 
 
-combine = tupleSummer#jydoop.sumreducer
-reduce = tupleSummer#jydoop.sumreducer
+combine = addHistogramListsReducer#jydoop.sumreducer
+reduce = addHistogramListsReducer#jydoop.sumreducer
 
-# def output(path,reducerOutput):
-#     """
-#     Output key/values into a reasonable CSV.
+def output(path,reducerOutput):
+    """
+    Output key/values into a reasonable CSV.
 
-#     All lists/tuples are unwrapped.
-#     """
-#     f = open(path, 'w')
-#     w = csv.writer(f,quoting=csv.QUOTE_ALL)
-#     for k, v in reducerOutput:
-#         l = []
-#         jydoop.unwrap(l, k)
-#         # unwrap(l, v)
-#         w.writerow(l+[str(dict(v))])
+    All lists/tuples are unwrapped.
+    """
+    f = open(path, 'w')
+    w = csv.writer(f,quoting=csv.QUOTE_ALL)
+    for k, v in reducerOutput:
+        l = []
+        jydoop.unwrap(l, k)
+        # unwrap(l, v)
+        w.writerow(l+[str(dict(v))])
 
 
 
