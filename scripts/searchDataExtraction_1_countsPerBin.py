@@ -30,7 +30,7 @@ def totalSearchDictFromSearchDaysData(searchDaysData):
             totalSearchDict[provider]=count
     return totalSearchDict
 
-startDate = "2013-05-01"
+startDate = "2013-07-01"
 endDate = "2013-08-01"
 
 
