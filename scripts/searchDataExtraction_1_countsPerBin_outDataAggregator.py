@@ -17,7 +17,7 @@ def map(infileRowNum, row, context):
 
 def reduce(key,valIter,context):
     valList = list(valIter)
-    anyProviderInfo = next(val for val in valIter if val[0]=="facetCount")
+    anyProviderInfo = next(val for val in valIter if val[0]=="ACTIVE_IN_RANGE")
     for val in valList:
         #print key,list(anyProviderInfo)+list(val)
         context.write(key,list(anyProviderInfo[1:])+list(val))

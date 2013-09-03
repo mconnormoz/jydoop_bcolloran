@@ -57,7 +57,7 @@ def map(key, value, context):
             updateChannel = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["updateChannel"].strip()
         except:
             updateChannel='no_channel'
-    if not (updateChannel in ["nightly","aurora","beta"]):
+    if not (updateChannel in ["nightly","aurora","beta","release"]):
         #context.write(("error","wrong_channel"),(1,"no_build"))
         #context.write("global_count",(1,"global_count"))
         return
