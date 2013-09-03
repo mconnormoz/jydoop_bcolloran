@@ -10,7 +10,6 @@ import csv
 
 setupjob = sequencefileutils.setupjob
 
-# make ARGS="scripts/searchDataExtraction_1_countsNoBins.py ./outData/searchCounts_noBins_2013-07_v3.csv /data/fhr/nopartitions/20130902" hadoop
 
 
 
@@ -22,13 +21,13 @@ def listOfSearchCountsOnDayWithSearch(searchCountDict):
     return [searchCountDict[key] for key in searchCountDict.keys() if key!="_v"]
 
 def totalSearchDictFromSearchDaysData(searchDaysData):
-    searchCountTupList = [(key,searchCountDict[key]) for searchCountDict in searchDaysData for key in searchCountDict.keys() if key!="_v"]
+    searchCountTupList = [(tuple(searchProv.split(".")),searchCountDict[searchProv]) for searchCountDict in searchDaysData for searchProv in searchCountDict.keys() if searchProv!="_v"]
     totalSearchDict={}
-    for provider,count in searchCountTupList:
+    for providerTup,count in searchCountTupList:
         try:
-            totalSearchDict[provider]+=count
+            totalSearchDict[providerTup]+=count
         except KeyError:
-            totalSearchDict[provider]=count
+            totalSearchDict[providerTup]=count
     return totalSearchDict
 
 startDate = "2013-07-01"
@@ -51,22 +50,41 @@ def map(key, value, context):
         return
 
 
-    # try:
-    #     os = payload["geckoAppInfo"]["os"]
-    # except KeyError:
-    #     try:
-    #         os = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["os"].strip()
-    #     except KeyError:
-    #         os = "no_os"
+    try: #channel
+      updateChannel = payload["geckoAppInfo"]["updateChannel"].strip()
+    except:
+        try:
+            updateChannel = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["updateChannel"].strip()
+        except:
+            updateChannel='no_channel'
+    if not (updateChannel in ["nightly","aurora","beta","release"]):
+        #context.write(("error","wrong_channel"),(1,"no_build"))
+        #context.write("global_count",(1,"global_count"))
+        return
+
+
+    try:
+        os = payload["geckoAppInfo"]["os"]
+    except KeyError:
+        try:
+            os = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["os"].strip()
+        except KeyError:
+            os = "no_os"
 
 
     # try:
-    #     country =payload["geoCountry"]
+    #     profileCreation = payload["data"]["last"]["org.mozilla.profile.age"]["profileCreation"]
     # except KeyError:
-    #     country="no_country"
+    #     profilecreation = "no_profilecreation"
 
-    # if country not in ["BR","CN","DE","ES","FR","ID","IN","IT","JP","MX","PL","RU","TR","US"]:
-    #     country="OTHER"
+
+    try:
+        country =payload["geoCountry"]
+    except KeyError:
+        country="no_country"
+
+    if country not in ["BR","CN","DE","ES","FR","ID","IN","IT","JP","MX","PL","RU","TR","US"]:
+        country="OTHER"
 
 
 
@@ -99,12 +117,12 @@ def map(key, value, context):
 
     numActiveDaysInRange = len(activeDaysInRange)
 
-    #find the days active since FHR code became active.
-    daysWithSearchesInRange = [payload['data']['days'][date]['org.mozilla.searches.counts'] for date in activeDaysInRange if date>=fhrActivationDate and 'org.mozilla.searches.counts' in payload['data']['days'][date].keys()]
 
-    # totalSearchesOnDaysWithSearches = [sum(listOfSearchCountsOnDayWithSearch(searchCountDict)) for searchCountDict in daysWithSearches]
+    daysWithSearchesInRange = [payload['data']['days'][date]['org.mozilla.searches.counts'] for date in activeDaysInRange if date>=fhrActivationDate and 'org.mozilla.searches.counts' in payload['data']['days'][date].keys()]
+    # print daysWithSearchesInRange
 
     totalSearchesByProvider = totalSearchDictFromSearchDaysData(daysWithSearchesInRange)
+    # print totalSearchesByProvider
 
     
 
@@ -114,14 +132,28 @@ def map(key, value, context):
     #if this record HAD ACTIVITY within the specified time range, add it to the general count:
     if numActiveDaysInRange>0:
         totalNumSearches = sum(totalSearchesByProvider.values())
-        context.write( ("ACTIVE_IN_RANGE")
+        context.write( (os,
+                      updateChannel,
+                      country,
+                      "ACTIVE",
+                      "ACTIVE")
                       ,(1,totalNumSearches,numActiveDaysInRange) )
         if totalNumSearches>0:
-            context.write( ("ANY_SEARCH_PROVIDER")
+            context.write( (os,
+                          updateChannel,
+                          country,
+                          "ANY_PROVIDER",
+                          "ANY_LOCATION")
                           ,(1,totalNumSearches,numActiveDaysInRange) )
 
-    for searchProvider,numSearches in totalSearchesByProvider.items():
-        context.write( (searchProvider)
+    for searchTup,numSearches in totalSearchesByProvider.items():
+        searchProvider = searchTup[0]
+        searchLocation = searchTup[1]
+        context.write( (os,
+                  updateChannel,
+                  country,
+                  searchProvider,
+                  searchLocation)
                   ,(1,numSearches,numActiveDaysInRange) )
 
 
