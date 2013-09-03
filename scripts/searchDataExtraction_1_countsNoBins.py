@@ -10,7 +10,7 @@ import csv
 
 setupjob = sequencefileutils.setupjob
 
-# make ARGS="scripts/searchDataExtraction_1_countsPerBin_osLocale.py ./outData/searchCounts_bins-osLocale_2013-07_v1.csv /data/fhr/nopartitions/20130902" hadoop
+# make ARGS="scripts/searchDataExtraction_1_countsPerBin.py ./outData/searchCounts_2013-07_v3.csv /data/fhr/nopartitions/20130902" hadoop
 
 
 
@@ -51,19 +51,22 @@ def map(key, value, context):
         return
 
 
-    try:
-        os = payload["geckoAppInfo"]["os"]
-    except KeyError:
-        try:
-            os = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["os"].strip()
-        except KeyError:
-            os = "no_os"
+    # try:
+    #     os = payload["geckoAppInfo"]["os"]
+    # except KeyError:
+    #     try:
+    #         os = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["os"].strip()
+    #     except KeyError:
+    #         os = "no_os"
 
 
-    try:
-        locale =payload['data']['last']['org.mozilla.appInfo.appinfo']['locale']
-    except KeyError:
-        locale="no_locale"
+    # try:
+    #     country =payload["geoCountry"]
+    # except KeyError:
+    #     country="no_country"
+
+    # if country not in ["BR","CN","DE","ES","FR","ID","IN","IT","JP","MX","PL","RU","TR","US"]:
+    #     country="OTHER"
 
 
 
@@ -111,20 +114,14 @@ def map(key, value, context):
     #if this record HAD ACTIVITY within the specified time range, add it to the general count:
     if numActiveDaysInRange>0:
         totalNumSearches = sum(totalSearchesByProvider.values())
-        context.write( (os,
-                      locale,
-                      "ACTIVE_IN_RANGE")
+        context.write( ("ACTIVE_IN_RANGE")
                       ,(1,totalNumSearches,numActiveDaysInRange) )
         if totalNumSearches>0:
-            context.write( (os,
-                          locale,
-                          "ANY_SEARCH_PROVIDER")
+            context.write( ("ANY_SEARCH_PROVIDER")
                           ,(1,totalNumSearches,numActiveDaysInRange) )
 
     for searchProvider,numSearches in totalSearchesByProvider.items():
-        context.write( (os,
-                  locale,
-                  searchProvider)
+        context.write( (searchProvider)
                   ,(1,numSearches,numActiveDaysInRange) )
 
 
