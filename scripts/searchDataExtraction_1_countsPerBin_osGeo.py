@@ -10,7 +10,7 @@ import csv
 
 setupjob = sequencefileutils.setupjob
 
-# make ARGS="scripts/searchDataExtraction_1_countsPerBin.py ./outData/searchCounts_2013-07_v3.csv /data/fhr/nopartitions/20130902" hadoop
+# make ARGS="scripts/searchDataExtraction_1_countsPerBin_osGeo.py ./outData/searchCounts_bins-osGeo_2013-07_v1.csv /data/fhr/nopartitions/20130902" hadoop
 
 
 
