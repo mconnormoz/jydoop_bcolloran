@@ -50,8 +50,8 @@ def totalSearchDictFromSearchDaysData(searchDaysData):
             totalSearchDict[providerTup]=count
     return totalSearchDict
 
-startDate = "2013-07-01"
-endDate = "2013-08-01"
+startDate = "2013-08-01"
+endDate = "2013-09-01"
 
 
 def map(key, value, context):
