@@ -12,7 +12,7 @@ setupjob = sequencefileutils.setupjob
 
 
 
-
+# make ARGS="scripts/searchDataExtraction_2_countsPerBin_preFF23.py ./outData/searchCounts_bins-preFF23_2013-07_v1.csv /data/fhr/nopartitions/20130902" hadoop
 
 
 minimalActiveFhrDaysEntrySet = set(["org.mozilla.crashes.crashes","org.mozilla.appSessions.previous"])
