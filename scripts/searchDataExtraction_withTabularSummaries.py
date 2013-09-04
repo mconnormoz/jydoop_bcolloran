@@ -110,10 +110,12 @@ def map(key, value, context):
 
     totalSearchesOnDaysWithSearches = [sum(listOfSearchCountsOnDayWithSearch(searchCountDict)) for searchCountDict in daysWithSearches]
 
-    totalSearchesByProvider = totalSearchDictFromSearchDaysData(daysWithSearches)
-    # print totalSearchesByProvider
+    totalSearchesByProviderDict = totalSearchDictFromSearchDaysData(daysWithSearches)
+    # print totalSearchesByProviderDict
 
     # avgNumSearchesPerActiveDay = sum(totalSearchesOnDaysWithSearches)/float(len(fhrActiveDataDaysList))
+
+    numActiveDays = len(fhrActiveDataDaysList)
 
     context.write( (os,
                   updateChannel,
@@ -121,13 +123,14 @@ def map(key, value, context):
                   "facetCount")
                   ,[(0,1)] )
 
-    for searchProvider,numSearches in totalSearchesByProvider.items():
-        context.write( (os,
-                  updateChannel,
-                  country,
-                  searchProvider)
-                  ,[( round(float(numSearches)/float(len(fhrActiveDataDaysList)),2)
-                    ,1)] )
+    for searchProvider,numSearches in totalSearchesByProviderDict.items():
+        for allFlagList in [list("0"*(4-len(bin(i)[2:]))+bin(i)[2:]) for i in range(16)]: #this comprenhesion produces all
+
+            context.write( (os,
+                      updateChannel,
+                      country,
+                      searchProvider)
+                      ,(numActiveDays,numSearches,1) )
 
 
 
