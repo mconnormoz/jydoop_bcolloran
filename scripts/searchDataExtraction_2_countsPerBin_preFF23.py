@@ -8,7 +8,27 @@ import csv
 
 #setupjob = healthreportutils.setupjob
 
-setupjob = sequencefileutils.setupjob
+#setupjob = sequencefileutils.setupjob
+def setupjob(job, args):
+    """
+    Set up a job to run on one or more HDFS locations
+
+    Jobs expect one or more arguments, the HDFS path(s) to the data.
+    """
+
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
+
+    if len(args) < 1:
+        raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
+
+    job.setInputFormatClass(MyInputFormat)
+    FileInputFormat.setInputPaths(job, ",".join(args));
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
+    job.getConfiguration().set("mapred.job.queue.name","research")
+
+
+
 
 
 
@@ -115,7 +135,19 @@ def map(key, value, context):
 
     ####find the date of the transition to version 23.0
     #if the current version is <23.0, set the v23date to be after any date in the record
-    if payload['data']['last']['org.mozilla.appInfo.appinfo']['platformVersion']<"23.0":
+
+    try:
+        currentVersion = payload["geckoAppInfo"]["version"]
+    except KeyError:
+        try:
+            currentVersion = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["os"].strip()
+        except KeyError:
+            #if a current version cannot be found, drop packet
+            return
+
+
+    if currentVersion<"23.0":
+        # if the currentVersion<23, the v23date transition is after any date in the record
         v23date = "9999-99-99"
     else:
         #in this case, the record must be on version 23.0 or higher; initially set the v23date transition date to be before any date in the record, then step through to look for the actual v23date
@@ -178,15 +210,19 @@ def map(key, value, context):
                               ,(1,totalNumSearches,numActiveDaysInRange) )
 
         for searchTup,numSearches in totalSearchesByProvider.items():
-            searchProvider = searchTup[0]
-            searchLocation = searchTup[1]
-            context.write( (os,
-                      updateChannel,
-                      country,
-                      versionFlag,
-                      searchProvider,
-                      searchLocation)
-                      ,(1,numSearches,numActiveDaysInRange) )
+            try:
+                #TRY needed b/c I was getting rare errors "IndexError: index out of range: 1". There must be badly formed search provider strings that are splitting incorrectly.
+                searchProvider = searchTup[0]
+                searchLocation = searchTup[1]
+                context.write( (os,
+                          updateChannel,
+                          country,
+                          versionFlag,
+                          searchProvider,
+                          searchLocation)
+                          ,(1,numSearches,numActiveDaysInRange) )
+            except IndexError:
+                pass
 
 
 

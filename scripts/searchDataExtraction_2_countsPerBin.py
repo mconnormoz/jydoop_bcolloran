@@ -8,7 +8,26 @@ import csv
 
 #setupjob = healthreportutils.setupjob
 
-setupjob = sequencefileutils.setupjob
+#setupjob = sequencefileutils.setupjob
+
+
+def setupjob(job, args):
+    """
+    Set up a job to run on one or more HDFS locations
+
+    Jobs expect one or more arguments, the HDFS path(s) to the data.
+    """
+
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
+
+    if len(args) < 1:
+        raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
+
+    job.setInputFormatClass(MyInputFormat)
+    FileInputFormat.setInputPaths(job, ",".join(args));
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
+    job.getConfiguration().set("mapred.job.queue.name","research")
 
 
 
@@ -146,16 +165,19 @@ def map(key, value, context):
                           "ANY_LOCATION")
                           ,(1,totalNumSearches,numActiveDaysInRange) )
 
-    for searchTup,numSearches in totalSearchesByProvider.items():
-        searchProvider = searchTup[0]
-        searchLocation = searchTup[1]
-        context.write( (os,
-                  updateChannel,
-                  country,
-                  searchProvider,
-                  searchLocation)
-                  ,(1,numSearches,numActiveDaysInRange) )
-
+    for searchTup,numSearches in totalSearchesByProvider.items():            try:
+            #TRY needed b/c I was getting rare errors "IndexError: index out of range: 1". There must be badly formed search provider strings that are splitting incorrectly.
+            searchProvider = searchTup[0]
+            searchLocation = searchTup[1]
+            context.write( (os,
+                      updateChannel,
+                      country,
+                      versionFlag,
+                      searchProvider,
+                      searchLocation)
+                      ,(1,numSearches,numActiveDaysInRange) )
+        except IndexError:
+            pass
 
 
 
