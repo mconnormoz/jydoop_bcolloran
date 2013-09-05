@@ -43,7 +43,13 @@ def map(key, payload, context):
     #iterate over the version info for days that have ['org.mozilla.appInfo.versions']["appVersion"], and return the date on which the transition to 23 occurs. Initialize the date as a 'None'
     v23date=None
     for date,versionInfo in (item for item in payload.daily_provider_data('org.mozilla.appInfo.versions') if "appVersion" in item[1].keys()):
-        if versionInfo["appVersion"][0].split(".")[0]=="23":
+        try:
+            #was getting "AttributeError: 'int' object has no attribute 'split'"
+            versionMajorString=versionInfo["appVersion"][0].split(".")[0]
+        except AttributeError:
+            versionMajorString=str(versionInfo["appVersion"][0])
+
+        if versionMajorString=="23":
             v23date=date
 
     #only consider records that have a v23date transition recorded
