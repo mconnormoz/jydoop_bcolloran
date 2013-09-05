@@ -32,8 +32,6 @@ def setupjob(job, args):
 # make ARGS="scripts/searchDataExtraction_2_countsPerBin_preFF23.py ./outData/searchCounts_bins-preFF23_2013-07_v1.csv /data/fhr/nopartitions/20130902" hadoop
 
 
-startDate = "2013-06-01"
-endDate = "2013-08-01"
 
 @healthreportutils.FHRMapper(only_major_channels=True)
 def map(key, payload, context):
@@ -54,7 +52,6 @@ def map(key, payload, context):
 
     #only consider records that have a v23date transition recorded
     if v23date:# and payload.channel=='release':
-        print "\nv23date",v23date
 
         # in this case, we want the PER USER rate of searches/provider/activeTick on >=23 vs. the rate on <23.
         # also want to know the rate of searches/provider/activeDay on >=23 vs. the rate on <23.
@@ -80,68 +77,31 @@ def map(key, payload, context):
         totalNumSearches_ltV23 = sum((searchCount[3] for searchCount in dailySearches if searchCount[0]<v23date))
         totalNumSearches_gteV23 = sum((searchCount[3] for searchCount in dailySearches if searchCount[0]>v23date))
 
-        context.write(("numRecords","numRecords"),1)
 
-        searchProvidersThisRecord = set([searchCount[1] for searchCount in dailySearches])
-        for searchProvider in searchProvidersThisRecord:
-            if totalNumSearches_ltV23>0:
+        # only consider records with at least one search pre and post v23date
+        if totalNumSearches_ltV23>0 and totalNumSearches_gteV23>0:
+            context.write(("numRecords","numRecords"),1)
+
+            searchProvidersThisRecord = set([searchCount[1] for searchCount in dailySearches])
+            for searchProvider in searchProvidersThisRecord:
                 numSearchesThisProvider_ltV23 = sum((searchCount[3] for searchCount in dailySearches if searchCount[0]<v23date and searchCount[1]==searchProvider))
                 context.write(("<23",searchProvider),
                     float(numSearchesThisProvider_ltV23)/float(totalNumSearches_ltV23))
-            elif totalNumSearches_ltV23==0:
-                # DISTRIBUTE SEARCHES EVENLY ACROSS PROVIDERS... THO THIS IS DICEY!!!!!!!!!!!!!!
-                context.write(("<23",searchProvider),
-                    1/len(searchProvidersThisRecord))
 
-            if totalNumSearches_gteV23>0:
                 numSearchesThisProvider_gteV23 = sum((searchCount[3] for searchCount in dailySearches if searchCount[0]>v23date and searchCount[1]==searchProvider))
                 context.write((">=23",searchProvider),
                     float(numSearchesThisProvider_gteV23)/float(totalNumSearches_gteV23))
-            elif totalNumSearches_gteV23==0:
-                # DISTRIBUTE SEARCHES EVENLY ACROSS PROVIDERS... THO THIS IS DICEY!!!!!!!!!!!!!!
-                context.write((">=23",searchProvider),
-                    1/len(searchProvidersThisRecord))
 
-
-        searchLocationsThisRecord = set([searchCount[2] for searchCount in dailySearches])
-        for searchLocation in searchLocationsThisRecord:
-            if totalNumSearches_ltV23>0:
+            searchLocationsThisRecord = set([searchCount[2] for searchCount in dailySearches])
+            for searchLocation in searchLocationsThisRecord:
                 numSearchesThisLocation_ltV23 = sum((searchCount[3] for searchCount in dailySearches if searchCount[0]<v23date and searchCount[2]==searchLocation))
                 context.write(("<23",searchLocation),
                     float(numSearchesThisLocation_ltV23)/float(totalNumSearches_ltV23))
 
-                print searchLocation, float(numSearchesThisLocation_ltV23)/float(totalNumSearches_ltV23)
 
-            elif totalNumSearches_ltV23==0:
-                # DISTRIBUTE SEARCHES EVENLY ACROSS PROVIDERS... THO THIS IS DICEY!!!!!!!!!!!!!!
-                context.write(("<23",searchProvider),
-                    1/len(searchLocationsThisRecord))
-                print searchLocation, 1/len(searchLocationsThisRecord)
-
-            
-
-            if totalNumSearches_gteV23>0:
                 numSearchesThisLocation_gteV23 = sum((searchCount[3] for searchCount in dailySearches if searchCount[0]>v23date and searchCount[2]==searchLocation))
                 context.write((">=23",searchLocation),
                     float(numSearchesThisLocation_gteV23)/float(totalNumSearches_gteV23))
-                print searchLocation, float(numSearchesThisLocation_gteV23)/float(totalNumSearches_gteV23)
-
-            elif totalNumSearches_gteV23==0:
-                # DISTRIBUTE SEARCHES EVENLY ACROSS PROVIDERS... THO THIS IS DICEY!!!!!!!!!!!!!!
-                context.write((">=23",searchProvider),
-                    1/len(searchLocationsThisRecord))
-                print searchLocation, 1/len(searchLocationsThisRecord)
-
-
-        # for searchCounts in dailySearches:
-        #     if searchCounts[0]<v23date:
-        #         context.write(("<23",searchCounts[1],searchCounts[2]),searchCounts[3])
-        #     elif searchCounts[0]>v23date:
-        #         context.write((">=23",searchCounts[1],searchCounts[2]),searchCounts[3])
-        #     else:
-        #         continue
-
-
 
 
 
