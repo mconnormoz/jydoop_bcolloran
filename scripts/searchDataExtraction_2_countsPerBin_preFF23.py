@@ -50,8 +50,8 @@ def totalSearchDictFromSearchDaysData(searchDaysData):
             totalSearchDict[providerTup]=count
     return totalSearchDict
 
-startDate = "2013-08-01"
-endDate = "2013-09-01"
+startDate = "2013-06-01"
+endDate = "2013-08-01"
 
 
 def map(key, value, context):
@@ -137,20 +137,27 @@ def map(key, value, context):
     #if the current version is <23.0, set the v23date to be after any date in the record
 
     try:
-        currentVersion = payload["geckoAppInfo"]["version"]
+        currentVersion = payload["geckoAppInfo"]["version"].strip()
     except KeyError:
         try:
-            currentVersion = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["os"].strip()
+            currentVersion = payload["data"]["last"]["org.mozilla.appInfo.appinfo"]["version"].strip()
         except KeyError:
             #if a current version cannot be found, drop packet
             return
 
+    try:
+        currentVersionMajor = int(currentVersion.split(".")[0])
+    except ValueError:
+        # if the first part of the version string can't be cast as a float, drop the record
+        return
 
-    if currentVersion<"23.0":
-        # if the currentVersion<23, the v23date transition is after any date in the record
+
+
+    if currentVersionMajor<23:
+        # if the currentVersionMajor<23, the v23date transition is AFTER any date in the record
         v23date = "9999-99-99"
     else:
-        #in this case, the record must be on version 23.0 or higher; initially set the v23date transition date to be before any date in the record, then step through to look for the actual v23date
+        #in this case, the record must be on version 23.0 or higher; initially set the v23date transition date to be BEFORE any date in the record, then step through to look for the actual v23date
         v23date="0000-00-00"
         for date in fhrActiveDataDaysList:
             try:
@@ -160,14 +167,14 @@ def map(key, value, context):
                     v23date=date
             except KeyError:
                 pass
-    # print v23date
+    print v23date
 
 
     activeDaysInRange_preV23 = [date for date in fhrActiveDataDaysList if (date>=fhrActivationDate and startDate<=date and date<endDate and date<v23date)]
 
     activeDaysInRange_postV23 = [date for date in fhrActiveDataDaysList if (date>=fhrActivationDate and startDate<=date and date<endDate and date>v23date)]
 
-    # print fhrActiveDataDaysList,"\n",activeDaysInRange_preV23,"\n",activeDaysInRange_postV23,"\n"
+    print fhrActiveDataDaysList,"\n",activeDaysInRange_preV23,"\n",activeDaysInRange_postV23,"\n"
 
     numActiveDaysInRange_pre23 = len(activeDaysInRange_preV23)
     numActiveDaysInRange_post23 = len(activeDaysInRange_postV23)
@@ -178,16 +185,13 @@ def map(key, value, context):
     daysWithSearchesInRange_preV23 = [payload['data']['days'][date]['org.mozilla.searches.counts'] for date in activeDaysInRange_preV23 if date>=fhrActivationDate and 'org.mozilla.searches.counts' in payload['data']['days'][date].keys()]
 
     daysWithSearchesInRange_postV23 = [payload['data']['days'][date]['org.mozilla.searches.counts'] for date in activeDaysInRange_postV23 if date>=fhrActivationDate and 'org.mozilla.searches.counts' in payload['data']['days'][date].keys()]
-    # print daysWithSearchesInRange
+    print daysWithSearchesInRange_preV23,"\n",daysWithSearchesInRange_postV23
 
     totalSearchesByProvider_preV23 = totalSearchDictFromSearchDaysData(daysWithSearchesInRange_preV23)
     totalSearchesByProvider_postV23 = totalSearchDictFromSearchDaysData(daysWithSearchesInRange_postV23)
-    # print totalSearchesByProvider
-
-    
 
 
-    #desired output variables: [numberInFacet, numberOfSearchesInFacet, numberOfActiveDaysInFacet]
+    #desired output variables: [numberInBin, numberOfSearchesInBin, numberOfActiveDaysInBin]
 
     #if this record HAD ACTIVITY within the specified time range, add it to the general count:
     for versionFlag,totalSearchesByProvider,numActiveDaysInRange in [("pre23",totalSearchesByProvider_preV23,numActiveDaysInRange_pre23),("23+",totalSearchesByProvider_postV23,numActiveDaysInRange_post23)]:
@@ -211,7 +215,7 @@ def map(key, value, context):
 
         for searchTup,numSearches in totalSearchesByProvider.items():
             try:
-                #TRY needed b/c I was getting rare errors "IndexError: index out of range: 1". There must be badly formed search provider strings that are splitting incorrectly.
+                #TRY needed b/c I was getting rare errors: "IndexError: index out of range: 1". This indicates existence of rare badly formed search provider strings missing a "."
                 searchProvider = searchTup[0]
                 searchLocation = searchTup[1]
                 context.write( (os,

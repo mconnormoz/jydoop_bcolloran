@@ -12,21 +12,7 @@ setupjob = sequencefileutils.setupjob
 
 def map(infileRowNum, row, context):
     data = row.strip().split(",")
-    if data[2]=="ACTIVE_IN_RANGE":
-        searchProvider = "ACTIVE"
-        searchLocation = "ACTIVE"
-    elif data[2]=="ANY_SEARCH_PROVIDER":
-        searchProvider = "ANY_PROVIDER"
-        searchLocation = "ANY_LOCATION"
-    else:
-        try:
-            # print data[2].split("."),data[2].split(".")[0]
-            searchProvider = data[2].split(".")[0]
-            searchLocation = data[2].split(".")[1]
-        except IndexError:
-            return
-
-    context.write(tuple(data[:2]),tuple([searchProvider,searchLocation]+data[3:]))
+    context.write(tuple(data[:4]),tuple(data[4:]))
 
 
 def reduce(key,valIter,context):
