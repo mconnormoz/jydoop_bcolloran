@@ -53,7 +53,7 @@ def map(key, payload, context):
             v23date=date
 
     #only consider records that have a v23date transition recorded
-    if v23date and self.channel=='release':
+    if v23date and payload.channel=='release':
         # print [dailySessionInfo[1].active_ticks for dailySessionInfo in payload.session_times() if dailySessionInfo[0]<v23date]
         # print v23date
         # print [dailySessionInfo[1].active_ticks for dailySessionInfo in payload.session_times() if dailySessionInfo[0]>v23date]
