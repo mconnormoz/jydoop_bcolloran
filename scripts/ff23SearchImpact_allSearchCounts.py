@@ -71,15 +71,15 @@ def map(key, payload, context):
 
     #NOTE only consider days STRICTLY greater or less than the v23date-- what happens ON the v23date is ambiguous.
 
-    context.write(("<23","ACTIVITY","DAYS"),
-        len([date for date in payload.days if date<v23date]))
-    context.write((">=23","ACTIVITY","DAYS"),
-        len([date for date in payload.days if date>v23date]))
+    # context.write(("<23","ACTIVITY","DAYS"),
+    #     len([date for date in payload.days if date<v23date]))
+    # context.write((">=23","ACTIVITY","DAYS"),
+    #     len([date for date in payload.days if date>v23date]))
 
-    context.write(("<23","ACTIVITY","TICKS"),
-        sum([dailySessionInfo[1].active_ticks for dailySessionInfo in payload.session_times() if dailySessionInfo[0]<v23date]))
-    context.write((">=23","ACTIVITY","TICKS"),
-        sum([dailySessionInfo[1].active_ticks for dailySessionInfo in payload.session_times() if dailySessionInfo[0]>v23date]))
+    # context.write(("<23","ACTIVITY","TICKS"),
+    #     sum([dailySessionInfo[1].active_ticks for dailySessionInfo in payload.session_times() if dailySessionInfo[0]<v23date]))
+    # context.write((">=23","ACTIVITY","TICKS"),
+    #     sum([dailySessionInfo[1].active_ticks for dailySessionInfo in payload.session_times() if dailySessionInfo[0]>v23date]))
 
     for searchCounts in payload.daily_search_counts():
         if searchCounts[0]<v23date:
