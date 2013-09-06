@@ -51,7 +51,7 @@ def map(key, payload, context):
             v23date=date
 
     #only consider records that have a v23date transition recorded
-    if v23date:# and payload.channel=='release':
+    if v23date and payload.channel=='release':
 
         # in this case, we want the PER USER rate of searches/provider/activeTick on >=23 vs. the rate on <23.
         # also want to know the rate of searches/provider/activeDay on >=23 vs. the rate on <23.
