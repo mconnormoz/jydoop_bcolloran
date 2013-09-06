@@ -29,11 +29,6 @@ def setupjob(job, args):
 
 
 
-
-
-# make ARGS="scripts/searchDataExtraction_2_countsPerBin_preFF23.py ./outData/searchCounts_bins-preFF23_2013-07_v1.csv /data/fhr/nopartitions/20130902" hadoop
-
-
 @healthreportutils.FHRMapper(only_major_channels=True)
 def map(key, payload, context):
     # payload = healthreportutils.FHRPayload(value)
@@ -52,7 +47,7 @@ def map(key, payload, context):
             v23date=date
 
     #only consider records that have a v23date transition recorded
-    if v23date and payload.channel=='release':
+    if v23date:
 
 
         # we want to know the rate of searches/provider/activeTick on >=23 vs. the rate on <23.
