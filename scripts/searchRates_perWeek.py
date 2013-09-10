@@ -34,8 +34,8 @@ def setupjob(job, args):
 
 
 
-startDate = datetime.date(2013,07,01) # Monday, July 1 2013. Using M-Su weeks
-numWeeks = 10
+startDate = datetime.date(2013,06,03) # Monday, July 1 2013. Using M-Su weeks
+numWeeks = 14
 weekEndPoints = [startDate.strftime("%Y-%m-%d")]+[(startDate + datetime.timedelta(days=weekNum*7)).strftime("%Y-%m-%d") for weekNum in range(1,numWeeks)
 ]
 print weekEndPoints
