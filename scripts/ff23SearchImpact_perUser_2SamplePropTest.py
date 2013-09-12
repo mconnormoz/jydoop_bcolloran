@@ -6,6 +6,11 @@ import random
 import csv
 
 
+'''
+NOTE: this script can be used to find the priors for the psuedo-bayesian approach too. Fit the distribution of n1/N1 for each record.
+'''
+
+
 
 
 def setupjob(job, args):
@@ -68,12 +73,12 @@ def map(key, payload, context):
                 # what happens ON v23date is ambiguous
                 pass
 
-        p1 = float(n1)/float(N1) if N1>0 else 0
-        p2 = float(n2)/float(N2) if N2>0 else 0
+        # p1 = float(n1)/float(N1) if N1>0 else 0
+        # p2 = float(n2)/float(N2) if N2>0 else 0
 
-        print (p1,N1,p2,N2)
+        # print (p1,N1,p2,N2)
 
-        context.write(1,(p1,N1,p2,N2))
+        context.write(1,(n1,N1,n2,N2))
 
 
 
