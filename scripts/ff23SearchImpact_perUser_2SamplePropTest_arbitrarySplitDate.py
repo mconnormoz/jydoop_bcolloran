@@ -41,7 +41,7 @@ def map(key, payload, context):
 
 
     #iterate over the version info for days that have ['org.mozilla.appInfo.versions']["appVersion"], and return the date on which the transition to 23 occurs. Initialize the date as a 'None'
-    splitDate=datetime.date(2013,06,03)+datetime.timedelta(days=random.randint(1,90)).strftime("%Y-%m-%d")
+    splitDate=(datetime.date(2013,06,03)+datetime.timedelta(days=random.randint(1,90))).strftime("%Y-%m-%d")
 
     if not splitDate:
         pass
