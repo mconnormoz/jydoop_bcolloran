@@ -3,7 +3,7 @@ import jydoop
 import healthreportutils
 import sequencefileutils
 import random
-import date
+import datetime
 import csv
 
 
