@@ -19,6 +19,7 @@ def setupjob(job, args):
 
     Jobs expect one or more arguments, the HDFS path(s) to the data.
     """
+    
     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
     import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
 
