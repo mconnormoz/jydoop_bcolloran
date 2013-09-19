@@ -92,6 +92,10 @@ class FHRPayload_v3(object):
         return self._o.get('environments', {}).get('current', {}).get('geckoAppInfo', None)
 
     @property
+    def geo(self):
+        return self._o.get('geoCountry', None)
+
+    @property
     def app_build_id(self):
         return self.currentAppInfo.get('appBuildID', None)
 
