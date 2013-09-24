@@ -12,6 +12,9 @@ make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /d
 #did not work
 make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /data/fhr/raw" hadoop
 
+
+make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /user/sguha/fhr/samples/output/1pct" hadoop
+
 '''
 
 def setupjob(job, args):
@@ -20,7 +23,6 @@ def setupjob(job, args):
 
     Jobs expect one or more arguments, the HDFS path(s) to the data.
     """
-    
     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
     import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
 
@@ -32,8 +34,6 @@ def setupjob(job, args):
     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
     # set the job to run in the RESEARCH queue
     job.getConfiguration().set("mapred.job.queue.name","research")
-
-# setupjob=healthreportutils_v3.setupjob
 
 
 @healthreportutils_v3.FHRMapper()
@@ -49,7 +49,7 @@ def map(key, payload, context):
             countData[3])
 
 
-
+combine = jydoop.sumreducer
 reduce = jydoop.sumreducer
 
 
