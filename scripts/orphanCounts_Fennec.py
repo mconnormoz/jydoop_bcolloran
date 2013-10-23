@@ -4,7 +4,7 @@ import healthreportutils_v3
 import random
 
 '''
-make ARGS="scripts/orphanCounts_Fennec.py ./outData/fennecQuery_numberOfAddonsPerUser.csv /data/fhr/nopartitions/20131001/3/part*" hadoop
+make ARGS="scripts/orphanCounts_Fennec.py ./outData/fennecQuery_numberOfAddonsPerUser.csv /data/fhr/nopartitions/20131012/3/part*" hadoop
 
 '''
 # setupjob = healthreportutils_v3.setupjob
