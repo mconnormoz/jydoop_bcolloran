@@ -4,16 +4,7 @@ import healthreportutils_v3
 import random
 
 '''
-
-make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /tmp/partitioned_export.7" hadoop
-
-make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /data/fhr/tmp/3" hadoop
-
-#did not work
-make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /data/fhr/raw" hadoop
-
-
-make ARGS="scripts/fennecQuery_searchByGeo.py /outData/fennec_searchByGeo.csv /user/sguha/fhr/samples/output/1pct" hadoop
+make ARGS="scripts/orphanCounts_Fennec.py ./outData/fennecQuery_numberOfAddonsPerUser.csv /data/fhr/nopartitions/20131001/3/part*" hadoop
 
 '''
 # setupjob = healthreportutils_v3.setupjob
