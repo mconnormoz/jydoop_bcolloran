@@ -40,17 +40,13 @@ def setupjob(job, args):
 @healthreportutils_v3.FHRMapper()
 def map(key, payload, context):
 
-    addons = payload.environments['current']['org.mozilla.addons.active']
-    addonInfoList = [(addonId,addons[addonId]["foreignInstall"],addons[addonId]["type"],addons[addonId]["userDisabled"]) for addonId in addons.keys() if addonId!="_v"]
-
-
-
-    for addonInfo in addonInfoList:
-        context.write(addonInfo,1)
-
+    firstDayData = str(payload._o.get('data', {}).get('days', {}).get(payload.days[0],{}))
+    context.write(hash(firstDayData),1)
 
 combine = jydoop.sumreducer
 reduce = jydoop.sumreducer
+
+#def reduce(key,vList,context):
 
 
 
