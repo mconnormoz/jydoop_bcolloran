@@ -8,10 +8,10 @@ import random
 in following commands, UPDATE DATES
 
 ----to run against HDFS sample
-make ARGS="scripts/orphanCounts_Fennec.py ./outData/fennecQuery_numberOfAddonsPerUser.csv /data/fhr/nopartitions/20131012/3/part*" hadoop
+make ARGS="scripts/orphanCounts_Fennec.py ./outData/orphanCounts_Fennec_2013-10-24.csv /data/fhr/nopartitions/20131022/3/part*" hadoop
 
 ----to run against full HBASE
-make ARGS="scripts/orph_Fennec_byDate.py ./outData/orphaningDatesFennec_2013-10-24.csv" hadoop
+make ARGS="scripts/orphanCounts_Fennec.py ./outData/orphanCounts_Fennec_2013-10-24.csv" hadoop
 
 '''
 
