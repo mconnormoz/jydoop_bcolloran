@@ -50,15 +50,35 @@ def map(key, payload, context):
     try:
         firstDay = payload.days[0]
     except IndexError:
+        context.write("no_firstDay",1)
         return
 
 
 
-    firstDayData = str(payload._o.get('data', {}).get('days', {}).get(firstDay,{}))
-    if firstDayData=={}:
+    try:
+        firstDayFirstEnvir = payload._o.get('data', {}).get('days', {}).get(firstDay,{}).keys()[0]
+    except IndexError:
+        context.write("no_firstDayFirstEnvir",1)
+        return
+
+
+
+    try:
+        firstDayFirstEnvirAppSession = payload._o.get('data', {}).get('days', {}).get(firstDay,{}).get(firstDayFirstEnvir,{})["org.mozilla.appSessions"]
+    except KeyError:
+        context.write("no_firstDayFirstEnvirAppSession",1)
+        return
+
+
+
+    if firstDayFirstEnvirAppSession=={}:
+        context.write("empty_firstDayFirstEnvirAppSession",1)
         return
     else:
-        context.write((firstDay,hash(firstDayData)),1)
+        firstDayDataStr = str(payload._o.get('data', {}).get('days', {}).get(firstDay,{}))
+        context.write( (firstDay,hash(firstDayDataStr)), 1)
+
+
 
 combine = jydoop.sumreducer
 reduce = jydoop.sumreducer
