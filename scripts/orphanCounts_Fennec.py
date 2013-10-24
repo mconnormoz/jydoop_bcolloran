@@ -44,8 +44,21 @@ setupjob = healthreportutils_v3.setupjob
 @healthreportutils_v3.FHRMapper()
 def map(key, payload, context):
 
-    firstDayData = str(payload._o.get('data', {}).get('days', {}).get(payload.days[0],{}))
-    context.write(hash(firstDayData),1)
+    if payload.version!=3:
+        return
+
+    try:
+        firstDay = payload.days[0]
+    except IndexError:
+        return
+
+
+
+    firstDayData = str(payload._o.get('data', {}).get('days', {}).get(firstDay,{}))
+    if firstDayData=={}:
+        return
+    else:
+        context.write(hash(firstDayData),1)
 
 combine = jydoop.sumreducer
 reduce = jydoop.sumreducer
