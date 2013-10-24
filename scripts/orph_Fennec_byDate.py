@@ -4,9 +4,16 @@ import healthreportutils_v3
 import random
 
 '''
-make ARGS="scripts/orphanCounts_Fennec.py ./outData/fennecQuery_numberOfAddonsPerUser.csv /data/fhr/nopartitions/20131012/3/part*" hadoop
+make ARGS="scripts/orph_Fennec_byDate.py ./outData/orphaningDatesFennec_2013-10-22.csv /data/fhr/nopartitions/20131012/3/part*" hadoop
+
 
 '''
+
+# uncomment this to write output to hdfs
+# def skip_local_output():
+#     return True
+
+
 # setupjob = healthreportutils_v3.setupjob
 
 def setupjob(job, args):

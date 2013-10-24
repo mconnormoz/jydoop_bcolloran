@@ -3,12 +3,21 @@ import jydoop
 import healthreportutils_v3
 import random
 
+
 '''
+in following commands, UPDATE DATES
+
+----to run against HDFS sample
 make ARGS="scripts/orphanCounts_Fennec.py ./outData/fennecQuery_numberOfAddonsPerUser.csv /data/fhr/nopartitions/20131012/3/part*" hadoop
 
-'''
-# setupjob = healthreportutils_v3.setupjob
+----to run against full HBASE
+make ARGS="scripts/orph_Fennec_byDate.py ./outData/orphaningDatesFennec_2013-10-24.csv" hadoop
 
+'''
+
+
+
+'''
 def setupjob(job, args):
     """
     Set up a job to run on one or more HDFS locations
@@ -26,6 +35,10 @@ def setupjob(job, args):
     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
     # set the job to run in the RESEARCH queue
     job.getConfiguration().set("mapred.job.queue.name","research")
+'''
+
+setupjob = healthreportutils_v3.setupjob
+
 
 
 @healthreportutils_v3.FHRMapper()
