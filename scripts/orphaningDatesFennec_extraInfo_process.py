@@ -13,23 +13,25 @@ make ARGS="scripts/orphaningDatesFennec_extraInfo_process.py ./outData/orphaning
 '''
 
 #needed to get data from HDFS
-def setupjob(job, args):
-    """
-    Set up a job to run on one or more HDFS locations
+setupjob=jydoop.setupjob
 
-    Jobs expect one or more arguments, the HDFS path(s) to the data.
-    """
-    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
-    import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
+# def setupjob(job, args):
+#     """
+#     Set up a job to run on one or more HDFS locations
 
-    if len(args) < 1:
-        raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
+#     Jobs expect one or more arguments, the HDFS path(s) to the data.
+#     """
+#     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+#     import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
 
-    job.setInputFormatClass(MyInputFormat)
-    FileInputFormat.setInputPaths(job, ",".join(args));
-    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
-    # set the job to run in the RESEARCH queue
-    job.getConfiguration().set("mapred.job.queue.name","research")
+#     if len(args) < 1:
+#         raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
+
+#     job.setInputFormatClass(MyInputFormat)
+#     FileInputFormat.setInputPaths(job, ",".join(args));
+#     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
+#     # set the job to run in the RESEARCH queue
+#     job.getConfiguration().set("mapred.job.queue.name","research")
 
 
 
