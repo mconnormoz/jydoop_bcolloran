@@ -15,8 +15,8 @@ make ARGS="scripts/orph_Fennec_byDate2.py ./outData/orphaningDatesFennec_extraIn
 
 '''
 
-######## to OUTPUT TO HDFS
-# make ARGS="scripts/orph_Fennec_byDate2.py /user/outData/orphaningDatesFennec_extraInfo_2013-10-24" hadoop
+######## to OUTPUT TO HDFS from RAW HBASE
+# make ARGS="scripts/orph_Fennec_byBuildId.py /user/outData/orph_Fennec_byBuildId_extraInfo_2013-10-24" hadoop
 def skip_local_output():
     return True
 
