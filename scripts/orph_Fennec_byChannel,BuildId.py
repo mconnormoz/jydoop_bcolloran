@@ -7,14 +7,15 @@ import random
 '''
 in following commands, UPDATE DATES
 
-----to run against HDFS sample
-make ARGS="scripts/{THIS_FILE}.py ./outData/{OUT_FILE}.csv /data/fhr/nopartitions/{DATE}/3/part*" hadoop
+----to run against HDFS sample of ALL v3 records (extract created by anurag in HDFS at /user/aphadke/temp_fennec_raw_dump)
 
-----to run against full HBASE
-make ARGS="scripts/orph_Fennec_byBuildId.py ./outData/orphaningDatesFennec_extraInfo_2013-10-24.csv" hadoop
+
+---HDFS dump of all Fennec records to HDFS summary
+make ARGS="scripts/orph_Fennec_byChannel,BuildId.py ./outData/orph_Fennec_byChannel,BuildId_2013-10-28 /user/aphadke/temp_fennec_raw_dump/part*" hadoop
+
 
 SAVE OUTPUT TO HDFS, then need to PROCESS WITH e.g:
-make ARGS="scripts/orphaningDatesFennec_extraInfo_process.py ./outData/orph_Fennec_byBuildId_extraInfo_2013-10-25.csv /user/bcolloran/outData/orph_Fennec_byBuildId_extraInfo_2013-10-25/part*" hadoop
+make ARGS="scripts/orph_Fennec_byChannel,BuildId_process.py ./outData/orph_Fennec_byChannel,BuildId_extraInfo_2013-10-25.csv /user/bcolloran/outData/orph_Fennec_byBuildId_extraInfo_2013-10-25/part*" hadoop
 
 
 '''
@@ -25,7 +26,7 @@ def skip_local_output():
     return True
 
 
-'''
+
 def setupjob(job, args):
     """
     Set up a job to run on one or more HDFS locations
@@ -43,9 +44,9 @@ def setupjob(job, args):
     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
     # set the job to run in the RESEARCH queue
     job.getConfiguration().set("mapred.job.queue.name","research")
-'''
 
-setupjob = healthreportutils_v3.setupjob
+
+# setupjob = healthreportutils_v3.setupjob
 
 
 
