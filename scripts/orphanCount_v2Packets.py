@@ -66,15 +66,30 @@ def map(key, value, context):
         return
 
 
-    appSessionDays = [day for day in dataDays if "org.mozilla.appSessions.previous" in payload["data"]["days"][day].keys() ]
+    firstAppSessionDay=None
+    for day in sorted(dataDays):
+        try:
+            if "org.mozilla.appSessions.previous" in payload["data"]["days"][day].keys():
+                firstAppSessionDay = day
+        except TypeError:
+            pass
+        if firstAppSessionDay:
+            break
 
-
-    if appSessionDays:
-        firstAppSessionDay = min(appSessionDays)
+    if firstAppSessionDay:
         firstAppSessionDayData = payload["data"]["days"][firstAppSessionDay]
     else:
         context.write("no_dayWithAppSession",1)
         return
+
+
+
+    # if appSessionDays:
+    #     firstAppSessionDay = min(appSessionDays)
+    #     firstAppSessionDayData = payload["data"]["days"][firstAppSessionDay]
+    # else:
+    #     context.write("no_dayWithAppSession",1)
+    #     return
 
     ##### TEST FOR ALL FINGERPRINT-RUINING ANOMALIES #### END
 
