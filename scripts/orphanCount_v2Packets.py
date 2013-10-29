@@ -127,7 +127,7 @@ def map(key, value, context):
 
     try:
         memory =payload["data"]["last"]["org.mozilla.sysinfo.sysinfo"]["memoryMB"]
-    except KeyError:
+    except:
         memory="no_memory"
 
     fingerprint = hash((os,
