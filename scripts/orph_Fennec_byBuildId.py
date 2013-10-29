@@ -11,12 +11,16 @@ in following commands, UPDATE DATES
 make ARGS="scripts/{THIS_FILE}.py ./outData/{OUT_FILE}.csv /data/fhr/nopartitions/{DATE}/3/part*" hadoop
 
 ----to run against full HBASE
-make ARGS="scripts/orph_Fennec_byDate2.py ./outData/orphaningDatesFennec_extraInfo_2013-10-24.csv" hadoop
+make ARGS="scripts/orph_Fennec_byBuildId.py ./outData/orphaningDatesFennec_extraInfo_2013-10-24.csv" hadoop
+
+SAVE OUTPUT TO HDFS, then need to PROCESS WITH e.g:
+make ARGS="scripts/orphaningDatesFennec_extraInfo_process.py ./outData/orph_Fennec_byBuildId_extraInfo_2013-10-25.csv /user/bcolloran/outData/orph_Fennec_byBuildId_extraInfo_2013-10-25/part*" hadoop
+
 
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# make ARGS="scripts/orph_Fennec_byBuildId.py /user/outData/orph_Fennec_byBuildId_extraInfo_2013-10-24" hadoop
+# make ARGS="scripts/orph_Fennec_byBuildId.py /user/bcolloran/outData/orph_Fennec_byBuildId_extraInfo_2013-10-25" hadoop
 def skip_local_output():
     return True
 
