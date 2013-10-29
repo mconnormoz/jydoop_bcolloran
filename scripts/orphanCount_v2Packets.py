@@ -11,7 +11,7 @@ in following commands, UPDATE DATES
 
 
 ----to run against full HBASE
-make ARGS="scripts/orphanCount_v2Packets.py ./outData/orphaningDatesFennec_extraInfo_2013-10-24" hadoop
+make ARGS="scripts/orphanCount_v2Packets.py ./outData/orphaningDatesFennec_extraInfo_2013-10-29" hadoop
 
 
 
@@ -71,7 +71,7 @@ def map(key, value, context):
         try:
             if "org.mozilla.appSessions.previous" in payload["data"]["days"][day].keys():
                 firstAppSessionDay = day
-        except TypeError:
+        except:
             pass
         if firstAppSessionDay:
             break
