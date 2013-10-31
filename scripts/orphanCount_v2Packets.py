@@ -2,6 +2,7 @@ import json
 import jydoop
 import healthreportutils
 import random
+from collections import OrderedDict
 
 '''
 
@@ -26,6 +27,14 @@ def skip_local_output():
 
 
 setupjob = healthreportutils.setupjob
+
+
+# need to use this since python dicts don't guarantee order, and since json.dumps with sorting flag is broken in jydoop
+def dictToSortedTupList(objIn):
+    if isinstance(objIn,dict):
+        return [(key,dictToSortedTupList(val)) for key,val in sorted(objIn.items(),key=lambda item:item[0])]
+    else:
+        return objIn
 
 
 
@@ -133,6 +142,8 @@ def map(key, value, context):
 
 
 
+    firstAppSessionDayDataStr=str(dictToSortedTupList(firstAppSessionDayData))
+    #print firstAppSessionDayDataStr
 
     fingerprint = hash((os,
                   updateChannel,
@@ -140,7 +151,7 @@ def map(key, value, context):
                   str(memory),
                   str(profileCreation),
                   firstAppSessionDay,
-                  json.dumps(firstAppSessionDayData,sort_keys=True)))
+                  firstAppSessionDayDataStr))
 
     context.write(fingerprint,1)
 
