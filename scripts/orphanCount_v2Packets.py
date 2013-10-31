@@ -125,10 +125,14 @@ def map(key, value, context):
     except KeyError:
         country="no_country"
 
+
     try:
         memory =payload["data"]["last"]["org.mozilla.sysinfo.sysinfo"]["memoryMB"]
     except:
         memory="no_memory"
+
+
+
 
     fingerprint = hash((os,
                   updateChannel,
