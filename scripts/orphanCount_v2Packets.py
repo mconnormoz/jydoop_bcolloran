@@ -136,7 +136,7 @@ def map(key, value, context):
                   str(memory),
                   str(profileCreation),
                   firstAppSessionDay,
-                  str(firstAppSessionDayData)))
+                  json.dumps(firstAppSessionDayData,sort_keys=True)))
 
     context.write(fingerprint,1)
 
