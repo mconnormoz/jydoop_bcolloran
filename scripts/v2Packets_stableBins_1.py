@@ -22,8 +22,8 @@ make ARGS="scripts/orphanCount_v2Packets.py ./outData/orphanCount_v2Packets_2013
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-def skip_local_output():
-    return True
+# def skip_local_output():
+#     return True
 
 
 setupjob = healthreportutils.setupjob
