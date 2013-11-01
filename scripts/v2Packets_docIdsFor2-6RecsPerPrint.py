@@ -1,28 +1,18 @@
 import json
-import jydoop
 import healthreportutils
-import random
 
 '''
-
-OUTOUT: will produce (fingerprint,count) pairs that need to be further processed to get count of each the number of prints with X records per print. Need to save output to HDFS for this to work.
-
 in following commands, UPDATE DATES
 
-
 ----to run against full HBASE
-make ARGS="scripts/orphanCount_v2Packets.py ./outData/orphaningDatesFennec_extraInfo_2013-10-29" hadoop
+jydoopRemote peach scripts/v2Packets_docIdsFor2-6RecsPerPrint.py outData/v2Packets_docIdsFor2-6RecsPerPrint_2013-11-01.txt
 
-
-
-SAVE OUTPUT TO HDFS, then need to PROCESS WITH e.g:
-make ARGS="scripts/orphanCount_v2Packets.py ./outData/orphanCount_v2Packets_2013-10-25.csv /user/bcolloran/outData/orph_Fennec_byBuildId_extraInfo_2013-10-25/part*" hadoop
 
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-def skip_local_output():
-    return True
+# def skip_local_output():
+#     return True
 
 
 setupjob = healthreportutils.setupjob
