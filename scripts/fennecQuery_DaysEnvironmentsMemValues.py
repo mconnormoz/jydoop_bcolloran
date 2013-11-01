@@ -9,14 +9,31 @@ import random
 
 
 ---HDFS dump of all Fennec records to HDFS summary
-make ARGS="scripts/fennecQuery_DaysEnviromentsMemValues.py ./outData/fennecQuery_DaysEnviromentsMemValues_2013-10-31 /user/aphadke/temp_fennec_raw_dump/part*" hadoop
+make ARGS="scripts/fennecQuery_DaysEnvironmentsMemValues.py ./outData/fennecQuery_DaysEnviromentsMemValues_2013-10-31 /user/aphadke/temp_fennec_raw_dump/part*" hadoop
 '''
 
 
-#needed to get data from HDFS
-setupjob=jydoop.setupjob
+#needed to get data from HDFS *as text*
+def setupjob(job, args):
+    """
+    Set up a job to run on one or more HDFS locations
 
-#don't save to HDFS
+    Jobs expect one or more arguments, the HDFS path(s) to the data.
+    """
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
+
+    if len(args) < 1:
+        raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
+
+    job.setInputFormatClass(MyInputFormat)
+    FileInputFormat.setInputPaths(job, ",".join(args));
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
+    # set the job to run in the RESEARCH queue
+    job.getConfiguration().set("mapred.job.queue.name","research")
+
+
+#don't save to HDFS, write as csv
 
 
 @healthreportutils_v3.FHRMapper()
