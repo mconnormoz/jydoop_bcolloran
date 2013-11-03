@@ -7,6 +7,9 @@ in following commands, UPDATE DATES
 ----to run against full HBASE
 jydoopRemote peach scripts/v2Packets_docIdsFor2-6RecsPerPrint.py outData/v2Packets_docIdsFor2-6RecsPerPrint_2013-11-01.txt
 
+----to *test* on a sample
+make ARGS="scripts/v2Packets_docIdsFor2-6RecsPerPrint.py ./outData/v2Packets_docIdsFor2-6RecsPerPrint_2013-11-01_test.txt /data/fhr/raw/20131101/part-m-08*" hadoop
+
 
 '''
 
