@@ -5,8 +5,7 @@ import healthreportutils
 in following commands, UPDATE DATES
 
 ----to run against full HBASE
-jydoopRemote peach scripts/v2Packets_printsWithManyRecsPerPrint.py 
- outData/v2Packets_printsWithManyRecsPerPrint.csv
+jydoopRemote peach scripts/v2Packets_printsWithManyRecsPerPrint.py outData/v2Packets_printsWithManyRecsPerPrint.csv
 
 
 '''

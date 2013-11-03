@@ -146,7 +146,7 @@ def reduce(fingerprint,docIdList,context):
             return
 
     if numDocIds>1:
-        context.write('',tuple(docIdList))
+        context.write('',str(tuple(docIdList)))
 
 
 
