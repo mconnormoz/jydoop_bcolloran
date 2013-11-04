@@ -55,12 +55,15 @@ minDocIdsToReport=1
 maxDocIdsToReport=6
 
 def reduce(fingerprint,docIdIter,context):
-    context.write('',list(docIdIter))
-    # numDocIds=0
-    # for docId in docIdIter:
-    #     numDocIds+=1
-    #     if numDocIds>maxDocIdsToReport:
-    #         return
+    numDocIds=0
+    docIdOutList = []
+    for docId in docIdIter:
+        numDocIds+=1
+        docIdOutList+=[docId]
+        if numDocIds>maxDocIdsToReport:
+            return
+
+    context.write('',docIdOutList)
 
     # if numDocIds>=minDocIdsToReport:
     #     context.write('',list(docIdIter))
