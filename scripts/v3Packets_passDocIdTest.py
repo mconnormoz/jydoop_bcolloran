@@ -42,9 +42,11 @@ def setupjob(job, args):
 @healthreportutils_v3.FHRMapper()
 def map(docId, payload, context):
 
-    firstDayData = str(payload._o.get('data', {}).get('days', {}).get(payload.days[0],{}))
-    print (hash(firstDayData),docId)
-    context.write(hash(firstDayData),docId)
+    try:
+        firstDayData = str(payload._o.get('data', {}).get('days', {}).get(payload.days[0],{}))
+        context.write(hash(firstDayData),docId)
+    except:
+        pass
 
 
 
