@@ -67,9 +67,9 @@ def map(docId, rawJsonIn, context):
         return
 
 
-    if payloadVersion != 2:
-        context.write("not_v2",1)
-        return
+    # if payloadVersion != 2:
+    #     context.write("not_v2",1)
+    #     return
 
 
     try:
@@ -161,15 +161,18 @@ def map(docId, rawJsonIn, context):
 
 
 
-def reduce(fingerprint,docIdList,context):
+minDocIdsToReport=2
+maxDocIdsToReport=6
+
+def reduce(fingerprint,docIdIter,context):
     numDocIds=0
-    for docId in docIdList:
+    for docId in docIdIter:
         numDocIds+=1
-        if numDocIds>6:
+        if numDocIds>maxDocIdsToReport:
             return
 
-    if numDocIds>1:
-        context.write('',str(tuple(docIdList)))
+    if numDocIds>minDocIdsToReport:
+        context.write('',str(tuple(docIdIter)))
 
 
 
