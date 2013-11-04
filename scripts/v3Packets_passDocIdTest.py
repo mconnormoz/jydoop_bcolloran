@@ -51,7 +51,7 @@ def map(docId, payload, context):
 
 
 
-minDocIdsToReport=1
+minDocIdsToReport=2
 maxDocIdsToReport=6
 
 def reduce(fingerprint,docIdIter,context):
