@@ -187,7 +187,7 @@ def reduce(k, vIter, context):
     i=0
     recordList=[]
     for fhrDocId,rawJsonIn in vIter:
-        if i==0:
+        if i==0:z
             zerothRecord=rawJsonIn
         elif i==1:
             #don't write out any records until there are at least 2 found for the fingerprint
