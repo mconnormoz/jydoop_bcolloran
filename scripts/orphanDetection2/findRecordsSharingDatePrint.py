@@ -5,7 +5,12 @@ import healthreportutils
 in following commands, UPDATE DATES
 
 ----to run against full HBASE, output to HDFS
-jydoopRemote peach scripts/getSampleOfFhrPacketsWithDuplicatedFingerprint_2013-11.py outData/v2Packets_sampleWithLinkedOrphans_2013-11-05
+jydoopRemote peach scripts/findRecordsSharingDatePrint.py outData/findRecordsSharingDatePrint_test
+
+
+----to run against full HDFS sample, output to HDFS; on peach:
+make ARGS="scripts/findRecordsSharingDatePrint.py ./outData/recordsSharingDatePrint /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2/part-r-*" hadoop
+
 
 '''
 
