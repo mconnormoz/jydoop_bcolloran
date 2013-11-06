@@ -43,10 +43,16 @@ def setupjob(job, args):
     job.getConfiguration().set("mapred.reduce.tasks","4352")
 
 
+
+
 '''
-As of 2013-11-01 ish, there were ~366*10^6 FINGERPRINTS in HBASE. Sample 1/1000 fingerprints to get ~366,000 fingerprints, which should come out to something like 1M maybe records
+As of 2013-11-01 ish, there were ~620M records with ~366M FINGERPRINTS in HBASE.
+Sample 1/100 of records to get ~6.2M records, with hopefully ~3.6M fingerprints.
+Sample 1/10 of fingerprints down to 360,000 prints, which should come out to something like 1M maybe records (because some prints will have more than 2 records)
 '''
-sampleRate = 0.001
+sampleRateOfRecords = 0.01
+
+sampleRateOfPrints = 0.1
 
 
 
@@ -60,6 +66,9 @@ def dictToSortedTupList(objIn):
 
 
 def map(fhrDocId, rawJsonIn, context):
+    if random.random()>sampleRateOfRecords:
+        #sampling
+        return
 
     try:
         payload = json.loads(rawJsonIn)
@@ -157,7 +166,7 @@ def map(fhrDocId, rawJsonIn, context):
 
 def reduce(fingerprint, vIter, context):
 
-    if random.random()>sampleRate:
+    if random.random()>sampleRateOfPrints:
         #sampling
         return
 
