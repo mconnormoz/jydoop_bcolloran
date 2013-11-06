@@ -15,7 +15,7 @@ def skip_local_output():
     return True
 
 
-setupjob = healthreportutils.setupjob
+# setupjob = healthreportutils.setupjob
 
 def setupjob(job, args):
     """
