@@ -6,7 +6,7 @@ import random
 in following commands, UPDATE DATES
 
 ----to run against full HBASE, output to HDFS
-jydoopRemote peach scripts/getSampleOfFhrPacketsWithDuplicatedFingerprint_2013-11.py outData/v2Packets_sampleWithLinkedOrphans_2013-11-05.txt
+jydoopRemote peach scripts/getSampleOfFhrPacketsWithDuplicatedFingerprint_2013-11.py outData/v2Packets_sampleWithLinkedOrphans_2013-11-05
 
 '''
 
@@ -16,6 +16,32 @@ def skip_local_output():
 
 
 setupjob = healthreportutils.setupjob
+
+def setupjob(job, args):
+    """
+    Set up a job to run full table scans for FHR data.
+
+    We don't expect any arguments.
+    """
+
+    import org.apache.hadoop.hbase.client.Scan as Scan
+    import com.mozilla.hadoop.hbase.mapreduce.MultiScanTableMapReduceUtil as MSTMRU
+
+    scan = Scan()
+    scan.setCaching(500)
+    scan.setCacheBlocks(False)
+    scan.addColumn(bytearray('data'), bytearray('json'))
+
+    # FIXME: do it without this multi-scan util
+    scans = [scan]
+    MSTMRU.initMultiScanTableMapperJob(
+        'metrics', scans,
+        None, None, None, job)
+
+    # inform HadoopDriver about the columns we expect to receive
+    job.getConfiguration().set("org.mozilla.jydoop.hbasecolumns", "data:json");
+    job.getConfiguration().set("mapred.reduce.tasks","4352")
+
 
 '''
 As of 2013-11-01 ish, there were ~366*10^6 FINGERPRINTS in HBASE. Sample 1/1000 fingerprints to get ~366,000 fingerprints, which should come out to something like 1M maybe records
