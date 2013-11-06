@@ -9,7 +9,7 @@ jydoopRemote peach scripts/findRecordsSharingDatePrint.py outData/findRecordsSha
 
 
 ----to run against full HDFS sample, output to HDFS; on peach:
-make ARGS="scripts/findRecordsSharingDatePrint.py ./outData/recordsSharingDatePrint /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2/part-r-*" hadoop
+make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/recordsSharingDatePrint /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2/part-r-*" hadoop
 
 
 '''
@@ -83,9 +83,11 @@ def map(fhrDocId, rawJsonIn, context):
         profileCreation = "no_profileCreation"
 
 
-    datePrints = [(date,hash(dictToSortedTupList(payload["data"]["days"][date]))) for date in payload["data"]["days"].keys()]
+    datePrints = tuple([ (date,hash(str(dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ])
     
     for d in datePrints:
+        # print (d,profileCreation)
+        # print (fhrDocId,datePrints)
         context.write((d,profileCreation),(fhrDocId,datePrints))
 
 
