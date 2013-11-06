@@ -6,7 +6,7 @@ import random
 in following commands, UPDATE DATES
 
 ----to run against full HBASE, output to HDFS
-jydoopRemote peach scripts/getSampleOfFhrPacketsWithDuplicatedFingerprint_2013-11.py outData/v2Packets_sampleWithLinkedOrphans_2013-11-05
+jydoopRemote peach scripts/getSampleOfFhrPacketsWithDuplicatedFingerprint_2013-11.py outData/v2Packets_sampleWithLinkedOrphans_2013-11-06
 
 '''
 
@@ -40,7 +40,8 @@ def setupjob(job, args):
 
     # inform HadoopDriver about the columns we expect to receive
     job.getConfiguration().set("org.mozilla.jydoop.hbasecolumns", "data:json");
-    job.getConfiguration().set("mapred.reduce.tasks","4352")
+    # job.getConfiguration().set("mapred.reduce.tasks",4352)
+    job.setNumReduceTasks(4352)
 
 
 
