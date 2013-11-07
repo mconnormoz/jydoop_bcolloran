@@ -15,8 +15,8 @@ make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/rec
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-def skip_local_output():
-    return True
+# def skip_local_output():
+#     return True
 
 
 # setupjob = healthreportutils.setupjob
@@ -96,3 +96,19 @@ def reduce(datePrint, vIter, context):
     for i in range(len(recordInfoList)):
         for j in range(i+1,len(recordInfoList)):
             context.write((recordInfoList[i],recordInfoList[j]),datePrint)
+
+
+
+
+
+def outputWithKey(path, results):
+    """
+    Output key/values into a reasonable CSV.
+
+    All lists/tuples are unwrapped.
+    """
+
+    f = open(path, 'w')
+    w = csv.writer(f)
+    for k, v in results:
+        w.writerow([str(k),str(v)])
