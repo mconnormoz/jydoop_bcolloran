@@ -95,7 +95,7 @@ def reduce(datePrint, vIter, context):
     recordInfoList = sorted(list(set(vIter)),key=lambda tup:tup[0])
     for i in range(len(recordInfoList)):
         for j in range(i+1,len(recordInfoList)):
-            context.write(str((recordInfoList[i],recordInfoList[j])),str(datePrint))
+            context.write((recordInfoList[i],recordInfoList[j])),datePrint)
 
 
 
