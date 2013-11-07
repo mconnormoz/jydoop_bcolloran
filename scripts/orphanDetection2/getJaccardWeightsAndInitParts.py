@@ -36,7 +36,7 @@ def setupjob(job, args):
 
 
 '''
-no mapper is used. input key vals are of the form
+identity mapper is used. input key vals are of the form
 ((recordInfo[i],recordInfo[j]), datePrint)
 and we need these immediately sorted+binned into reducers.
 
@@ -44,6 +44,10 @@ each "recordInfo" is of the form
 (fhrDocId,datePrints)
 
 '''
+def map(recordEdge,datePrint,context):
+    context.write(recordEdge,datePrint)
+
+
 def jaccard(a, b):
     c = a.intersection(b)
     return float(len(c)) / (len(a) + len(b) - len(c))
