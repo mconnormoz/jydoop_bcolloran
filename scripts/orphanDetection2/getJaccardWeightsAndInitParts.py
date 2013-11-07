@@ -68,6 +68,15 @@ def reduce(recordEdge, datePrintIter, context):
         weightedRecordEdge = tuple(sorted([recordEdge[0][0],recordEdge[1][0]])+[intersection/union])
         context.write(weightedRecordEdge,("PART",min([recordEdge[0][0],recordEdge[1][0]])))
     except:
+        try:
+            context.write("recordEdge[0]",str(recordEdge[0]))
+        except:
+            context.write("NO_recordEdge[0]",str(recordEdge[0]))
+        try:
+            context.write("recordEdge[1]",str(recordEdge[1]))
+        except:
+            context.write("NO_recordEdge[1]",str(recordEdge[1]))
+
         context.write("ERROR",str(recordEdge))
 
 
