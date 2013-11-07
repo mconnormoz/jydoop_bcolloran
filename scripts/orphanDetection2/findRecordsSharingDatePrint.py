@@ -15,8 +15,8 @@ make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/rec
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-def skip_local_output():
-    return True
+# def skip_local_output():
+#     return True
 
 
 # setupjob = healthreportutils.setupjob
