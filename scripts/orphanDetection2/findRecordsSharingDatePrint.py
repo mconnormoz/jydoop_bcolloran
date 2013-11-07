@@ -103,11 +103,18 @@ def reduce(datePrint, vIter, context):
 
 def outputWithKey(path, results):
     """
-    Output key/values into a reasonable CSV.
-
-    All lists/tuples are unwrapped.
+    Output key/values 
     """
+    f = open(path, 'w')
+    w = csv.writer(f)
+    for k, v in results:
+        w.writerow([str(k),str(v)])
 
+
+def outputWithoutKey(path, results):
+    """
+    Output key/values
+    """
     f = open(path, 'w')
     w = csv.writer(f)
     for k, v in results:
