@@ -35,7 +35,7 @@ def setupjob(job, args):
 
     job.setInputFormatClass(MyInputFormat)
     FileInputFormat.setInputPaths(job, ",".join(args));
-    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
     # set the job to run in the RESEARCH queue
     job.getConfiguration().set("mapred.job.queue.name","research")
 
