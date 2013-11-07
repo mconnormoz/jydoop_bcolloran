@@ -15,8 +15,8 @@ make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/rec
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 # setupjob = healthreportutils.setupjob
@@ -96,8 +96,3 @@ def reduce(datePrint, vIter, context):
     for i in range(len(recordInfoList)):
         for j in range(i+1,len(recordInfoList)):
             context.write((recordInfoList[i],recordInfoList[j]),datePrint)
-
-
-
-
-
