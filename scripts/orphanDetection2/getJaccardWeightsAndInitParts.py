@@ -1,6 +1,7 @@
 '''
 in following commands, UPDATE DATES
 
+make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/weightedEdgesInParts /user/bcolloran/outData/recordsSharingDatePrint/part-r*" hadoop
 
 '''
 
@@ -59,8 +60,8 @@ def reduce(recordEdge, datePrintIter, context):
     union = float(len(set(recordEdge[0][1]).union(recordEdge[1][1])))
     intersection = float(len( sum(1 for _ in datePrintIter) ))
     # note that after this mapred pass, the datePrintList for each record is no longer needed, so we can pass out a new recordEdge with just the docIds
-    recordEdgeOut = tuple(sorted([recordEdge[0][0],recordEdge[1][0]]))
-    context.write(recordEdgeOut,intersection/union)
+    weightedRecordEdge = tuple(sorted([recordEdge[0][0],recordEdge[1][0]])+[intersection/union])
+    context.write(weightedRecordEdge,("PART",min([recordEdge[0][0],recordEdge[1][0]])))
 
 
 
