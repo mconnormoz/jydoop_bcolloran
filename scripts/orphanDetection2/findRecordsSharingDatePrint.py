@@ -15,8 +15,8 @@ make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/rec
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 # setupjob = healthreportutils.setupjob
@@ -35,7 +35,7 @@ def setupjob(job, args):
 
     job.setInputFormatClass(MyInputFormat)
     FileInputFormat.setInputPaths(job, ",".join(args));
-    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
     # set the job to run in the RESEARCH queue
     job.getConfiguration().set("mapred.job.queue.name","research")
 
