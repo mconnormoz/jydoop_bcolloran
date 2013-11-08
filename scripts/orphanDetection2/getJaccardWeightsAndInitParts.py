@@ -9,8 +9,8 @@ make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/w
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-def skip_local_output():
-    return True
+# def skip_local_output():
+#     return True
 
 
 setupjob = jydoop.setupjob
@@ -65,13 +65,25 @@ def reduce(recordEdge, datePrintIter, context):
     # datePrintIter contains the intersection of days in both records
 
     # recordEdge=json.loads(recordEdge)
+    try:
+        intersection = float(len( sum(1 for _ in set(datePrintIter) ) ))
+    except:
+        context.write("no_datePrintIter",1)
+        intersection = 1
 
     try:
         union = float(len(set(recordEdge[0][1]).union(recordEdge[1][1])))
-        intersection = float(len( sum(1 for _ in datePrintIter) ))
+    except:
+        context.write("no_union",1)
+        union = 1
+
+
+    try:
+        
         # note that after this mapred pass, the datePrintList for each record is no longer needed, so we can pass out a new recordEdge with just the docIds
         weightedRecordEdge = tuple(sorted([recordEdge[0][0],recordEdge[1][0]])+[intersection/union])
         context.write(weightedRecordEdge,("PART",min([recordEdge[0][0],recordEdge[1][0]])))
+
     except:
         try:
             context.write("recordEdge[0]",str(recordEdge[0]))
@@ -86,6 +98,12 @@ def reduce(recordEdge, datePrintIter, context):
 
 
 
+
+def output(path, results):
+    # just dump tab separated key/vals
+    f = open(path, 'w')
+    for k, v in results:
+        print >>f, str(k)+"\t"+str(v)
 
 
 

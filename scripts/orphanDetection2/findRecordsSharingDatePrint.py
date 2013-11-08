@@ -92,12 +92,12 @@ def map(fhrDocId, rawJsonIn, context):
         profileCreation = "no_profileCreation"
 
 
-    datePrints = tuple([ (date,hash(str(dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ])
+    datePrints = tuple([ profileCreation+"_"+date+"_"+hash(str(dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ])
     
     for d in datePrints:
         # print (d,profileCreation)
         # print (fhrDocId,datePrints)
-        context.write((d,profileCreation),(fhrDocId,datePrints))
+        context.write(d,(fhrDocId,datePrints))
 
 
 def reduce(datePrint, vIter, context):
