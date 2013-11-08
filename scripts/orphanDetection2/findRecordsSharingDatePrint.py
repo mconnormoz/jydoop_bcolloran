@@ -9,7 +9,7 @@ jydoopRemote peach scripts/findRecordsSharingDatePrint.py outData/findRecordsSha
 
 
 ----to run against full HDFS sample, output to HDFS; on peach:
-make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/recordsSharingDatePrint /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2/part-r-*" hadoop
+make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/recordsSharingDatePrint /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2" hadoop
 
 
 '''
@@ -19,25 +19,25 @@ def skip_local_output():
     return True
 
 
-# setupjob = healthreportutils.setupjob
+setupjob = jydoop.setupjob
 
-def setupjob(job, args):
-    """
-    Set up a job to run on one or more HDFS locations
+# def setupjob(job, args):
+#     """
+#     Set up a job to run on one or more HDFS locations
 
-    Jobs expect one or more arguments, the HDFS path(s) to the data.
-    """
-    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
-    import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
+#     Jobs expect one or more arguments, the HDFS path(s) to the data.
+#     """
+#     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+#     import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
 
-    if len(args) < 1:
-        raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
+#     if len(args) < 1:
+#         raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
 
-    job.setInputFormatClass(MyInputFormat)
-    FileInputFormat.setInputPaths(job, ",".join(args));
-    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
-    # set the job to run in the RESEARCH queue
-    job.getConfiguration().set("mapred.job.queue.name","research")
+#     job.setInputFormatClass(MyInputFormat)
+#     FileInputFormat.setInputPaths(job, ",".join(args));
+#     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
+#     # set the job to run in the RESEARCH queue
+#     job.getConfiguration().set("mapred.job.queue.name","research")
 
 
 
