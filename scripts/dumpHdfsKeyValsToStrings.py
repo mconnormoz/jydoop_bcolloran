@@ -10,5 +10,14 @@ make ARGS="scripts/orphanDetection2/dumpHdfsKeyValsToStrings.py ./outData/PATH_O
 
 setupjob = jydoop.setupjob
 
+
+def output(path, results):
+    # just dump tab separated key/vals
+    f = open(path, 'w')
+    for k, v in results:
+        print >>f, str(k)+"\t"+str(v)
+
+
+
 def map(key,val,context):
     context.write(str(key),str(val))

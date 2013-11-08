@@ -15,6 +15,14 @@ make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/rec
 
 '''
 
+
+def output(path, results):
+    # just dump tab separated key/vals
+    f = open(path, 'w')
+    for k, v in results:
+        print >>f, str(k)+"\t"+str(v)
+
+
 ######## to OUTPUT TO HDFS from RAW HBASE
 def skip_local_output():
     return True
@@ -99,4 +107,6 @@ def reduce(datePrint, vIter, context):
             context.write(
                 (recordInfoList[i],recordInfoList[j]),
                 datePrint)
+
+
 
