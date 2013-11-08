@@ -35,7 +35,7 @@ def setupjob(job, args):
 
     job.setInputFormatClass(MyInputFormat)
     FileInputFormat.setInputPaths(job, ",".join(args));
-    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
     # set the job to run in the RESEARCH queue
     job.getConfiguration().set("mapred.job.queue.name","research")
 
@@ -95,29 +95,6 @@ def reduce(datePrint, vIter, context):
     recordInfoList = sorted(list(set(vIter)),key=lambda tup:tup[0])
     for i in range(len(recordInfoList)):
         for j in range(i+1,len(recordInfoList)):
-            context.write(
-                (recordInfoList[i],recordInfoList[j]),
-                datePrint)
+            context.write(json.dumps([recordInfoList[i],recordInfoList[j]]),
+                json.dumps(datePrint))
 
-
-
-
-
-def outputWithKey(path, results):
-    """
-    Output key/values 
-    """
-    f = open(path, 'w')
-    w = csv.writer(f)
-    for k, v in results:
-        w.writerow([str(k),str(v)])
-
-
-def outputWithoutKey(path, results):
-    """
-    Output key/values
-    """
-    f = open(path, 'w')
-    w = csv.writer(f)
-    for k, v in results:
-        w.writerow([str(k),str(v)])

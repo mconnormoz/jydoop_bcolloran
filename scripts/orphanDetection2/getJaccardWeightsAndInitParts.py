@@ -1,3 +1,5 @@
+import json
+
 '''
 in following commands, UPDATE DATES
 
@@ -60,6 +62,8 @@ def reduce(recordEdge, datePrintIter, context):
     # recordEdge[0][1] is the datePrints in record_i
     # recordEdge[1][1] is the datePrints in record_j
     # datePrintIter contains the intersection of days in both records
+
+    recordEdge=json.loads(recordEdge)
 
     try:
         union = float(len(set(recordEdge[0][1]).union(recordEdge[1][1])))
