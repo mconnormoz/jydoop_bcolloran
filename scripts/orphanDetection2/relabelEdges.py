@@ -47,18 +47,22 @@ def reduce(part, iterOfVals, context):
     setOfParts = set()
     #initialize the set of parts under consideration with the key part
     setOfParts.add(part)
+    context.getCounter("MY_COUNTERS", "reducer").increment(1)
 
     #go through iterOfVals sorting PARTS from edges
-    for val in iterOfEdgesAndParts:
+    for val in iterOfVals:
         if val[0]=="PART":
             setOfParts.add(val)
+            context.getCounter("MY_COUNTERS", "part added to set").increment(1)
         else:
             setOfEdges.add(val)
+            context.getCounter("MY_COUNTERS", "edge added to set").increment(1)
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
 
     for edge in setOfEdges:
         context.write(edge,part)
+        context.getCounter("MY_COUNTERS", "(edge,part) emitted").increment(1)
 
 
 
