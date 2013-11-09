@@ -55,6 +55,7 @@ def reduce(part, iterOfVals, context):
             setOfParts.add(val)
             context.getCounter("MY_COUNTERS", "part added to set").increment(1)
         else:
+            context.write(val)
             setOfEdges.union(val)
             context.getCounter("MY_COUNTERS", "edge added to set").increment(1)
 
