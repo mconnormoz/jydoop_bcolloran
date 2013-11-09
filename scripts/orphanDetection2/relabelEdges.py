@@ -26,7 +26,7 @@ def output(path, results):
 input key will be a PART
 
 input val will be either:
-1) a list of weightedRecordEdges
+1) a LIST of several weightedRecordEdges (a tuple of edges, actually)
 2) another PART
 
 where: 
@@ -55,7 +55,7 @@ def reduce(part, iterOfVals, context):
             setOfParts.add(val)
             context.getCounter("MY_COUNTERS", "part added to set").increment(1)
         else:
-            setOfEdges.add(val)
+            setOfEdges.union(val)
             context.getCounter("MY_COUNTERS", "edge added to set").increment(1)
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
