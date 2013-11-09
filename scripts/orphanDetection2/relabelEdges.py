@@ -55,9 +55,8 @@ def reduce(part, iterOfVals, context):
             setOfParts.add(val)
             context.getCounter("MY_COUNTERS", "part added to set").increment(1)
         else:
-            context.write(val,part)
-            setOfEdges.union(val)
-            context.getCounter("MY_COUNTERS", "edge added to set").increment(1)
+            setOfEdges = setOfEdges.union(val)
+            context.getCounter("MY_COUNTERS", "sets of edges union").increment(1)
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
 
