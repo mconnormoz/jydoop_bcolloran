@@ -53,16 +53,16 @@ def reduce(part, iterOfVals, context):
     for val in iterOfVals:
         if val[0]=="PART":
             setOfParts.add(val)
-            context.getCounter("MY_COUNTERS", "part added to set").increment(1)
+            context.getCounter("GRAPH_STATS", "part added to set").increment(1)
         else:
             setOfEdges = setOfEdges.union(val)
-            context.getCounter("MY_COUNTERS", "sets of edges union").increment(1)
+            context.getCounter("GRAPH_STATS", "sets of edges union").increment(1)
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
 
     for edge in setOfEdges:
         context.write(edge,part)
-        context.getCounter("MY_COUNTERS", "(edge,part) emitted").increment(1)
+        context.getCounter("GRAPH_STATS", "(edge,part) emitted").increment(1)
 
 
 
