@@ -3,7 +3,7 @@ import jydoop
 '''
 in following commands, UPDATE DATES
 
-make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/weightedEdgesInParts /user/bcolloran/outData/recordsSharingDatePrint/part-r*" hadoop
+make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/weightedEdgesInParts /user/bcolloran/outData/recordsSharingDatePrint" hadoop
 
 '''
 
@@ -22,7 +22,14 @@ def output(path, results):
         print >>f, str(k)+"\t"+str(v)
 
 
+'''
+input key; val --
+weightedRecordEdge; part
 
+where: 
+    weightedRecordEdge = (docId_i, docId_j, weight_ij)
+    part = ("PART",partNum)
+'''
 def map(recordEdge,part,context):
     #recordEdge[0] and recordEdge[1] are the docIds of the two records connected by this edge
     context.write(recordEdge[0],(recordEdge,part))
@@ -37,14 +44,17 @@ def reduce(docId, iterOfEdgesAndParts, context):
         setOfEdgesTouchingRecord.add(item[0])
         setOfPartsTouchingRecord.add(item[1])
 
-    lowestPart = min(setOfPartsTouchingRecord)
+    lowestPart = min(setOfPartsTouchingRecord, key = lambda part:part[1])
+
+    #emit the lowest part with a tuple of all the edges it touches
+    context.write(("PART",lowestPart),tuple(setOfEdgesTouchingRecord))
 
 
     if len(setOfPartsTouchingRecord)>1:
         #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER part in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
         for part in setOfPartsTouchingRecord:
             if part!=lowestPart:
-                context.write()
+                context.write(("PART",part),("PART",lowestPart))
 
 
 
