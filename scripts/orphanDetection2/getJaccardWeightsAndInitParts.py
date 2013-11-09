@@ -1,4 +1,3 @@
-import json
 import jydoop
 
 '''
@@ -9,44 +8,27 @@ make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/w
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 setupjob = jydoop.setupjob
-
-# def setupjob(job, args):
-#     """
-#     Set up a job to run on one or more HDFS locations
-
-#     Jobs expect one or more arguments, the HDFS path(s) to the data.
-#     """
-#     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
-#     import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
-
-#     if len(args) < 1:
-#         raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
-
-#     job.setInputFormatClass(MyInputFormat)
-#     FileInputFormat.setInputPaths(job, ",".join(args));
-#     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
-#     # set the job to run in the RESEARCH queue
-#     job.getConfiguration().set("mapred.job.queue.name","research")
-
-
 
 
 
 
 '''
-identity mapper is used. input key vals are of the form
-((recordInfo[i],recordInfo[j]), datePrint)
+identity mapper is used.
+input key;vals are of the form
+(recordInfo[i],recordInfo[j]); datePrint
 and we need these immediately sorted+binned into reducers.
 
 each "recordInfo" is of the form
 (fhrDocId,datePrints)
 
 '''
+
+
 def map(recordEdge,datePrint,context):
     context.write(recordEdge,datePrint)
 
@@ -64,22 +46,12 @@ def reduce(recordEdge, datePrintIter, context):
     # recordEdge[1][1] is the datePrints in record_j
     # datePrintIter contains the intersection of days in both records
 
-    # recordEdge=json.loads(recordEdge)
     printsCommonToEdgeEnds = set()
     for d in datePrintIter:
         printsCommonToEdgeEnds.add(d)
 
     intersection = float(len(printsCommonToEdgeEnds))
 
-
-
-    # try:
-    #     intersection = float(len( sum(1 for _ in set(datePrintIter) ) ))
-    # except:
-    #     context.write("no_datePrintIter",1)
-    #     intersection = 1
-
-    
     union = float(len(set(recordEdge[0][1]).union(recordEdge[1][1])))
 
     try:
