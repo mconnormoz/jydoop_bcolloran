@@ -49,6 +49,7 @@ def reduce(docId, iterOfEdgesAndParts, context):
     #emit the lowest part with a tuple of all the edges it touches
     context.write(lowestPart,tuple(setOfEdgesTouchingRecord))
     context.getCounter("GRAPH_STATS", "NUMBER_OF_PARTS").increment(1)
+    context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS").increment(0)
 
     if len(setOfPartsTouchingRecord)>1:
         #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER part in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
