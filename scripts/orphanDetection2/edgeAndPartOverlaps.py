@@ -8,8 +8,8 @@ make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/w
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 setupjob = jydoop.setupjob
@@ -49,9 +49,9 @@ def reduce(docId, iterOfEdgesAndParts, context):
     #emit the lowest part with a tuple of all the edges it touches
     context.write(lowestPart,tuple(setOfEdgesTouchingRecord))
 
-
     if len(setOfPartsTouchingRecord)>1:
         #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER part in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
+        context.getCounter("GRAPH_CHANGE", "OVERLAPPING_PART").increment(1)
         for part in setOfPartsTouchingRecord:
             if part!=lowestPart:
                 context.write(part,lowestPart)
