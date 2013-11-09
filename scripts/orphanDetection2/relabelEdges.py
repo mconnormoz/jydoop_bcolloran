@@ -3,7 +3,7 @@ import jydoop
 '''
 in following commands, UPDATE DATES
 
-make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/weightedEdgesInParts /user/bcolloran/outData/recordsSharingDatePrint" hadoop
+make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/relabeledEdges ./outData/partsOverlap" hadoop
 
 '''
 
@@ -57,7 +57,8 @@ def reduce(part, iterOfVals, context):
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
 
-    for edge
+    for edge in setOfEdges:
+        context.write(edge,part)
 
 
 
