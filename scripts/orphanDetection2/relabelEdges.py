@@ -8,8 +8,8 @@ make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/relabeledEdges ./o
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 setupjob = jydoop.setupjob
