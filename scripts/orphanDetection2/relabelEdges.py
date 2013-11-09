@@ -47,7 +47,7 @@ def reduce(part, iterOfVals, context):
     setOfParts = set()
     #initialize the set of parts under consideration with the key part
     setOfParts.add(part)
-    context.getCounter("MY_COUNTERS", "reducer").increment(1)
+    context.getCounter("GRAPH_STATS", "NUM_INPUT_PARTS").increment(1)
 
     #go through iterOfVals sorting PARTS from edges
     for val in iterOfVals:
