@@ -3,7 +3,7 @@ import jydoop
 '''
 in following commands, UPDATE DATES
 
-make ARGS="scripts/orphanDetection2/getJaccardWeightsAndInitParts.py ./outData/relabeledEdges ./outData/partsOverlap" hadoop
+make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/relabeledEdges ./outData/partsOverlap" hadoop
 
 '''
 
