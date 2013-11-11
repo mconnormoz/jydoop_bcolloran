@@ -30,26 +30,6 @@ def skip_local_output():
 
 setupjob = jydoop.setupjob
 
-# def setupjob(job, args):
-#     """
-#     Set up a job to run on one or more HDFS locations
-
-#     Jobs expect one or more arguments, the HDFS path(s) to the data.
-#     """
-#     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
-#     import org.apache.hadoop.mapreduce.lib.input.SequenceFileAsTextInputFormat as MyInputFormat
-
-#     if len(args) < 1:
-#         raise Exception("Usage: <hdfs-location1> [ <location2> ] [ <location3> ] [ ... ]")
-
-#     job.setInputFormatClass(MyInputFormat)
-#     FileInputFormat.setInputPaths(job, ",".join(args));
-#     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
-#     # set the job to run in the RESEARCH queue
-#     job.getConfiguration().set("mapred.job.queue.name","research")
-
-
-
 
 
 
@@ -77,6 +57,11 @@ def map(fhrDocId, rawJsonIn, context):
     if payloadVersion != 2:
         return
 
+    try:
+        thisPingDate = payload["thisPingDate"]
+    except: #was getting errors finding packets without a version
+        thisPingDate = "no_pingDate"
+
     #NOTE: we drop any packet without data.days entries. these cannot be fingerprinted/linked.
     try:
         dataDays = payload["data"]["days"].keys()
@@ -93,6 +78,8 @@ def map(fhrDocId, rawJsonIn, context):
 
 
     datePrints = tuple([ profileCreation+"_"+date+"_"+hash(str(dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ])
+    
+    recordInfo = (len(dataDays),thisPingDate)
     
     for d in datePrints:
         # print (d,profileCreation)

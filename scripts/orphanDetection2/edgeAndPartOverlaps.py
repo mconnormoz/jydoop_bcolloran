@@ -8,6 +8,9 @@ make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/weightedEdg
 ---to iterate
 make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/partsOverlap2 /user/bcolloran/outData/relabeledEdges" hadoop
 
+
+-- dump an iteration to text
+make ARGS="scripts/dumpHdfsKeyValsToStrings.py ./outData/partsOverlap7 ./outData/partsOverlap7" hadoop
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE

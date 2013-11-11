@@ -54,20 +54,20 @@ def reduce(recordEdge, datePrintIter, context):
 
     union = float(len(set(recordEdge[0][1]).union(recordEdge[1][1])))
 
-    try:
+    # try:
         # note that after this mapred pass, the datePrintList for each record is no longer needed, so we can pass out a new recordEdge with just the docIds
-        weightedRecordEdge = tuple(sorted([recordEdge[0][0],recordEdge[1][0]])+[intersection/union])
-        context.write(weightedRecordEdge,("PART",min([recordEdge[0][0],recordEdge[1][0]])))
+    weightedRecordEdge = tuple(sorted([recordEdge[0][0],recordEdge[1][0]])+[intersection/union])
+    context.write(weightedRecordEdge,("PART",min([recordEdge[0][0],recordEdge[1][0]])))
 
-    except:
-        try:
-            context.write("recordEdge[0]",str(recordEdge[0]))
-        except:
-            context.write("NO_recordEdge[0]",str(recordEdge[0]))
-        try:
-            context.write("recordEdge[1]",str(recordEdge[1]))
-        except:
-            context.write("NO_recordEdge[1]",str(recordEdge[1]))
+    # except:
+    #     try:
+    #         context.write("recordEdge[0]",str(recordEdge[0]))
+    #     except:
+    #         context.write("NO_recordEdge[0]",str(recordEdge[0]))
+    #     try:
+    #         context.write("recordEdge[1]",str(recordEdge[1]))
+    #     except:
+    #         context.write("NO_recordEdge[1]",str(recordEdge[1]))
 
 
 
