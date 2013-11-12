@@ -28,6 +28,14 @@ def output(path, results):
         print >>f, str(k)+"\t"+str(v)
 
 
+def localTextInput(mapper):
+    #local feeds a line of text input to the function after cleaning it up
+    #just ignore the line key. split
+    def localMapper(lineKey,inputLine,context):
+        keyValList = inputLine.split("\t")
+        return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
+    return localMapper
+
 '''
 input key; val --
 weightedRecordEdge; part
@@ -36,6 +44,8 @@ where:
     weightedRecordEdge = (docId_i, docId_j, weight_ij)
     part = ("PART",partNum)
 '''
+
+@localTextInput
 def map(recordEdge,part,context):
     #recordEdge[0] and recordEdge[1] are the docIds of the two records connected by this edge
     context.write(recordEdge[0],(recordEdge,part))
@@ -54,18 +64,15 @@ def reduce(docId, iterOfEdgesAndParts, context):
 
     #emit the lowest part with a tuple of all the edges it touches
     context.write(lowestPart,tuple(setOfEdgesTouchingRecord))
-    context.getCounter("GRAPH_STATS", "NUMBER_OF_RECORDS").increment(1)
-    context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER").increment(0)
+    # context.getCounter("GRAPH_STATS", "NUMBER_OF_RECORDS").increment(1)
+    # context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER").increment(0)
 
     if len(setOfPartsTouchingRecord)>1:
-        #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER part in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
-        context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER").increment(1)
+        #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER parts in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
+        # context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER").increment(1)
         for part in setOfPartsTouchingRecord:
             if part!=lowestPart:
                 context.write(part,lowestPart)
-
-
-
 
 
 

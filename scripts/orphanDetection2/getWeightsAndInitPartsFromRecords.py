@@ -79,21 +79,35 @@ def map(fhrDocId, rawJsonIn, context):
 
     datePrints = tuple([ str(profileCreation)+"_"+date+"_"+str(hash(str(dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ])
     
-    recordInfo = (len(dataDays),thisPingDate)
     
     for d in datePrints:
         # print (d,profileCreation)
         # print (fhrDocId,datePrints)
         context.write(d,(fhrDocId,datePrints))
 
+def jaccard(a, b):
+    c = a.intersection(b)
+    return float(len(c)) / (len(a) + len(b) - len(c))
 
-def reduce(datePrint, vIter, context):
-    recordInfoList = sorted(list(set(vIter)),key=lambda tup:tup[0])
+def reduce(datePrint, valIter, context):
+    # a given datePrint can only be associated with a given record ONCE, because a date print cannot appear twice in the same record, so it will never be possible for identical (datePrint,recordInfo) pairs to be emitted in the map phase
+
+    # valIter contains (fhrDocId,datePrints); sort these by fhrDocId
+    recordInfoList = sorted(valIter,key=lambda tup:tup[0])
+
     for i in range(len(recordInfoList)):
         for j in range(i+1,len(recordInfoList)):
+            daysA = set(recordInfoList[i][1])
+            daysB = set(recordInfoList[j][1])
+            daysBoth = daysA.intersection(daysB)
+            daysEither = daysA.union(daysB)
+            weightInfo = (float(len(daysBoth))/float(len(daysEither)),len(daysA),len(daysB),len(daysBoth),len(daysEither))
+
             context.write(
-                (recordInfoList[i],recordInfoList[j]),
-                datePrint)
+                (recordInfoList[i][0],recordInfoList[j][0],weightInfo),
+                ("PART",recordInfoList[i][0])
+                )
+
 
 
 
