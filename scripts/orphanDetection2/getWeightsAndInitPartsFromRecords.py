@@ -10,8 +10,7 @@ jydoopRemote peach scripts/findRecordsSharingDatePrint.py outData/findRecordsSha
 
 
 ----to run against HDFS sample, output to HDFS; on peach:
-make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/edgeWeightsAndInitParts /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2" hadoop
-
+make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/orphIterTest/edgeWeightsAndInitParts /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2" hadoop
 
 '''
 
@@ -31,14 +30,14 @@ def skip_local_output():
 setupjob = jydoop.setupjob
 
 
-
-
 # need to use this since python dicts don't guarantee order, and since json.dumps with sorting flag is broken in jydoop
 def dictToSortedTupList(objIn):
     if isinstance(objIn,dict):
         return [(key,dictToSortedTupList(val)) for key,val in sorted(objIn.items(),key=lambda item:item[0])]
     else:
         return objIn
+
+
 
 
 

@@ -3,10 +3,14 @@ import jydoop
 '''
 in following commands, UPDATE DATES
 
-make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/weightedEdgesInParts /user/bcolloran/outData/recordsSharingDatePrint" hadoop
+
+---to start iteration
+make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/partsOverlap2 ./outData/orphIterTest/edgeWeightsAndInitParts" hadoop
 
 ---to iterate
-make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/partsOverlap2 /user/bcolloran/outData/relabeledEdges" hadoop
+make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/partsOverlap2 /user/bcolloran/outData/relabeledEdges1" hadoop
+
+
 
 
 -- dump an iteration to text
