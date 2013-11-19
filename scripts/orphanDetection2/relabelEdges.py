@@ -5,6 +5,9 @@ in following commands, UPDATE DATES
 
 make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/relabeledEdges ./outData/partsOverlap" hadoop
 
+---to iterate
+make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/orphIterTest/relabeledEdges1 ./outData/orphIterTest/partsOverlap2" hadoop
+
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
@@ -32,6 +35,12 @@ def localTextInput(mapper):
             return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
         return localMapper
 
+def counterLocal(context,counterGroup,countername,value):
+    if jydoop.isJython():
+        context.getCounter(counterGroup, countername).increment(value)
+    else:
+        pass
+
 '''
 input KEY will be a PART
 
@@ -51,6 +60,8 @@ def map(part,val,context):
 
 
 
+
+
 def reduce(part, iterOfVals, context):
 
     setOfEdges = set()
@@ -58,22 +69,22 @@ def reduce(part, iterOfVals, context):
     setOfParts = set()
     #initialize the set of parts under consideration with the key part
     setOfParts.add(part)
-    context.getCounter("GRAPH_STATS", "NUM_INPUT_PARTS").increment(1)
+    counterLocal(context,"GRAPH_STATS", "NUM_INPUT_PARTS",1)
 
     #go through iterOfVals sorting PARTS from edges
     for val in iterOfVals:
         if val[0]=="PART":
             setOfParts.add(val)
-            context.getCounter("GRAPH_STATS", "part added to set").increment(1)
+            counterLocal(context,"GRAPH_STATS", "part added to set",1)
         else:
             setOfEdges = setOfEdges.union(val)
-            context.getCounter("GRAPH_STATS", "sets of edges union").increment(1)
+            counterLocal(context,"GRAPH_STATS", "sets of edges union",1)
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
 
     for edge in setOfEdges:
         context.write(edge,part)
-        context.getCounter("GRAPH_STATS", "(edge,part) emitted").increment(1)
+        counterLocal(context,"GRAPH_STATS", "(edge,part) emitted",1)
 
 
 

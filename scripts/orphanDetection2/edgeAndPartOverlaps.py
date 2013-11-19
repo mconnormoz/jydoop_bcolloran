@@ -43,6 +43,13 @@ def localTextInput(mapper):
             return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
         return localMapper
 
+def counterLocal(context,counterGroup,countername,value):
+    if jydoop.isJython():
+        context.getCounter(counterGroup, countername).increment(value)
+    else:
+        pass
+
+
 '''
 input key; val --
 weightedRecordEdge; part
@@ -82,12 +89,12 @@ def reduce(docId, iterOfEdgesAndParts, context):
 
     #emit the lowest part with a tuple of all the edges it touches
     context.write(lowestPart,tuple(setOfEdgesTouchingRecord))
-    context.getCounter("GRAPH_STATS", "NUMBER_OF_RECORDS").increment(1)
-    context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER").increment(0)
+    counterLocal(context,"GRAPH_STATS", "NUMBER_OF_RECORDS",1)
+    counterLocal(context,"GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER",0)
 
     if len(setOfPartsTouchingRecord)>1:
         #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER parts in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
-        context.getCounter("GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER").increment(1)
+        counterLocal(context,"GRAPH_STATS", "OVERLAPPING_PARTS_THIS_ITER",1)
         for part in setOfPartsTouchingRecord:
             if part!=lowestPart:
                 context.write(part,lowestPart)
