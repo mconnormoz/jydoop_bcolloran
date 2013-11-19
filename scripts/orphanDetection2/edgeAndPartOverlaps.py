@@ -5,10 +5,10 @@ in following commands, UPDATE DATES
 
 
 ---to start iteration
-make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/partsOverlap2 ./outData/orphIterTest/edgeWeightsAndInitParts" hadoop
+make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/orphIterTest/partsOverlap2 ./outData/orphIterTest/edgeWeightsAndInitParts" hadoop
 
 ---to iterate
-make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/partsOverlap2 /user/bcolloran/outData/relabeledEdges1" hadoop
+make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/orphIterTest/partsOverlap2 ./outData/orphIterTest/relabeledEdges1" hadoop
 
 
 
