@@ -30,9 +30,9 @@ def localTextInput(mapper):
     return localMapper
 
 '''
-input key will be a PART
+input KEY will be a PART
 
-input val will be either:
+input VAL will be either:
 1) a LIST of several weightedRecordEdges (a tuple of edges, actually)
 2) another PART
 

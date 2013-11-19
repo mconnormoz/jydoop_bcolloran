@@ -9,8 +9,8 @@ in following commands, UPDATE DATES
 jydoopRemote peach scripts/findRecordsSharingDatePrint.py outData/findRecordsSharingDatePrint_test
 
 
-----to run against full HDFS sample, output to HDFS; on peach:
-make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/recordsSharingDatePrint /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2" hadoop
+----to run against HDFS sample, output to HDFS; on peach:
+make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/edgeWeightsAndInitParts /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2" hadoop
 
 
 '''
@@ -23,7 +23,7 @@ def output(path, results):
         print >>f, str(k)+"\t"+str(v)
 
 
-######## to OUTPUT TO HDFS from RAW HBASE
+######## to OUTPUT TO HDFS
 def skip_local_output():
     return True
 
