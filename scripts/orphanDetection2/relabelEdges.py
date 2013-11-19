@@ -24,10 +24,13 @@ def output(path, results):
 def localTextInput(mapper):
     #local feeds a line of text input to the function after cleaning it up
     #just ignore the line key. split
-    def localMapper(lineKey,inputLine,context):
-        keyValList = inputLine.split("\t")
-        return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
-    return localMapper
+    if jydoop.isJython():
+        return mapper
+    else:
+        def localMapper(lineKey,inputLine,context):
+            keyValList = inputLine.split("\t")
+            return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
+        return localMapper
 
 '''
 input KEY will be a PART
