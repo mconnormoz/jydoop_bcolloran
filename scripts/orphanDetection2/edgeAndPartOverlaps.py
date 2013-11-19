@@ -48,11 +48,22 @@ where:
     part = ("PART",partNum)
 '''
 
+class keyValError(Exception):
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+    def __str__(self):
+        return repr((self.key, self.value))
+
+
 @localTextInput
 def map(recordEdge,part,context):
     #recordEdge[0] and recordEdge[1] are the docIds of the two records connected by this edge
-    context.write(recordEdge[0],(recordEdge,part))
-    context.write(recordEdge[1],(recordEdge,part))
+    try:
+        context.write(recordEdge[0],(recordEdge,part))
+        context.write(recordEdge[1],(recordEdge,part))
+    except:
+        raise keyValError(recordEdge,part)
 
 
 
