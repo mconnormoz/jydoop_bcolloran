@@ -6,11 +6,11 @@ import jydoop
 in following commands, UPDATE DATES
 
 ----to run against full HBASE, output to HDFS
-jydoopRemote peach scripts/findRecordsSharingDatePrint.py outData/findRecordsSharingDatePrint_test
+jydoopRemote peach scripts/getWeightsAndInitPartsFromRecords.py outData/findRecordsSharingDatePrint_test
 
 
 ----to run against HDFS sample, output to HDFS; on peach:
-make ARGS="scripts/orphanDetection2/findRecordsSharingDatePrint.py ./outData/orphIterTest/edgeWeightsAndInitParts /user/bcolloran/outData/v2Packets_sampleWithLinkedOrphans_2013-11-05_v2" hadoop
+make ARGS="scripts/orphanDetection2/getWeightsAndInitPartsFromRecords.py ./outData/orphIterTest/edgeWeightsAndInitParts0 ./data/samples/fhr/v2/withOrphans/2013-11-05" hadoop
 
 '''
 
