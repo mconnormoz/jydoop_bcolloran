@@ -34,10 +34,11 @@ def localTextInput(mapper):
 
 class edgeTupError(Exception):
     def __init__(self, part, tupleOfEdges, tupleOfEdgesIter):
-        self.key = key
-        self.value = value
+        self.part = part
+        self.tupleOfEdges = tupleOfEdges
+        self.tupleOfEdgesIter =tupleOfEdgesIter
     def __str__(self):
-        return repr((self.key, self.value))
+        return repr((self.part, self.tupleOfEdges,self.tupleOfEdgesIter))
 
 '''
 input key will be a PART
