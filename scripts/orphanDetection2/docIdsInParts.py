@@ -69,6 +69,7 @@ def reduce(part, tupleOfEdgesIter, context):
             setOfDocIds.add(tupleOfEdges[0])
             setOfDocIds.add(tupleOfEdges[1])
         except:
+            return
             raise edgeTupError(part,tupleOfEdges,list(tupleOfEdgesIter))
         
 
