@@ -6,7 +6,7 @@ in following commands, UPDATE DATES
 make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/relabeledEdges ./outData/partsOverlap" hadoop
 
 ---to iterate
-make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/orphIterTest/relabeledEdges1 ./outData/orphIterTest/partsOverlap2" hadoop
+make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/orphIterTest/relabeledEdges_2 ./outData/orphIterTest/partsOverlap_1" hadoop
 
 '''
 

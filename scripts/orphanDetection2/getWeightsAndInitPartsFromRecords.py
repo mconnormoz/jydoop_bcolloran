@@ -21,6 +21,11 @@ def output(path, results):
     for k, v in results:
         print >>f, str(k)+"\t"+str(v)
 
+def counterLocal(context,counterGroup,countername,value):
+    if jydoop.isJython():
+        context.getCounter(counterGroup, countername).increment(value)
+    else:
+        pass
 
 ######## to OUTPUT TO HDFS
 def skip_local_output():

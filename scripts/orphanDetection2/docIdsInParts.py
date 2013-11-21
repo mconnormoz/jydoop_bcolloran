@@ -3,7 +3,7 @@ import jydoop
 '''
 in following commands, UPDATE DATES
 
-make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/finalEdgesInParts ./outData/partsOverlap" hadoop
+make ARGS="scripts/orphanDetection2/docIdsInParts.py ./outData/finalDocIdsInParts ./outData/partsOverlap" hadoop
 
 '''
 
@@ -53,13 +53,14 @@ def map(part,tupleOfEdges,context):
 
 def reduce(part, tupleOfEdgesIter, context):
 
-    setOfEdges = set()
+    setOfDocIds = set()
 
     #go through iterOfVals sorting PARTS from edges
     for tupleOfEdges in tupleOfEdgesIter:
-        setOfEdges = setOfEdges.union(tupleOfEdges)
+        setOfDocIds.add(tupleOfEdges[0])
+        setOfDocIds.add(tupleOfEdges[1])
 
-    context.write(part,tuple(setOfEdges))
+    context.write(part,tuple(setOfDocIds))
 
 
 
