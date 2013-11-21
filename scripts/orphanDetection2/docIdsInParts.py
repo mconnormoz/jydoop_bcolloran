@@ -32,6 +32,13 @@ def localTextInput(mapper):
             return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
         return localMapper
 
+class keyValError(Exception):
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+    def __str__(self):
+        return repr((self.key, self.value))
+
 '''
 input key will be a PART
 
@@ -57,8 +64,12 @@ def reduce(part, tupleOfEdgesIter, context):
 
     #go through iterOfVals sorting PARTS from edges
     for tupleOfEdges in tupleOfEdgesIter:
-        setOfDocIds.add(tupleOfEdges[0])
-        setOfDocIds.add(tupleOfEdges[1])
+        try:
+            setOfDocIds.add(tupleOfEdges[0])
+            setOfDocIds.add(tupleOfEdges[1])
+        except:
+            raise keyValError(recordEdge,part)
+        
 
     context.write(part,tuple(setOfDocIds))
 
