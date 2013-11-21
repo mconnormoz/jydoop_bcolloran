@@ -32,8 +32,8 @@ def localTextInput(mapper):
             return mapper(eval(keyValList[0]),eval(keyValList[1]),context)
         return localMapper
 
-class keyValError(Exception):
-    def __init__(self, key, value):
+class edgeTupError(Exception):
+    def __init__(self, part, tupleOfEdges, tupleOfEdgesIter):
         self.key = key
         self.value = value
     def __str__(self):
@@ -68,7 +68,7 @@ def reduce(part, tupleOfEdgesIter, context):
             setOfDocIds.add(tupleOfEdges[0])
             setOfDocIds.add(tupleOfEdges[1])
         except:
-            raise keyValError(recordEdge,part)
+            raise edgeTupError(part,tupleOfEdges,tupleOfEdgesIter)
         
 
     context.write(part,tuple(setOfDocIds))
