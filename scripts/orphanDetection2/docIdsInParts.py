@@ -40,6 +40,16 @@ class edgeTupError(Exception):
     def __str__(self):
         return repr((self.part, self.listOfEdges,self.iterOfEdges))
 
+
+def counterLocal(context,counterGroup,countername,value):
+    if jydoop.isJython():
+        context.getCounter(counterGroup, countername).increment(value)
+    else:
+        pass
+
+
+
+
 '''
 input key will be a PART
 
@@ -56,6 +66,8 @@ where:
 def map(edge,part,context):
     #recordEdge[0] and recordEdge[1] are the docIds of the two records connected by this edge
     context.write(part,edge)
+    counterLocal(context,"GRAPH_STATS", "num input edges",1)
+
 
 
 
@@ -68,7 +80,10 @@ def reduce(part, iterOfEdges, context):
 
         setOfDocIds.add(edge[0])
         setOfDocIds.add(edge[1])
-        
+
+    counterLocal(context,"GRAPH_STATS", "num output parts",1)
+    counterLocal(context,"GRAPH_STATS", "num output records",len(setOfDocIds))
+
 
     context.write(part,list(setOfDocIds))
 
