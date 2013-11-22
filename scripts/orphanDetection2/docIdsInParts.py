@@ -8,8 +8,8 @@ make ARGS="scripts/orphanDetection2/docIdsInParts.py ./outData/finalDocIdsInPart
 '''
 
 ######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 setupjob = jydoop.setupjob
@@ -33,12 +33,12 @@ def localTextInput(mapper):
         return localMapper
 
 class edgeTupError(Exception):
-    def __init__(self, part, tupleOfEdges, tupleOfEdgesIter):
+    def __init__(self, part, listOfEdges, iterOfEdges):
         self.part = part
-        self.tupleOfEdges = tupleOfEdges
-        self.tupleOfEdgesIter =tupleOfEdgesIter
+        self.listOfEdges = listOfEdges
+        self.iterOfEdges =iterOfEdges
     def __str__(self):
-        return repr((self.part, self.tupleOfEdges,self.tupleOfEdgesIter))
+        return repr((self.part, self.listOfEdges,self.iterOfEdges))
 
 '''
 input key will be a PART
@@ -53,27 +53,24 @@ where:
 
 '''
 @localTextInput
-def map(part,tupleOfEdges,context):
+def map(edge,part,context):
     #recordEdge[0] and recordEdge[1] are the docIds of the two records connected by this edge
-    context.write(part,tupleOfEdges)
+    context.write(part,edge)
 
 
 
-def reduce(part, tupleOfEdgesIter, context):
+def reduce(part, iterOfEdges, context):
 
     setOfDocIds = set()
 
     #go through iterOfVals sorting PARTS from edges
-    for tupleOfEdges in tupleOfEdgesIter:
-        try:
-            setOfDocIds.add(tupleOfEdges[0])
-            setOfDocIds.add(tupleOfEdges[1])
-        except:
-            return
-            raise edgeTupError(part,tupleOfEdges,list(tupleOfEdgesIter))
+    for edge in iterOfEdges:
+
+        setOfDocIds.add(edge[0])
+        setOfDocIds.add(edge[1])
         
 
-    context.write(part,tuple(setOfDocIds))
+    context.write(part,list(setOfDocIds))
 
 
 

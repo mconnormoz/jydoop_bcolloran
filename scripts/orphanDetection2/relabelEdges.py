@@ -45,7 +45,7 @@ def counterLocal(context,counterGroup,countername,value):
 input KEY will be a PART
 
 input VAL will be either:
-1) a LIST of several weightedRecordEdges (a tuple of edges, actually)
+1) a LIST of several weightedRecordEdges
 2) another PART
 
 where: 
