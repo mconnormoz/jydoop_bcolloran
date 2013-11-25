@@ -17,9 +17,16 @@ make ARGS="scripts/orphanDetection2/getWeightsAndInitPartsFromRecords.py ./outDa
 
 def output(path, results):
     # just dump tab separated key/vals
-    f = open(path, 'w')
-    for k, v in results:
-        print >>f, str(k)+"\t"+str(v)
+    firstLine = True
+    with open(path, 'w') as f:
+        for k, v in results:
+            if firstLine:
+                f.write(str(k)+"\t"+str(v))
+                firstLine=False
+            else:
+                f.write("\n"+str(k)+"\t"+str(v))
+
+
 
 def counterLocal(context,counterGroup,countername,value):
     if jydoop.isJython():
@@ -35,6 +42,18 @@ def skip_local_output():
 setupjob = jydoop.setupjob
 
 
+def localTextInput(mapper):
+    #local feeds a line of text input to the function after cleaning it up
+    #just ignore the line key. split
+    if jydoop.isJython():
+        return mapper
+    else:
+        def localMapper(lineKey,inputLine,context):
+            keyValList = inputLine.split("\t")
+            return mapper(keyValList[0],keyValList[1],context)
+        return localMapper
+
+
 # need to use this since python dicts don't guarantee order, and since json.dumps with sorting flag is broken in jydoop
 def dictToSortedTupList(objIn):
     if isinstance(objIn,dict):
@@ -43,9 +62,23 @@ def dictToSortedTupList(objIn):
         return objIn
 
 
+def jaccard(a, b):
+    c = a.intersection(b)
+    return float(len(c)) / (len(a) + len(b) - len(c))
 
 
 
+
+
+
+
+
+
+
+
+
+
+@localTextInput
 def map(fhrDocId, rawJsonIn, context):
 
     try:
@@ -72,8 +105,6 @@ def map(fhrDocId, rawJsonIn, context):
     except:
         return
 
-
-
     #NOTE: we will use profile creation date to add further refinement to date colisions, but it is not required.
     try:
         profileCreation = payload["data"]["last"]["org.mozilla.profile.age"]["profileCreation"]
@@ -89,9 +120,15 @@ def map(fhrDocId, rawJsonIn, context):
         # print (fhrDocId,datePrints)
         context.write(d,(fhrDocId,datePrints))
 
-def jaccard(a, b):
-    c = a.intersection(b)
-    return float(len(c)) / (len(a) + len(b) - len(c))
+
+
+
+
+
+
+
+
+
 
 def reduce(datePrint, valIter, context):
     # a given datePrint can only be associated with a given record ONCE, because a date print cannot appear twice in the same record, so it will never be possible for identical (datePrint,recordInfo) pairs to be emitted in the map phase
@@ -99,6 +136,7 @@ def reduce(datePrint, valIter, context):
     # valIter contains (fhrDocId,datePrints); sort these by fhrDocId
     recordInfoList = sorted(valIter,key=lambda tup:tup[0])
 
+    # note: if this datePrint only appears in one record, no edge will be emitted
     for i in range(len(recordInfoList)):
         for j in range(i+1,len(recordInfoList)):
             daysA = set(recordInfoList[i][1])

@@ -18,8 +18,25 @@ make ARGS="scripts/dumpHdfsKeyValsToStrings.py ./outData/partsOverlap2 ./outData
 '''
 
 
-setupjob = jydoop.setupjob
+# setupjob = jydoop.setupjob
 
+
+def setupjob(job, args):
+    """
+    Set up a job to run on a list of paths.  Jobs expect at least one path,
+    but you may specify as many as you like.
+    """
+
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat as MyInputFormat
+
+    if len(args) < 1:
+        raise Exception("Usage: path [ path2 ] [ path3 ] [ ... ]")
+
+    job.setInputFormatClass(MyInputFormat)
+    FileInputFormat.setInputPaths(job, ",".join(args));
+    """Indicate to HadoopDriver which Mapper we want to use."""
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "HBASE")
 
 def output(path, results):
     # just dump tab separated key/vals
