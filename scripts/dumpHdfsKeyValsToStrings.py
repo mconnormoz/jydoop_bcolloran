@@ -36,7 +36,7 @@ def setupjob(job, args):
     job.setInputFormatClass(MyInputFormat)
     FileInputFormat.setInputPaths(job, ",".join(args));
     """Indicate to HadoopDriver which Mapper we want to use."""
-    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "HBASE")
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
 
 def output(path, results):
     # just dump tab separated key/vals
