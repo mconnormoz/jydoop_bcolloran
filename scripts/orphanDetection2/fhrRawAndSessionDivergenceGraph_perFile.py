@@ -17,14 +17,20 @@ setupjob = jydoop.setupjob
 
 def output(path, results):
     # just dump tab separated key/vals
-    firstLine = True
-    with open(path, 'w') as f:
-        for k, v in results:
-            if firstLine:
-                f.write(str(k)+"\t"+str(v))
-                firstLine=False
-            else:
-                f.write("\n"+str(k)+"\t"+str(v))
+    
+    
+    partNum=0
+    for k, vList in results:
+        partNum+=1
+        with open(path+"_numRecs"+str(len([v for v in vList if v[0:9]=='{"version']))+("_graph" if [v for v in vList if v[0:7]=='{"nodes'] else "")+"_partNum"+str(partNum), 'w') as f:
+            firstLine = True
+            for v in vList:
+                if firstLine:
+                    # print repr(v)
+                    f.write(str(v).strip())
+                    firstLine=False
+                else:
+                    f.write("\n"+str(v).strip())
 
 
 def localTextInput(mapper):
@@ -74,27 +80,11 @@ where:
 
 '''
 @localTextInput
-def map(docId,partOrJson,context):
-    context.write(docId,partOrJson)
+def map(partId,docOrGraph,context):
+    context.write(partId,docOrGraph)
 
-
-
-def reduce(docId, iterOfPartOrJson, context):
-    jsonsForThisPart=[]
-    for partOrJson in iterOfPartOrJson:
-        if type(partOrJson)==tuple: #the part for these docs
-            partId = partOrJson[1]
-        else: #a record in the part
-            jsonsForThisPart.append(partOrJson)
-
-    missedRecords = 0
-
-    for json in jsonsForThisPart:
-        try:
-            context.write(partId,json.strip())
-        except:
-            missedRecords+=1
-            print docId,missedRecords
+def reduce(partId, iterOfdocOrGraph, context):
+    context.write(partId,list(iterOfdocOrGraph))
 
 
 

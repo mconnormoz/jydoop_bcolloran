@@ -17,9 +17,16 @@ setupjob = jydoop.setupjob
 
 def output(path, results):
     # just dump tab separated key/vals
-    f = open(path, 'w')
-    for k, v in results:
-        print >>f, str(k)+"\t"+str(v)
+    firstLine = True
+    with open(path, 'w') as f:
+        for k, v in results:
+            if firstLine:
+                f.write(str(k)+"\t"+str(v))
+                firstLine=False
+            else:
+                f.write("\n"+str(k)+"\t"+str(v))
+
+
 
 def localTextInput(mapper):
     #local feeds a line of text input to the function after cleaning it up
