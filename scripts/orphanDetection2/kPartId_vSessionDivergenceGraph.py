@@ -237,9 +237,11 @@ class sessionGraph(object):
         if len(self.sessionList)==0:
             pass
         elif len(self.sessionList)==1:
-            self.sessionChain = {hash(self.sessionList[0]): {"date":self.sessionList[0][0],
+            self.sessionChain = {hash(self.sessionList[0]):
+                {"date":self.sessionList[0][0],
                 "dailySessNum":self.sessionList[0][1],
                 "count":1,
+                "startupTimes":self.sessionList[0][2],
                 "childTreeWidth":1,
                 "earliestInThread":self.minDate,
                 "latestInThread":self.maxDate,
@@ -252,9 +254,11 @@ class sessionGraph(object):
         if len(self.sessionList)>1:
             # initialize the session chain dict
             self.initialSessions = set([hash(self.sessionList[0])])
-            self.sessionChain = {hash(self.sessionList[0]): {"date":self.sessionList[0][0],
+            self.sessionChain = {hash(self.sessionList[0]):
+                {"date":self.sessionList[0][0],
                 "dailySessNum":self.sessionList[0][1],
                 "count":1,
+                "startupTimes":self.sessionList[0][2],
                 "childTreeWidth":None,
                 "earliestInThread":self.minDate,
                 "latestInThread":self.maxDate,
@@ -265,6 +269,7 @@ class sessionGraph(object):
                 self.sessionChain[hash(self.sessionList[i])] = {"date":self.sessionList[i][0],
                 "dailySessNum":self.sessionList[i][1],
                 "count":1,
+                "startupTimes":self.sessionList[i][2],
                 "childTreeWidth":None,
                 "earliestInThread":self.minDate,
                 "latestInThread":self.maxDate,
@@ -276,8 +281,9 @@ class sessionGraph(object):
             self.finalSessions = set([hash(self.sessionList[finalSess])])
 
             self.sessionChain[hash(self.sessionList[finalSess])] = {"date":self.sessionList[finalSess][0],
-                "dailySessNum":self.sessionList[finalSess-1][1],
+                "dailySessNum":self.sessionList[finalSess][1],
                 "count":1,
+                "startupTimes":self.sessionList[finalSess][2],
                 "childTreeWidth":1,
                 "earliestInThread":self.minDate,
                 "latestInThread":self.maxDate,
@@ -300,14 +306,20 @@ class sessionGraph(object):
                 # if this session id is already in the session graph, add the next/prev bags
                 self.sessionChain[sessId]["next"] += sessDict["next"]
                 self.sessionChain[sessId]["prev"] += sessDict["prev"]
+                # increase the count (number of times this session appears)
                 self.sessionChain[sessId]["count"] += 1
+                # update the earliest/latest days in the thread
                 self.sessionChain[sessId]["earliestInThread"] = min(self.sessionChain[sessId]["earliestInThread"],sessDict["earliestInThread"])
                 self.sessionChain[sessId]["latestInThread"] = max(self.sessionChain[sessId]["latestInThread"],sessDict["latestInThread"])
 
+                # update the childTreeWidth (which at this point should be either 1 or None). The childTreeWidth should only be 1 if ALL the children are not None (which)
+                self.sessionChain[sessId]["childTreeWidth"] = 1 if all([self.sessionChain[sessId]["childTreeWidth"],sessDict["childTreeWidth"]]) else None
+
+
             else: # if this session id is NOT in the session graph, just insert the session from the otherSessGraph
                 self.sessionChain[sessId] = sessDict
-                self.sessionChain[sessId]["earliestInThread"] = sessDict["earliestInThread"]
-                self.sessionChain[sessId]["latestInThread"] = sessDict["latestInThread"]
+                # self.sessionChain[sessId]["earliestInThread"] = sessDict["earliestInThread"]
+                # self.sessionChain[sessId]["latestInThread"] = sessDict["latestInThread"]
 
 
 
@@ -389,7 +401,9 @@ class sessionGraph(object):
             try:
                 return max(1, sum(self.sessionChain[childId]["childTreeWidth"] for childId in self.sessionChain[sessId]["next"].keys() if childId))
             except:
-                print  "width list", [self.sessionChain[childId]["childTreeWidth"] for childId in self.sessionChain[sessId]["next"].keys() if childId]
+                print "\nthis session",self.sessionChain[sessId]
+                print "next sessions", [(nextId,self.sessionChain[nextId]) for nextId in self.sessionChain[sessId]["next"].keys() if nextId]
+                print "prev sessions", [(prevId,self.sessionChain[prevId]) for prevId in self.sessionChain[sessId]["prev"].keys() if prevId]
                 raise
 
     def addTreeWidthToSessionChain_2(self,idList):
@@ -512,7 +526,8 @@ def reduce(partId, iterOfFhrPayloads, context):
     try:
         context.write(partId,sessionGraphOut.d3NodesLinksJson())
     except:
-        pass
+        print "failedToJsonify",partId
+        
 
 
 

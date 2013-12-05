@@ -40,7 +40,7 @@ def map(fhrDocId, rawJsonIn, context):
 
     try:
         payload = json.loads(rawJsonIn)
-    except KeyError:
+    except:
         #context.write(("error","bad_payload"),1)
         #context.write("global_count",1)
         return
@@ -48,21 +48,21 @@ def map(fhrDocId, rawJsonIn, context):
     try: #was getting errors finding packets without a version field, so had to wrap this test in a try block
         if not (payload["version"]==2):
             return
-    except KeyError:
+    except:
         #context.write(("error","no_version"),1)
         #context.write("global_count",1)
         return
 
     try:
         thisPingDate = payload["thisPingDate"]
-    except KeyError:
+    except:
         #context.write(("error","no_thisPingDate"),1)
         #context.write("global_count",1)
         return
 
     try:
         lastPingDate = payload["lastPingDate"]
-    except KeyError:
+    except:
         #context.write(("error","no_lastPingDate"),1)
         #context.write("global_count",1)
         lastPingDate = None
@@ -90,18 +90,18 @@ def map(fhrDocId, rawJsonIn, context):
 
     try:
         profileCreation = payload["data"]["last"]["org.mozilla.profile.age"]["profileCreation"]
-    except KeyError:
+    except:
         profileCreation = "no_profileCreation"
 
 
     try:
         country =payload["geoCountry"]
-    except KeyError:
+    except:
         country="no_country"
 
     try:
         memory =payload["data"]["last"]["org.mozilla.sysinfo.sysinfo"]["memoryMB"]
-    except KeyError:
+    except:
         memory="no_memory"
 
 
@@ -159,7 +159,7 @@ def map(fhrDocId, rawJsonIn, context):
 
     try:
         firstFhrActiveDayData = str( payload["data"]["days"][min(activeDaysSinceFhr)] )
-    except KeyError:
+    except:
         firstFhrActiveDayData = "no_firstFhrActiveDayData"
 
 
