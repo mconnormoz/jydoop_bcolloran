@@ -10,7 +10,7 @@ jydoopRemote peach scripts/getWeightsAndInitPartsFromRecords.py outData/findReco
 
 
 ----to run against HDFS sample, output to HDFS; on peach:
-make ARGS="scripts/orphanDetection2/getWeightsAndInitPartsFromRecords.py ./outData/orphIterTest/edgeWeightsAndInitParts0 ./data/samples/fhr/v2/withOrphans/2013-11-05" hadoop
+make ARGS="scripts/orphanDetection2/getWeightsAndInitPartsFromRecords.py ./outData/orphIterTest2/kEdge_vPart_0 ./data/samples/fhr/v2/withOrphans/2013-11-05" hadoop
 
 '''
 
@@ -25,14 +25,16 @@ def output(path, results):
                 firstLine=False
             else:
                 f.write("\n"+str(k)+"\t"+str(v))
+    # print context.localCounterDict
 
-
+# context.localCounterDict="\n\nFOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\n"
 
 def counterLocal(context,counterGroup,countername,value):
     if jydoop.isJython():
         context.getCounter(counterGroup, countername).increment(value)
     else:
         pass
+
 
 ######## to OUTPUT TO HDFS
 def skip_local_output():
@@ -80,6 +82,7 @@ def jaccard(a, b):
 
 @localTextInput
 def map(fhrDocId, rawJsonIn, context):
+    context.getCounter("MAPPER", "docs_in").increment(1)
 
     try:
         payload = json.loads(rawJsonIn)
@@ -93,11 +96,6 @@ def map(fhrDocId, rawJsonIn, context):
 
     if payloadVersion != 2:
         return
-
-    try:
-        thisPingDate = payload["thisPingDate"]
-    except: #was getting errors finding packets without a version
-        thisPingDate = "no_pingDate"
 
     #NOTE: we drop any packet without data.days entries. these cannot be fingerprinted/linked.
     try:
@@ -131,6 +129,7 @@ def map(fhrDocId, rawJsonIn, context):
 
 
 def reduce(datePrint, valIter, context):
+    context.getCounter("REDUCER", "datePrint_in").increment(1)
     # a given datePrint can only be associated with a given record ONCE, because a date print cannot appear twice in the same record, so it will never be possible for identical (datePrint,recordInfo) pairs to be emitted in the map phase
 
     # valIter contains (fhrDocId,datePrints); sort these by fhrDocId
@@ -144,6 +143,8 @@ def reduce(datePrint, valIter, context):
             daysBoth = daysA.intersection(daysB)
             daysEither = daysA.union(daysB)
             weightInfo = (float(len(daysBoth))/float(len(daysEither)),len(daysA),len(daysB),len(daysBoth),len(daysEither))
+
+            context.getCounter("REDUCER", "edges_out").increment(1)
 
             context.write(
                 (recordInfoList[i][0],recordInfoList[j][0],weightInfo),

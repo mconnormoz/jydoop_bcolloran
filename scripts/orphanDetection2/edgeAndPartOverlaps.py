@@ -5,7 +5,7 @@ in following commands, UPDATE DATES
 
 
 ---to start iteration
-make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/orphIterTest/partsOverlap_1 ./outData/orphIterTest/edgeWeightsAndInitParts0" hadoop
+make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/orphIterTest2/kPart_vObjsTouchingPart_1 ./outData/orphIterTest2/kEdge_vPart_0" hadoop
 
 ---to iterate
 make ARGS="scripts/orphanDetection2/edgeAndPartOverlaps.py ./outData/orphIterTest/partsOverlap_3 ./outData/orphIterTest/relabeledEdges_2" hadoop
