@@ -2,6 +2,7 @@ import subprocess
 import re
 import socket
 import datetime
+import os
 
 
 
@@ -21,8 +22,7 @@ else:
     print "================ PEACH RUN ================"
 
 
-
-
+os.chdir(rootPath)
 
 scriptPath = rootPath+"scripts/orphanDetection2/"
 
