@@ -20,9 +20,15 @@ setupjob = jydoop.setupjob
 
 def output(path, results):
     # just dump tab separated key/vals
-    f = open(path, 'w')
-    for k, v in results:
-        print >>f, str(k)+"\t"+str(v)
+    firstLine = True
+    with open(path, 'w') as f:
+        for k, v in results:
+            if firstLine:
+                f.write(str(k)+"\t"+str(v))
+                firstLine=False
+            else:
+                f.write("\n"+str(k)+"\t"+str(v))
+
 
 def localTextInput(mapper):
     #local feeds a line of text input to the function after cleaning it up
@@ -228,8 +234,13 @@ class sessionGraph(object):
             sessNumOnDay = len([num for date,num,startUp in self.sessionList if date==currentSessDate])
             startupTimes = healthreportutils.SessionStartTimes(main=currentSess["main"], first_paint=currentSess["firstPaint"],
                 session_restored=currentSess["sessionRestored"])
-
+            maxDataDaysSessDate = self.sessionList[-1][0] if self.sessionList else None
             self.sessionList+=[(currentSessDate,sessNumOnDay,startupTimes)]
+            #in the VERY rare case that the currentSessDate<maxDataDaysSessDate, we have to sort the sessionList to make sure that the current session is ordered correctly in time.
+            if maxDataDaysSessDate and currentSessDate<maxDataDaysSessDate:
+                self.sessionList.sort()
+
+
 
         self.minDate=min(sess[0] for sess in self.sessionList)
         self.maxDate=max(sess[0] for sess in self.sessionList)
@@ -520,6 +531,11 @@ def reduce(partId, iterOfFhrPayloads, context):
         else:
             # print 1
             sessionGraphOut.merge( sessionGraph(fhrPayload) )
+
+    context.getCounter("REDUCER", "partsMerged").increment(1)
+    numMergedStr = str(context.getCounter("REDUCER", "partsMerged"))
+    if numMergedStr[-2:]=="00":
+        print numMergedStr
 
     # print "\n------------------------"
     # print sessionGraphOut

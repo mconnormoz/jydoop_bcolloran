@@ -17,10 +17,10 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
 else:
     onCluster=False
     rootPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/"
-    dataPath = rootPath+"testData/orph2.5/"
-    initInDataPath = dataPath+"sampleOfRecordsWithOrphans_2013-11-05_3.txt"
+    dataPath = rootPath+"testData/orph2.6/"
+    initInDataPath = rootPath+"testData/orph2.5/"+"sampleOfRecordsWithOrphans_2013-11-05_3.txt"
     fileDriverPath=rootPath+"FileDriver.py"
-    print "================ PEACH RUN ================"
+    print "================ LOCAL RUN ================"
 
 
 os.chdir(rootPath)
@@ -64,12 +64,10 @@ class jydoopJob(object):
 
     def run(self):
         if onCluster:
-            # if type(self.inPathList)==type([]):
-            #     #in this case, concatenate these files to a temp file.
-                
-            # else:
-            #     inPaths =
-            inPaths = " ".join(list(self.inPathList))
+            if type(self.inPathList)==type([]):
+                inPaths = " ".join(list(self.inPathList))
+            else:
+                inPaths = self.inPathList
             makeString = 'ARGS="%(script)s %(outPath)s %(inPaths)s"' % {"script": self.script,"outPath": self.outPath, "inPaths": inPaths}
             commandList = ["make",makeString,"hadoop"]
             print "\nCommand issued:\n"," ".join(commandList),"\n"
@@ -81,11 +79,12 @@ class jydoopJob(object):
                 inPath = self.inPathList
             commandList = ["python", fileDriverPath, self.script, inPath, self.outPath]
 
-        p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
-        stdout,stderr = p.communicate()
+        # p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
+        # stdout,stderr = p.communicate()
+        stdout=subprocess.check_output(commandList)
         print stdout
         self.stdout=stdout
-        self.stderr=stderr
+        # self.stderr=stderr
         return self
 
 
@@ -133,16 +132,16 @@ jydoopJob(scriptPath+"kPartId_vRawJson.py",
 
 # Now we can bin these (partId,(docId,fhrJson)) pairs by partId see which of the jsons in each part is a possible head record, and emit the final set of (docId,fhrJson) pairs. or we can generate divergence graphs
 
-print "==== generate kPartId_vSessionDivergenceGraph"
-jydoopJob(scriptPath+"kPartId_vSessionDivergenceGraph.py",
-                dataPath+"kPartId_vFhrJson",
-                dataPath+"kPartId_vSessionDivergenceGraph").run()
+# print "==== generate kPartId_vSessionDivergenceGraph"
+# jydoopJob(scriptPath+"kPartId_vSessionDivergenceGraph.py",
+#                 dataPath+"kPartId_vFhrJson",
+#                 dataPath+"kPartId_vSessionDivergenceGraph").run()
 
 
-print "==== generate fhrRawAndSessionDivergenceGraph_perFile"
-jydoopJob(scriptPath+"fhrRawAndSessionDivergenceGraph_perFile.py",
-                [dataPath+"kPartId_vSessionDivergenceGraph", dataPath+"kPartId_vFhrJson"],
-                dataPath+"/filePerPart/docAndDivgGraphs").run()
+# print "==== generate fhrRawAndSessionDivergenceGraph_perFile"
+# jydoopJob(scriptPath+"fhrRawAndSessionDivergenceGraph_perFile.py",
+#                 [dataPath+"kPartId_vSessionDivergenceGraph", dataPath+"kPartId_vFhrJson"],
+#                 dataPath+"/filePerPart/docAndDivgGraphs").run()
 
 
 
