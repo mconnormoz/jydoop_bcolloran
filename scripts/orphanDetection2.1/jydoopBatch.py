@@ -88,17 +88,6 @@ class jydoopJob(object):
         return self
 
 
-make ARGS="scripts/dumpHdfsKeyValsToStrings.py ./outData/partsOverlap7 ./outData/partsOverlap7" hadoop
-
-commandList = 
-
-HadoopDriver: scripts/addon_usage_fhr.py addons-usage-2013-12-02.csv /data/fhr/partitioned/20131202/2/release /data/fhr/partitioned/20131202/2/beta /data/fhr/partitioned/20131202/2/aurora /data/fhr/partitioned/20131202/2/nightly /data/fhr/partitioned/20131202/2/others
-
-
-
-
-
-
 print "==== initialize graph parts"
 jydoopJob( scriptPath+"getWeightsAndInitPartsFromRecords.py" , initInDataPath,dataPath+"kEdge_vPart_0").run()
 
