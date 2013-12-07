@@ -312,7 +312,7 @@ class sessionGraph(object):
                 self.sessionChain[sessId]["earliestInThread"] = min(self.sessionChain[sessId]["earliestInThread"],sessDict["earliestInThread"])
                 self.sessionChain[sessId]["latestInThread"] = max(self.sessionChain[sessId]["latestInThread"],sessDict["latestInThread"])
 
-                # update the childTreeWidth (which at this point should be either 1 or None). The childTreeWidth should only be 1 if ALL the children are not None (which)
+                # update the childTreeWidth (which at this point should be either 1 or None). The childTreeWidth should only be 1 if ALL the children are not None (which means they are ends). If any childTreeWidth is None, it means that the chain has descendants from this node.
                 self.sessionChain[sessId]["childTreeWidth"] = 1 if all([self.sessionChain[sessId]["childTreeWidth"],sessDict["childTreeWidth"]]) else None
 
 

@@ -70,7 +70,7 @@ where:
 @localTextInput
 def map(part,listOfEdges,context):
     #recordEdge[0] and recordEdge[1] are the docIds of the two records connected by this edge
-    counterLocal(context,"GRAPH_STATS", "edges into mapper",1)
+    context.getCounter("MAPPER", "edges into mapper").increment(1)
 
     for edge in listOfEdges:
         context.write((edge[0],part),1)
@@ -80,8 +80,7 @@ def map(part,listOfEdges,context):
 
 def reduce(docId_partId, junkVal, context):
     context.write(docId_partId[0],docId_partId[1])
-    counterLocal(context,"GRAPH_STATS", "records out of reducer",1)
-
+    context.getCounter("REDUCER", "records out of reducer").increment(1)
 
 
 

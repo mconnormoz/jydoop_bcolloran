@@ -224,7 +224,9 @@ def reduce(k, vIter, cx):
                 maxRecordTupOut = random.choice(maxRecordTupList)
                 #cx.write( "NON_UNIQUE_HEAD_RECORD" ,maxRecordTup)
 
+            # REMOVE THE MAXIMAL DOC FRON THE LIST
             fhrDocIdList.remove(maxRecordTupOut[3])
+            # THEN EMIT ALL REMAINING DOC IDS
             if fhrDocIdList:
                 for docId in fhrDocIdList:
                     cx.write( docId , 1)

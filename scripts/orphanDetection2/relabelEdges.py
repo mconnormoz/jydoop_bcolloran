@@ -69,22 +69,25 @@ def reduce(part, iterOfVals, context):
     setOfParts = set()
     #initialize the set of parts under consideration with the key part
     setOfParts.add(part)
-    counterLocal(context,"GRAPH_STATS", "NUM_INPUT_PARTS",1)
+    # counterLocal(context,"GRAPH_STATS", "NUM_INPUT_PARTS",1)
+    context.getCounter("REDUCER", "NUM_INPUT_PARTS").increment(1)
 
     #go through iterOfVals sorting PARTS from edges
     for val in iterOfVals:
         if val[0]=="PART":
             setOfParts.add(val)
-            counterLocal(context,"GRAPH_STATS", "part added to set",1)
+            # counterLocal(context,"GRAPH_STATS", "part added to set",1)
+            context.getCounter("REDUCER", "PART_COLLISIONS").increment(1)
         else:
             setOfEdges = setOfEdges.union(val)
-            counterLocal(context,"GRAPH_STATS", "sets of edges union",1)
+            # counterLocal(context,"GRAPH_STATS", "sets of edges union",1)
+            context.getCounter("REDUCER", "sets of edges union").increment(1)
 
     lowestPart = min(setOfParts, key = lambda part:part[1])
 
     for edge in setOfEdges:
         context.write(edge,part)
-        counterLocal(context,"GRAPH_STATS", "(edge,part) emitted",1)
+        context.getCounter("REDUCER", "kEdge_vPart emitted").increment(1)
 
 
 

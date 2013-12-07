@@ -29,7 +29,7 @@ def output(path, results):
 
 def localTextInput(mapper):
     #local feeds a line of text input to the function after cleaning it up
-    #just ignore the line key. split
+    #just ignore the lineKey.
     if jydoop.isJython():
         return mapper
     else:
@@ -63,16 +63,6 @@ def counterLocal(context,counterGroup,countername,value):
 
 
 
-'''
-input key will be a PART
-
-input val will be a LIST of several weightedRecordEdges (a tuple of edges, actually)
-
-where: 
-    part = ("PART",partNum)
-    weightedRecordEdge = (docId_i, docId_j, weight_ij)
-
-'''
 @localTextInput
 def map(docId,partOrJson,context):
     context.write(docId,partOrJson)
@@ -87,14 +77,13 @@ def reduce(docId, iterOfPartOrJson, context):
         else: #a record in the part
             jsonsForThisPart.append(partOrJson)
 
-    missedRecords = 0
-
     for json in jsonsForThisPart:
         try:
             context.write(partId,json.strip())
-        except:
-            missedRecords+=1
-            print docId,missedRecords
+        except UnboundLocalError:
+            #exception raised if 'partId' not set above
+            #this happens id a doc was *not linked to any other records* upstream in the data pipeline.
+            context.getCounter("REDUCER", "records without parts").increment(1)
 
 
 

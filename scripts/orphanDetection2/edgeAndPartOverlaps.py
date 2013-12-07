@@ -84,7 +84,7 @@ def map(recordEdge,part,context):
 
 
 def reduce(docId, iterOfEdgesAndParts, context):
-    counterLocal(context,"GRAPH_STATS", "num records touched (reducer)",1)
+    context.getCounter("REDUCER", "docIds checked for overlaps").increment(1)
 
     setOfEdgesTouchingRecord = set()
     setOfPartsTouchingRecord = set()
@@ -99,10 +99,10 @@ def reduce(docId, iterOfEdgesAndParts, context):
 
     context.write(lowestPart,list(setOfEdgesTouchingRecord))
 
-    counterLocal(context,"GRAPH_STATS", "num overlapping parts this iter (red)",0)
+    context.getCounter("REDUCER", "OVERLAPPING_PARTS").increment(0)
     if len(setOfPartsTouchingRecord)>1:
         #in this case, the parts overlap; we need to pass the LOWER part to the bin of the HIGHER parts in the next MR job, so that the edges touching that part can be re-labeled into the lower part.
-        counterLocal(context,"GRAPH_STATS", "num overlapping parts this iter (red)",1)
+        context.getCounter("REDUCER", "OVERLAPPING_PARTS").increment(1)
         for part in setOfPartsTouchingRecord:
             if part!=lowestPart:
                 context.write(part,lowestPart)
