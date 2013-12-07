@@ -71,7 +71,9 @@ class jydoopJob(object):
                 inPaths = self.inPathList
             makeString = 'ARGS="%(script)s %(outPath)s %(inPaths)s"' % {"script": self.script,"outPath": self.outPath, "inPaths": inPaths}
             commandList = ["make",makeString,"hadoop"]
-            print "\nCommand issued:\n"," ".join(commandList),"\n"
+            command = " ".join(commandList),"\n"
+            print "\nCommand issued:\n",command
+            p = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE)
         else:
             if type(self.inPathList)==type([]):
                 #in this case, concatenate these files to a temp file.
@@ -79,8 +81,8 @@ class jydoopJob(object):
             else:
                 inPath = self.inPathList
             commandList = ["python", fileDriverPath, self.script, inPath, self.outPath]
+            p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
 
-        p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
         retcode = p.wait()
         stdout,stderr = p.communicate()
         
