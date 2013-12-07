@@ -25,7 +25,7 @@ else:
 
 os.chdir(rootPath)
 
-scriptPath = rootPath+"scripts/orphanDetection2/"
+scriptPath = "scripts/orphanDetection2/"
 
 
 

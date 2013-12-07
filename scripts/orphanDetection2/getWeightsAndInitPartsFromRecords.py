@@ -60,7 +60,6 @@ def setupjob(job, args):
     """Indicate to HadoopDriver which Mapper we want to use."""
     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
     job.getConfiguration().set("mapred.job.queue.name","research")
-    
 
 
 
