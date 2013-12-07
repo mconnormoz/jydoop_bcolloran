@@ -23,9 +23,10 @@ else:
     print "================ LOCAL RUN ================"
 
 
-os.chdir(rootPath)
 
-scriptPath = "scripts/orphanDetection2/"
+os.chdir(rootPath)
+# MUST use a relative path from rootPath because of jydoop makefile weirdness
+scriptPath = "scripts/orphanDetection2/" 
 
 
 
