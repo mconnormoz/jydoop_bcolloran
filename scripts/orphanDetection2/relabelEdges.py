@@ -10,7 +10,7 @@ make ARGS="scripts/orphanDetection2/relabelEdges.py ./outData/orphIterTest/relab
 
 '''
 
-######## to OUTPUT TO HDFS from RAW HBASE
+######## to OUTPUT TO HDFS
 def skip_local_output():
     return True
 

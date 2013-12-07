@@ -89,12 +89,11 @@ class jydoopJob(object):
         retcode = p.wait()
         stdout,stderr = p.communicate()
         
-        # stdout=subprocess.check_output(commandList)
-        print "====== stdout ========================",stdout
-        print "====== stdout end =============================="
+        # print "====== stdout ========================",stdout
+        # print "====== stdout end =============================="
 
-        print "====== stderr ========================",stderr
-        print "====== stderr end =============================="
+        # print "====== stderr ========================",stderr
+        # print "====== stderr end =============================="
 
         if retcode: #process returns 0 on success
             raise subprocess.CalledProcessError(retcode, " ".join(commandList))

@@ -10,9 +10,10 @@ make ARGS="scripts/orphanDetection2/docIdsInParts.py ./outData/finalDocIdsInPart
 
 '''
 
-######## to OUTPUT TO HDFS from RAW HBASE
-# def skip_local_output():
-    # return True
+######## to OUTPUT TO HDFS
+def skip_local_output():
+    return True
+
 
 
 setupjob = jydoop.setupjob
