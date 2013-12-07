@@ -10,7 +10,8 @@ import os
 if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     onCluster=True
     rootPath = "/home/bcolloran/jydoop_bcolloran2/jydoop/"
-    #HDFS path
+    #HDFS paths
+    dataPath = "/user/bcolloran/orphanDetection2/test1/"
     initInDataPath = "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-00024"
     print "================ PEACH RUN ================"
 else:
