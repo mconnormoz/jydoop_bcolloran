@@ -59,7 +59,10 @@ class jydoopJob(object):
         return tmpFile
 
     def getCounterVal(self,counterName):
-        reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stdout)
+        if onCluster:
+            reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stderr)
+        else:
+            reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stdout)
         return int(reMatches[0].split("=")[1]) #get the first string match value
 
 
