@@ -73,7 +73,7 @@ class jydoopJob(object):
             commandList = ["make",makeString,"hadoop"]
             command = " ".join(commandList)
             print "\nCommand issued:\n",command
-            p = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE)
+            p = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         else:
             if type(self.inPathList)==type([]):
                 #in this case, concatenate these files to a temp file.
