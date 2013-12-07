@@ -79,13 +79,33 @@ class jydoopJob(object):
                 inPath = self.inPathList
             commandList = ["python", fileDriverPath, self.script, inPath, self.outPath]
 
-        # p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
-        # stdout,stderr = p.communicate()
-        stdout=subprocess.check_output(commandList)
-        print stdout
+        p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
+        retcode = p.wait()
+        stdout,stderr = p.communicate()
+        
+        # stdout=subprocess.check_output(commandList)
+        print "stdout",stdout
+
+        if retcode: #process returns 0 on success
+            raise subprocess.CalledProcessError(retcode, " ".join(commandList))
         self.stdout=stdout
-        # self.stderr=stderr
+        self.stderr=stderr
         return self
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 print "==== initialize graph parts"

@@ -533,9 +533,10 @@ def reduce(partId, iterOfFhrPayloads, context):
             sessionGraphOut.merge( sessionGraph(fhrPayload) )
 
     context.getCounter("REDUCER", "partsMerged").increment(1)
-    numMergedStr = str(context.getCounter("REDUCER", "partsMerged"))
-    if numMergedStr[-2:]=="00":
-        print numMergedStr
+    # for debugging
+    # numMergedStr = str(context.getCounter("REDUCER", "partsMerged"))
+    # if numMergedStr[-2:]=="00":
+    #     print numMergedStr
 
     # print "\n------------------------"
     # print sessionGraphOut
