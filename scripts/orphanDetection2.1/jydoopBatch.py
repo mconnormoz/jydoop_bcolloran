@@ -71,7 +71,7 @@ class jydoopJob(object):
                 inPaths = self.inPathList
             makeString = 'ARGS="%(script)s %(outPath)s %(inPaths)s"' % {"script": self.script,"outPath": self.outPath, "inPaths": inPaths}
             commandList = ["make",makeString,"hadoop"]
-            command = " ".join(commandList),"\n"
+            command = " ".join(commandList)
             print "\nCommand issued:\n",command
             p = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE)
         else:
@@ -87,7 +87,7 @@ class jydoopJob(object):
         stdout,stderr = p.communicate()
         
         # stdout=subprocess.check_output(commandList)
-        print "stdout",stdout
+        print "====== stdout ======",stdout
 
         if retcode: #process returns 0 on success
             raise subprocess.CalledProcessError(retcode, " ".join(commandList))
