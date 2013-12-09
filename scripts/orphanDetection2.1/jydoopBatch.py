@@ -8,19 +8,19 @@ import os
 
 
 if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
+    print "================ PEACH RUN ================"
     onCluster=True
     rootPath = "/home/bcolloran/jydoop_bcolloran2/jydoop/"
     #HDFS paths
     dataPath = "/user/bcolloran/orphanDetection2/test2/"
     initInDataPath = "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
-    print "================ PEACH RUN ================"
 else:
+    print "================ LOCAL RUN ================"
     onCluster=False
     rootPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/"
     dataPath = rootPath+"testData/orph2.6/"
     initInDataPath = rootPath+"testData/orph2.5/"+"sampleOfRecordsWithOrphans_2013-11-05_3.txt"
     fileDriverPath=rootPath+"FileDriver.py"
-    print "================ LOCAL RUN ================"
 
 
 
