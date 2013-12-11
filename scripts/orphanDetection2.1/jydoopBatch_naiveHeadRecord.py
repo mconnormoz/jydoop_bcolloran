@@ -220,6 +220,7 @@ while graphIter<100:
     graphIter+=1
     print "==number overlapping:",numOverlapping
     if numOverlapping==0:
+        convergedFlag=True
         break
 
     jydoopJob(scriptPath+"relabelEdges.py",
@@ -227,7 +228,17 @@ while graphIter<100:
                     dataPath+"kEdge_vPart_"+str(graphIter+1)).run(logger)
     graphIter+=1
 
-print "\n================ graph converged ================ iter:",graphIter,"\n"
+
+
+if convergedFlag:
+    print "\n================ graph converged ================ iter:",graphIter,"\n"
+else:
+    print "\n====== graph FAILED TO converge on iter:,"graphIter
+    print "(some kind of error occurred)\n"
+    return
+
+
+
 
 
 # at this point, we have a file full of (kPart,vObjTouchingPart) pairs, in which all of the vObjTouchingPart items will be lists of weighted edges between documents.
