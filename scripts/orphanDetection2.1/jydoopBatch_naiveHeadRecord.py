@@ -79,12 +79,11 @@ class batchLog(object):
                 """
             else:
                 message = """From: jydoop batch bot <bcolloran@mozilla.com>
-                To: <bcolloran@mozilla.com>
-                Subject: Naive head record extraction -FAILURE-
+To: <bcolloran@mozilla.com>
+Subject: Naive head record extraction -FAILURE-
 
-                Jydoop batch failed. Logs follow.
-
-                """
+Jydoop batch failed. Logs follow.
+"""
             try:
                 smtpObj = smtplib.SMTP('localhost')
                 smtpObj.sendmail(sender, receivers, message+self.logString)         
@@ -232,6 +231,7 @@ while graphIter<100:
 
 if convergedFlag:
     print "\n================ graph converged ================ iter:",graphIter,"\n"
+    logger.log("\n================ graph converged ================ iter: "+graphIter+"\n")
 else:
     print "\n====== graph FAILED TO converge on iter:",graphIter
     print "(some kind of error occurred)\n"
