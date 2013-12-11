@@ -58,7 +58,8 @@ class batchLog(object):
     def __repr__(self):
         return self.logString
     def durationStamp(self):
-        self.logString += "\nElapsed time: "+ str((datetime.datetime.utcnow()-self.initTime).total_seconds())+ " seconds ("+str((datetime.datetime.utcnow()-self.initTime).total_seconds()/3600)+ "hrs)"
+        self.logString += "\nElapsed time: "+ str(datetime.datetime.utcnow()-self.initTime)
+        # + " seconds ("+str((datetime.datetime.utcnow()-self.initTime).total_seconds()/3600)+ "hrs)"
         return self
     def write(self):
         with open(logPath+"log_"+datetime.datetime.utcnow().isoformat(),"w") as logFile:
