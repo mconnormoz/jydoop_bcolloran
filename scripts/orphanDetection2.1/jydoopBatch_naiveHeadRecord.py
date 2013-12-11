@@ -235,7 +235,7 @@ if convergedFlag:
 else:
     print "\n====== graph FAILED TO converge on iter:",graphIter
     print "(some kind of error occurred)\n"
-    return
+    exit()
 
 
 
