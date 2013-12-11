@@ -3,24 +3,9 @@ import re
 import socket
 import datetime
 import os
-# import smtplib
+import smtplib
 
-# sender = 'bcolloran@mozilla.com'
-# receivers = ['rosco.petracula@gmail.com']
 
-# message = """From: From Person <from@fromdomain.com>
-# To: To Person <to@todomain.com>
-# Subject: SMTP e-mail test
-
-# This is a test e-mail message.
-# """
-
-# try:
-#    smtpObj = smtplib.SMTP('localhost')
-#    smtpObj.sendmail(sender, receivers, message)         
-#    print "Successfully sent email"
-# except SMTPException:
-#    print "Error: unable to send email"
 
 logging =True
 
@@ -78,6 +63,37 @@ class batchLog(object):
     def write(self):
         with open(logPath+"log_"+datetime.datetime.utcnow().isoformat(),"w") as logFile:
             logFile.write(str(logger))
+        return self
+    def email(self,success=True):
+        if onCluster:
+            sender = 'bcolloran@mozilla.com'
+            receivers = ['bcolloran@mozilla.com']
+            if success:
+                message = """From: jydoop batch bot <bcolloran@mozilla.com>
+                To: <bcolloran@mozilla.com>
+                Subject: Naive head record extraction -SUCCESS-
+
+                Jydoop batch succeeded. Logs follow.
+
+                """
+            else:
+                message = """From: jydoop batch bot <bcolloran@mozilla.com>
+                To: <bcolloran@mozilla.com>
+                Subject: Naive head record extraction -FAILURE-
+
+                Jydoop batch failed. Logs follow.
+
+                """
+            try:
+                smtpObj = smtplib.SMTP('localhost')
+                smtpObj.sendmail(sender, receivers, message+self.logString)         
+                print "Successfully sent email"
+            except SMTPException:
+                print "Error: unable to send email"
+            return self
+        else:
+            print "email not sent for local jobs."
+
 
 
 
@@ -161,7 +177,7 @@ class jydoopJob(object):
             print "\n         ===stderr===\n",stderr
             print
             logger.log("\n\nBATCH FAILED :-(\n\n")
-            logger.write()
+            logger.write().email(success=False)
             raise subprocess.CalledProcessError(retcode, " ".join(commandList))
         if verbose:
             print "\n         ===stdout===\n",stdout
@@ -239,4 +255,4 @@ jydoopJob(scriptPath+"final_kNaiveHeadRecordDocId_vPartId.py",
 
 
 logger.log("Batch complete: "+ datetime.datetime.utcnow().isoformat()+"\n")
-logger.durationStamp().write()
+logger.durationStamp().write().email()
