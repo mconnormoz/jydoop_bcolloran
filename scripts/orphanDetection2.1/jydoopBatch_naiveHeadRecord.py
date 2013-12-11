@@ -3,7 +3,24 @@ import re
 import socket
 import datetime
 import os
+# import smtplib
 
+# sender = 'bcolloran@mozilla.com'
+# receivers = ['rosco.petracula@gmail.com']
+
+# message = """From: From Person <from@fromdomain.com>
+# To: To Person <to@todomain.com>
+# Subject: SMTP e-mail test
+
+# This is a test e-mail message.
+# """
+
+# try:
+#    smtpObj = smtplib.SMTP('localhost')
+#    smtpObj.sendmail(sender, receivers, message)         
+#    print "Successfully sent email"
+# except SMTPException:
+#    print "Error: unable to send email"
 
 
 
@@ -153,17 +170,16 @@ while graphIter<10:
 
 print "\n================ graph converged ================ iter:",graphIter,"\n"
 
+
 # at this point, we have a file full of (kPart,vObjTouchingPart) pairs, in which all of the vObjTouchingPart items will be lists of weighted edges between documents.
 # to find the head record of each of these sets of records, we need to go back and look at the records themselves again, which means we have to join the (docId,fhrJson) pairs with (docId,partId) pairs, so that we can flip this around to get (partId,(docId,fhrJson)) pairs.
+
 
 print "\n==== get partIds for each docId"
 
 jydoopJob(scriptPath+"final_kDocId_vPartId.py",
                 dataPath+"kPart_vObjTouchingPart_"+str(graphIter),
                 dataPath+"kDocId_vPartId_final").run()
-
-
-
 
 
 print "\n==== get the naive tie breaker info for each record, label it by part"
