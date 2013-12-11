@@ -122,7 +122,7 @@ class jydoopJob(object):
 
     def getCounterVal(self,counterName):
         if onCluster:
-            reMatches = rlogPath = e.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stderr)
+            reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stderr)
         else:
             reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stdout)
         return int(reMatches[0].split("=")[-1]) #last string match value
