@@ -45,11 +45,12 @@ def localTextInput(mapper):
 
 @localTextInput
 def map(partId, docId_tieBreakInfo, context):
-    context.getCounter("MAPPER", "parts in").increment(1)
+    context.getCounter("MAPPER", "input: docIds with tieBreakInfo (and partId)").increment(1)
     context.write(partId,docId_tieBreakInfo)
 
 
 def reduce(partId, iter_docId_tieBreakInfo, context):
+    context.getCounter("REDUCER", "number of parts").increment(1)
     maxRecordDocIdList = None
     maxRecordTieBreakInfo = ("0000-00-00",0,0)
     for docId, tieBreakInfo in iter_docId_tieBreakInfo:

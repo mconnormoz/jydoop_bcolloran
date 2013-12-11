@@ -16,7 +16,8 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     logPath = rootPath+"outData/orphIterLogs/"
     #HDFS paths
     dataPath = "/user/bcolloran/orphanDetection2/test2/"
-    initInDataPath = "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
+    initInDataPath = "/tmp/full_dumb_export"
+    # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
     verbose=False
 else:
     print "================ LOCAL RUN ================"

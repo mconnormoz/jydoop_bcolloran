@@ -2,6 +2,7 @@ import json
 # import healthreportutils
 import jydoop
 
+
 '''
 in following commands, UPDATE DATES
 
@@ -11,7 +12,6 @@ jydoopRemote peach scripts/getWeightsAndInitPartsFromRecords.py outData/findReco
 
 ----to run against HDFS sample, output to HDFS; on peach:
 make ARGS="scripts/orphanDetection2/getWeightsAndInitPartsFromRecords.py ./outData/orphIterTest3/kEdge_vPart_0 ./data/samples/fhr/v2/withOrphans/2013-11-05" hadoop
-
 '''
 
 
@@ -25,15 +25,7 @@ def output(path, results):
                 firstLine=False
             else:
                 f.write("\n"+str(k)+"\t"+str(v))
-    # print context.localCounterDict
 
-# context.localCounterDict="\n\nFOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\n"
-
-def counterLocal(context,counterGroup,countername,value):
-    if jydoop.isJython():
-        context.getCounter(counterGroup, countername).increment(value)
-    else:
-        pass
 
 
 ######## to OUTPUT TO HDFS
@@ -41,25 +33,24 @@ def skip_local_output():
     return True
 
 
-setupjob = jydoop.setupjob
+# setupjob = jydoop.setupjob
 
-# def setupjob(job, args):
-#     """
-#     Set up a job to run on a list of paths.  Jobs expect at least one path,
-#     but you may specify as many as you like.
-#     """
+def setupjob(job, args):
+    """
+    Set up a job to run on a list of paths.  Jobs expect at least one path,
+    but you may specify as many as you like.
+    """
 
-#     import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
-#     import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat as MyInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.FileInputFormat as FileInputFormat
+    import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat as MyInputFormat
 
-#     if len(args) < 1:
-#         raise Exception("Usage: path [ path2 ] [ path3 ] [ ... ]")
+    if len(args) < 1:
+        raise Exception("Usage: path [ path2 ] [ path3 ] [ ... ]")
 
-#     job.setInputFormatClass(MyInputFormat)
-#     FileInputFormat.setInputPaths(job, ",".join(args));
-#     """Indicate to HadoopDriver which Mapper we want to use."""
-#     job.getConfiguration().set("org.mozilla.jydoop.mappertype", "JYDOOP")
-#     # job.getConfiguration().set("mapred.job.queue.name","research")
+    job.setInputFormatClass(MyInputFormat)
+    FileInputFormat.setInputPaths(job, ",".join(args));
+    """Indicate to HadoopDriver which Mapper we want to use."""
+    job.getConfiguration().set("org.mozilla.jydoop.mappertype", "TEXT")
 
 
 
