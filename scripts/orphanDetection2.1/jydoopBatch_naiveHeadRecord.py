@@ -209,7 +209,7 @@ jydoopJob( scriptPath+"getWeightsAndInitPartsFromRecords.py" , initInDataPath,da
 
 graphIter = 0
 print "\n================ iteration ================",graphIter
-while graphIter<10:
+while graphIter<100:
     print "\n==== check for overlaps",graphIter
 
     numOverlapping = jydoopJob(
