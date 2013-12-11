@@ -31,6 +31,7 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     #HDFS paths
     dataPath = "/user/bcolloran/orphanDetection2/test2/"
     initInDataPath = "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
+    verbose=False
 else:
     print "================ LOCAL RUN ================"
     onCluster=False
@@ -44,7 +45,6 @@ else:
     except OSError as exception:
         if not os.path.isdir(dataPath):
             raise
-
     verbose=True
 
 
