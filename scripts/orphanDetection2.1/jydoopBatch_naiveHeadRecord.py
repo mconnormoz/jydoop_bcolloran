@@ -233,7 +233,7 @@ while graphIter<100:
 if convergedFlag:
     print "\n================ graph converged ================ iter:",graphIter,"\n"
 else:
-    print "\n====== graph FAILED TO converge on iter:,"graphIter
+    print "\n====== graph FAILED TO converge on iter:",graphIter
     print "(some kind of error occurred)\n"
     return
 
