@@ -84,6 +84,7 @@ def map(docId,partOrJson,context):
         try: #was getting errors finding packets without a version field, so had to wrap this test in a try block
             if not (payload["version"]==2):
                 context.getCounter("MAPPER", "record not v2").increment(1)
+                return
         except KeyError:
             context.getCounter("MAP ERROR", "no version").increment(1)
             context.getCounter("MAP ERROR", "REJECTED RECORDS").increment(1)

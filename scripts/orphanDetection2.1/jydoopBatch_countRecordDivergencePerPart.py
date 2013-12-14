@@ -252,18 +252,20 @@ jydoopJob(scriptPath+"final_kDocId_vPartId.py",
                 dataPath+"kDocId_vPartId_final").run()
 
 
-print "==== take initial Jsons and kDocId_vPartId_final to kPart_vFhrJson"
-jydoopJob(scriptPath+"kPartId_vDocId-RawJson.py",
-                [dataPath+"kDocId_vPartId_final",initInDataPath],
-                dataPath+"kPartId_vRawJson").run()
-
-# Now we can bin these (partId,(docId,fhrJson)) pairs by partId see which of the jsons in each part is a possible head record, and emit the final set of (docId,fhrJson) pairs. or we can generate divergence graphs.
 
 
-print "==== generate kPartId_vSessionDivergenceGraph"
-jydoopJob(scriptPath+"kPartId_vSessionDivergenceGraph.py",
-                dataPath+"kPartId_vFhrJson",
-                dataPath+"kPartId_vSessionDivergenceGraph").run()
+# print "==== take initial Jsons and kDocId_vPartId_final to kPart_vFhrJson"
+# jydoopJob(scriptPath+"kPartId_vDocId-RawJson.py",
+#                 [dataPath+"kDocId_vPartId_final",initInDataPath],
+#                 dataPath+"kPartId_vRawJson").run()
+
+# # Now we can bin these (partId,(docId,fhrJson)) pairs by partId see which of the jsons in each part is a possible head record, and emit the final set of (docId,fhrJson) pairs. or we can generate divergence graphs.
+
+
+# print "==== generate kPartId_vSessionDivergenceGraph"
+# jydoopJob(scriptPath+"kPartId_vSessionDivergenceGraph.py",
+#                 dataPath+"kPartId_vFhrJson",
+#                 dataPath+"kPartId_vSessionDivergenceGraph").run()
 
 
 logger.log("Batch complete: "+ datetime.datetime.utcnow().isoformat()+"\n")

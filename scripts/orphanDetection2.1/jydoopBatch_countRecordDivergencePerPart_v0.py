@@ -3,106 +3,32 @@ import re
 import socket
 import datetime
 import os
-import smtplib
 
 
 
-logging =True
 
 if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     print "================ PEACH RUN ================"
     onCluster=True
     rootPath = "/home/bcolloran/jydoop_bcolloran2/jydoop/"
-    logPath = rootPath+"outData/orphIterLogs/"
     #HDFS paths
     dataPath = "/user/bcolloran/orphanDetection2/test2/"
-    initInDataPath = "/tmp/full_dumb_export"
-    # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
-    verbose=False
+    initInDataPath = "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
 else:
     print "================ LOCAL RUN ================"
     onCluster=False
     rootPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/"
+    dataPath = rootPath+"testData/orph2.7/"
     initInDataPath = rootPath+"testData/orph2.5/"+"sampleOfRecordsWithOrphans_2013-11-05_3.txt"
     fileDriverPath=rootPath+"FileDriver.py"
+    os.mkdir(dataPath)
 
-    dataPath = rootPath+"testData/orph2.7/"
-    logPath = dataPath
-    try:
-        os.makedirs(dataPath)
-    except OSError as exception:
-        if not os.path.isdir(dataPath):
-            raise
-    verbose=True
-
-
-try:
-    os.makedirs(logPath)
-except OSError as exception:
-    if not os.path.isdir(logPath):
-        raise
 
 
 
 os.chdir(rootPath)
 # MUST use a relative path from rootPath because of jydoop makefile weirdness
-scriptPath = "scripts/orphanDetection2/"
-
-class batchLog(object):
-    def __init__(self,logPath,initString=""):
-        self.logPath=logPath
-        self.logString=initString
-        self.initTime = datetime.datetime.utcnow()
-    def log(self,logEntry):
-        self.logString += logEntry
-        return self
-    def __repr__(self):
-        return self.logString
-    def durationStamp(self):
-        self.logString += "\nElapsed time: "+ str(datetime.datetime.utcnow()-self.initTime)
-        # + " seconds ("+str((datetime.datetime.utcnow()-self.initTime).total_seconds()/3600)+ "hrs)"
-        return self
-    def write(self):
-        with open(logPath+"log_"+datetime.datetime.utcnow().isoformat(),"w") as logFile:
-            logFile.write(str(logger))
-        return self
-    def email(self,success=True):
-        if onCluster:
-            sender = 'bcolloran@mozilla.com'
-            receivers = ['bcolloran@mozilla.com']
-            if success:
-                message = """From: jydoop batch bot <bcolloran@mozilla.com>
-                To: <bcolloran@mozilla.com>
-                Subject: Naive head record extraction -SUCCESS-
-
-                Jydoop batch succeeded. Logs follow.
-
-                """
-            else:
-                message = """From: jydoop batch bot <bcolloran@mozilla.com>
-To: <bcolloran@mozilla.com>
-Subject: Naive head record extraction -FAILURE-
-
-Jydoop batch failed. Logs follow.
-"""
-            try:
-                smtpObj = smtplib.SMTP('localhost')
-                smtpObj.sendmail(sender, receivers, message+self.logString)         
-                print "Successfully sent email"
-            except SMTPException:
-                print "Error: unable to send email"
-            return self
-        else:
-            print "email not sent for local jobs."
-
-
-
-
-
-
-
-logger = batchLog(logPath,"Batch started: "+ datetime.datetime.utcnow().isoformat()+"\n")
-
+scriptPath = "scripts/orphanDetection2/" 
 
 
 
@@ -142,10 +68,10 @@ class jydoopJob(object):
             reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stderr)
         else:
             reMatches = re.findall("INFO mapred.JobClient:\s+"+counterName+"=[0-9]+",self.stdout)
-        return int(reMatches[0].split("=")[-1]) #last string match value
+        return int(reMatches[0].split("=")[1]) #get the first string match value
 
 
-    def run(self,logger=None):
+    def run(self):
         if onCluster:
             if type(self.inPathList)==type([]):
                 inPaths = " ".join(list(self.inPathList))
@@ -163,30 +89,21 @@ class jydoopJob(object):
             else:
                 inPath = self.inPathList
             commandList = ["python", fileDriverPath, self.script, inPath, self.outPath]
-            command = " ".join(commandList)
             p = subprocess.Popen(commandList,stdout=subprocess.PIPE)
 
         retcode = p.wait()
         stdout,stderr = p.communicate()
+        
+        # print "====== stdout ========================",stdout
+        # print "====== stdout end =============================="
 
-        if logger:
-            logger.log("\n======= Command issued:  "+command)
-            logger.log("\n         ===stdout==="+(("\n"+stdout) if stdout else " None\n"))
-            logger.log("\n         ===stderr==="+(("\n"+stderr) if stderr else " None\n"))
+        # print "====== stderr ========================",stderr
+        # print "====== stderr end =============================="
+
         if retcode: #process returns 0 on success
-            print "\n         ===stdout===\n",stdout
-            print "\n         ===stderr===\n",stderr
-            print
-            logger.log("\n\nBATCH FAILED :-(\n\n")
-            logger.write().email(success=False)
             raise subprocess.CalledProcessError(retcode, " ".join(commandList))
-        if verbose:
-            print "\n         ===stdout===\n",stdout
-            print "\n         ===stderr===\n",stderr
-
         self.stdout=stdout
         self.stderr=stderr
-
         return self
 
 
@@ -203,43 +120,33 @@ class jydoopJob(object):
 
 
 
-print "\n==== initialize graph parts"
-jydoopJob( scriptPath+"getWeightsAndInitPartsFromRecords.py" , initInDataPath,dataPath+"kEdge_vPart_0").run(logger)
+
+
+print "==== initialize graph parts"
+jydoopJob( scriptPath+"getWeightsAndInitPartsFromRecords.py" , initInDataPath,dataPath+"kEdge_vPart_0").run()
 
 
 graphIter = 0
-print "\n================ iteration ================",graphIter
-while graphIter<100:
-    print "\n==== check for overlaps",graphIter
+print "================ iteration ================",graphIter
+while graphIter<10:
+    print "==== check for overlaps",graphIter
 
     numOverlapping = jydoopJob(
             scriptPath+"edgeAndPartOverlaps.py",
             dataPath+"kEdge_vPart_"+str(graphIter),
             dataPath+"kPart_vObjTouchingPart_"+str(graphIter+1))\
-        .run(logger).getCounterVal("OVERLAPPING_PARTS")
+        .run().getCounterVal("OVERLAPPING_PARTS")
     graphIter+=1
     print "==number overlapping:",numOverlapping
     if numOverlapping==0:
-        convergedFlag=True
         break
 
     jydoopJob(scriptPath+"relabelEdges.py",
                     dataPath+"kPart_vObjTouchingPart_"+str(graphIter),
-                    dataPath+"kEdge_vPart_"+str(graphIter+1)).run(logger)
+                    dataPath+"kEdge_vPart_"+str(graphIter+1)).run()
     graphIter+=1
 
-
-
-if convergedFlag:
-    print "\n================ graph converged ================ iter:",graphIter,"\n"
-    logger.log("\n================ graph converged ================ iter: "+graphIter+"\n")
-else:
-    print "\n====== graph FAILED TO converge on iter:",graphIter
-    print "(some kind of error occurred)\n"
-    exit()
-
-
-
+print "================ graph converged ================ iter:",graphIter,"\n"
 
 
 # at this point, we have a file full of (kPart,vObjTouchingPart) pairs, in which all of the vObjTouchingPart items will be lists of weighted edges between documents.
@@ -255,16 +162,28 @@ jydoopJob(scriptPath+"final_kDocId_vPartId.py",
 print "==== take initial Jsons and kDocId_vPartId_final to kPart_vFhrJson"
 jydoopJob(scriptPath+"kPartId_vDocId-RawJson.py",
                 [dataPath+"kDocId_vPartId_final",initInDataPath],
-                dataPath+"kPartId_vRawJson").run()
+                dataPath+"kPartId_vDocId-RawJson").run()
 
 # Now we can bin these (partId,(docId,fhrJson)) pairs by partId see which of the jsons in each part is a possible head record, and emit the final set of (docId,fhrJson) pairs. or we can generate divergence graphs.
 
+print "==== get naive head-records as (kDocId,vFhrJson) pairs"
+# jydoopJob(scriptPath+"naiveHeadrecordExtraction.py",
+#                 dataPath+"kPartId_vFhrJson",
+#                 dataPath+"kPartId_vSessionDivergenceGraph").run()
 
-print "==== generate kPartId_vSessionDivergenceGraph"
-jydoopJob(scriptPath+"kPartId_vSessionDivergenceGraph.py",
-                dataPath+"kPartId_vFhrJson",
-                dataPath+"kPartId_vSessionDivergenceGraph").run()
+
+# print "==== generate kPartId_vSessionDivergenceGraph"
+# jydoopJob(scriptPath+"kPartId_vSessionDivergenceGraph.py",
+#                 dataPath+"kPartId_vFhrJson",
+#                 dataPath+"kPartId_vSessionDivergenceGraph").run()
 
 
-logger.log("Batch complete: "+ datetime.datetime.utcnow().isoformat()+"\n")
-logger.durationStamp().write().email()
+# print "==== generate fhrRawAndSessionDivergenceGraph_perFile"
+# jydoopJob(scriptPath+"fhrRawAndSessionDivergenceGraph_perFile.py",
+#                 [dataPath+"kPartId_vSessionDivergenceGraph", dataPath+"kPartId_vFhrJson"],
+#                 dataPath+"/filePerPart/docAndDivgGraphs").run()
+
+
+
+
+
