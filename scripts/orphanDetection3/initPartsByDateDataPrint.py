@@ -11,7 +11,7 @@ def skip_local_output():
     return True
 
 
-setupjob = orphUtils.hdfsjobByType("JYDOOP")
+setupjob = orphUtils.hdfsjobByType("TEXT")
 
 
 
