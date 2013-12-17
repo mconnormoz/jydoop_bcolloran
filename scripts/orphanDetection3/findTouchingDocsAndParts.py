@@ -10,6 +10,9 @@ output = orphUtils.outputTabSep
 def skip_local_output():
     return True
 
+def num_reduce_tasks():
+    return 23
+
 
 setupjob = orphUtils.hdfsjobByType("JYDOOP")
 
