@@ -27,6 +27,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.python.core.Py;
 import org.python.core.PyObject;
+import org.python.core.PyInteger;
 import org.python.core.PyIterator;
 import org.python.core.PyTuple;
 import org.python.core.util.StringUtil;
@@ -342,9 +343,20 @@ public class HadoopDriver extends Configured implements Tool {
        break;
     }
 
+
+
     boolean maponly = module.getFunction("reduce") == null;
+
+    int numReducers = 4; //use 4 as the default, but
+    // See if we want to set a specific number of reduce tasks
+    System.out.println("check for num_reduce_tasks()");
+    PyObject numReducersFnc = module.getFunction("num_reduce_tasks");
+    if (numReducersFnc != null) {
+      PyObject numReducersPy = numReducersFnc.__call__();
+      numReducers = numReducersPy.asInt();
+    }
     // set below to 0 to do a map-only job
-    job.setNumReduceTasks(maponly ? 0 : 4 );    // at least one, adjust as required
+    job.setNumReduceTasks(maponly ? 0 : numReducers );    // at least one, adjust as required
 
     if (module.getFunction("combine") != null) {
       job.setCombinerClass(MyCombiner.class);
@@ -359,7 +371,7 @@ public class HadoopDriver extends Configured implements Tool {
     if (skipfunc != null) {
        PyObject skipobj = skipfunc.__call__();
        if (skipobj.asInt() != 0) {
-          return 0;
+          return 0; //this exits run(), skipping the local output bits
        }
     }
 
