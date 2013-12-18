@@ -27,7 +27,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.python.core.Py;
 import org.python.core.PyObject;
-import org.python.core.PyInteger;
 import org.python.core.PyIterator;
 import org.python.core.PyTuple;
 import org.python.core.util.StringUtil;
@@ -343,8 +342,6 @@ public class HadoopDriver extends Configured implements Tool {
        break;
     }
 
-
-
     boolean maponly = module.getFunction("reduce") == null;
 
     int numReducers = 4; //use 4 as the default, but
@@ -371,7 +368,7 @@ public class HadoopDriver extends Configured implements Tool {
     if (skipfunc != null) {
        PyObject skipobj = skipfunc.__call__();
        if (skipobj.asInt() != 0) {
-          return 0; //this exits run(), skipping the local output bits
+          return 0; //this exits run(), skipping the local output parts below
        }
     }
 
