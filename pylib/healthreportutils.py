@@ -23,7 +23,7 @@ from collections import namedtuple
 SessionInfo = namedtuple('SessionInfo', ('total', 'clean', 'active_ticks'))
 
 
-SessionStartTimes = namedtuple('SessionStartTimes', ('main', 'first_pain',
+SessionStartTimes = namedtuple('SessionStartTimes', ('main', 'first_paint',
     'session_restored'))
 
 
