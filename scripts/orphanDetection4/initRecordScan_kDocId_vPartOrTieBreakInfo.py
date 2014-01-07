@@ -11,6 +11,10 @@ def skip_local_output():
     return True
 
 
+def num_reduce_tasks():
+    return 26
+
+
 setupjob = orphUtils.hdfsjobByType("TEXT")
 
 
@@ -76,6 +80,7 @@ def map(docId, rawJsonIn, context):
         currentSessionTime = 0
         context.getCounter("MAP WARNING", "no currentSessionTime").increment(1)
 
+    ### emit tieBreakInfo
     context.getCounter("MAPPER", "(docId,tieBreakInfo) out").increment(1)
     context.write("docId"+docId,
         (thisPingDate, numAppSessionsPreviousOnThisPingDate, currentSessionTime) )
@@ -83,10 +88,12 @@ def map(docId, rawJsonIn, context):
     datePrints = [str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ]
 
 
+    ### emit datePrints
     for d in datePrints:
         context.getCounter("MAPPER", "(datePrint,docId) out").increment(1)
         context.write(d,docId)
 
+    ### emit unlinkable 
     if not datePrints:
         # NOTE: if there are NO date prints in a record, the record cannot be linked to any others. pass it through with it's own part already determined
         context.getCounter("MAPPER", "unlinkable record with no dates").increment(1)
@@ -122,7 +129,9 @@ def reduce(datePrintOrDocId, docIdIter_OrTieBreakIter, context):
             context.getCounter("REDUCER", "num docIds shared by >=10 records").increment(1)
         return
     elif datePrintOrDocId[0:11]=="unlinkable_":
-        # we have a ("unlinkable_"+docId, "p"+docId) pair. pass it. the valIter should only have 1 elt.
+        # we have a ("unlinkable_"+docId, "p"+docId) pair.
+        # emit it as a ("unlinkable_"+docId, "p"+docId) pair.
+        # the valIter should only have 1 elt.
         partIdSet = list(set(docIdIter_OrTieBreakIter))
         if len(partIdSet)==1:
             context.write(datePrintOrDocId[11:],partIdSet[0])

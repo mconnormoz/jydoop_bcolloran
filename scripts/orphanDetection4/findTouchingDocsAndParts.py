@@ -33,7 +33,7 @@ def map(docId, partId_orTieBreakInfo, context):
     if partId_orTieBreakInfo[0]=="p":
         # if we have an input part id, pass it to a tuple for down-stream set operations
         context.write(docId,tuple([partId_orTieBreakInfo]))
-        context.getCounter("MAPPER", "(docId,partSet) passed through").increment(1)
+        context.getCounter("MAPPER", "(docId,partSet) passed to reducer").increment(1)
         return
     elif type(partId_orTieBreakInfo)==type(tuple()):
         context.getCounter("MAPPER", "tieBreakInfo dropped").increment(1)
