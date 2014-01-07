@@ -56,9 +56,9 @@ def reduce(partId, iter_docId_tieBreakInfo, context):
     context.getCounter("REDUCER", "number of parts").increment(1)
     maxRecordDocIdList = None
     maxRecordTieBreakInfo = ("0000-00-00",0,0)
-    saveIter=[]
+    # saveIter=[]
     for docId, tieBreakInfo in iter_docId_tieBreakInfo:
-        saveIter+=[(docId, tieBreakInfo)]
+        # saveIter+=[(docId, tieBreakInfo)]
         if tieBreakInfo>maxRecordTieBreakInfo:
             #if this is the maximal record, update the maxRecordTieBreakInfo and reset the maxRecordDocIdList
             # print partId,docId,tieBreakInfo
@@ -86,7 +86,7 @@ def reduce(partId, iter_docId_tieBreakInfo, context):
             context.getCounter("REDUCER", "records tied for naive head").increment(len(maxRecordDocIdList))
             context.getCounter("REDUCER", "FINAL HEAD RECORD docIds OUT").increment(1)
 
-        context.write(docIdOut, [partId,saveIter])
+        context.write(docIdOut, partId)
 
 
 

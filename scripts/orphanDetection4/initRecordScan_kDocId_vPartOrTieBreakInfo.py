@@ -16,11 +16,8 @@ setupjob = orphUtils.hdfsjobByType("TEXT")
 
 
 
-# @orphUtils.localTextInput()
+@orphUtils.localTextInput()
 def map(docId, rawJsonIn, context):
-    # NEXT LINE IS FOR TESTING ONLY
-    docId="d0c-"+docId
-
     context.getCounter("MAPPER", "INPUT (docId,payload)").increment(1)
 
     try:
