@@ -35,7 +35,7 @@ def hdfsjobByType(hdfsType):
     return setupjob
 
 
-def localTextInput(evalVal=False):
+def localTextInput(evalVal=False,evalTup=False):
     def innerFunc(mapper):
         #local feeds a line of text input to the function after cleaning it up
         #just ignore the line key. split
@@ -44,7 +44,10 @@ def localTextInput(evalVal=False):
         else:
             def localMapper(lineKey,inputLine,context):
                 keyValList = inputLine.split("\t")
-                if evalVal:
+                if evalTup:
+                    outVal = eval(keyValList[1].strip()) if keyValList[1][0]=="("  else keyValList[1].strip()
+                    return mapper(keyValList[0].strip(),outVal,context)
+                elif evalVal:
                     return mapper(keyValList[0].strip(),eval(keyValList[1].strip()),context)
                 else:
                     return mapper(keyValList[0].strip(),keyValList[1].strip(),context)
