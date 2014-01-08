@@ -12,7 +12,7 @@ def skip_local_output():
 
 
 def num_reduce_tasks():
-    return 26
+    return 2500
 
 
 setupjob = orphUtils.hdfsjobByType("TEXT")
