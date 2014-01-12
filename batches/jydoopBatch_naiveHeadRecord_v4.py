@@ -13,7 +13,7 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
  
     batchEnv = jydoopBatch.env(jydoopRoot="/home/bcolloran/jydoop_bcolloran2/jydoop/",
         scriptRoot="scripts/orphanDetection4/",
-        dataRoot="/user/bcolloran/orphanDetection4/test_full_dumb_export",
+        dataRoot="/user/bcolloran/orphanDetection4/test_full_dumb_export/",
         logPath="outData/orphIterLogs4/",
         verbose=True,
         onCluster=True)
@@ -49,11 +49,11 @@ else:
 
 
 
-print "\n==== initialize graph parts"
-jydoopBatch.job(batchEnv,
-    "initRecordScan_kDocId_vPartOrTieBreakInfo.py",
-    initInDataPath,
-    "kDocId_vPartOrTieBreakInfo").run()
+# print "\n==== initialize graph parts"
+# jydoopBatch.job(batchEnv,
+#     "initRecordScan_kDocId_vPartOrTieBreakInfo.py",
+#     initInDataPath,
+#     "kDocId_vPartOrTieBreakInfo").run()
 
 
 print "\n==== find initial part overlaps, skip tieBreakInfo"
