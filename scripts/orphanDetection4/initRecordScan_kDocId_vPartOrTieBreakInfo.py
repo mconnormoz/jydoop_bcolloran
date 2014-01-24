@@ -15,7 +15,7 @@ def num_reduce_tasks():
     return 25
 
 
-setupjob = orphUtils.hdfsjobByType("TEXT")
+setupjob = orphUtils.hdfsjobByType("JYDOOP")
 
 
 
