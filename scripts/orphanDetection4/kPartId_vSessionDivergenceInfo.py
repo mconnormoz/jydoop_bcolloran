@@ -3,6 +3,11 @@ import healthreportutils
 import json
 import datetime
 
+import orphUtils
+
+
+output = orphUtils.outputTabSep
+
 '''
 in following commands, UPDATE DATES
 
@@ -11,47 +16,13 @@ make ARGS="scripts/orphanDetection2/docIdsInParts.py ./outData/finalDocIdsInPart
 '''
 
 ######## to OUTPUT TO HDFS
-def skip_local_output():
-    return True
+# def skip_local_output():
+#     return True
 
 
 
-setupjob = jydoop.setupjob
+setupjob = orphUtils.hdfsjobByType("HDFS")
 
-
-def output(path, results):
-    # just dump tab separated key/vals
-    firstLine = True
-    with open(path, 'w') as f:
-        for k, v in results:
-            if firstLine:
-                f.write(str(k)+"\t"+str(v))
-                firstLine=False
-            else:
-                f.write("\n"+str(k)+"\t"+str(v))
-
-
-def localTextInput(mapper):
-    #local feeds a line of text input to the function after cleaning it up
-    #just ignore the line key. split
-    if jydoop.isJython():
-        return mapper
-    else:
-        def localMapper(lineKey,inputLine,context):
-            keyValList = inputLine.split("\t")
-            key = keyValList[0]
-
-            val = keyValList[1].rstrip()
-
-            return mapper(key,val,context)
-        return localMapper
-
-
-def counterLocal(context,counterGroup,countername,value):
-    if jydoop.isJython():
-        context.getCounter(counterGroup, countername).increment(value)
-    else:
-        pass
 
 
 class bag(object):
@@ -216,6 +187,25 @@ def getSessionsWithNum(fhrPayload):
                 session_restored=sr)
 
 
+def getSessionsWithNum_dropLastDay(fhrPayload):
+    """Iterate over all session startup times.
+
+    Is a generator of (day, SessionStartTimes) tuples.
+    """
+    sessionsDict=dict()
+    for day, sessions in list(fhrPayload.daily_provider_data('org.mozilla.appSessions.previous'))[:-1]:
+        sessionsDict['day']=dict()
+        for i, main in enumerate(sessions.get('main', [])):
+            try:
+                fp = sessions['firstPaint'][i]
+                sr = sessions['sessionRestored'][i]
+            except (KeyError, IndexError):
+                continue
+
+            yield day, i, healthreportutils.SessionStartTimes(main=main, first_paint=fp,
+                session_restored=sr)
+
+
 
 
 def unixDayToIsoDate(unixDay):
@@ -226,9 +216,10 @@ def unixDayToIsoDate(unixDay):
 
 class sessionGraph(object):
     def __init__(self,fhrPayload):
-        self.sessionList = [(day_sess[0],day_sess[1],day_sess[2]) for day_sess in getSessionsWithNum(fhrPayload)]
+        self.sessionList = [(day_sess[0],day_sess[1],day_sess[2]) for day_sess in getSessionsWithNum_dropLastDay(fhrPayload)]
         
         #add the appSession.current
+        '''
         currentSess = fhrPayload._o.get('data', {}).get('last', {}).get('org.mozilla.appSessions.current', {})
         if currentSess:
             currentSessDate=unixDayToIsoDate(currentSess["startDay"])
@@ -240,15 +231,19 @@ class sessionGraph(object):
             #in the VERY rare case that the currentSessDate<maxDataDaysSessDate, we have to sort the sessionList to make sure that the current session is ordered correctly in time.
             if maxDataDaysSessDate and currentSessDate<maxDataDaysSessDate:
                 self.sessionList.sort()
+        '''
 
 
+
+
+
+        if len(self.sessionList)==0:
+            return
 
         self.minDate=min(sess[0] for sess in self.sessionList)
         self.maxDate=max(sess[0] for sess in self.sessionList)
 
-        if len(self.sessionList)==0:
-            pass
-        elif len(self.sessionList)==1:
+        if len(self.sessionList)==1:
             self.sessionChain = {hash(self.sessionList[0]):
                 {"date":self.sessionList[0][0],
                 "dailySessNum":self.sessionList[0][1],
@@ -308,6 +303,10 @@ class sessionGraph(object):
         return str(self.sessionChain)
 
     def merge(self,otherSessGraph):
+        #if either of the graphs has no sessions, return the other graph
+        if len(self.sessionList)==0:
+            
+
 
         self.finalSessions = self.finalSessions.union(otherSessGraph.finalSessions)
         self.initialSessions = self.initialSessions.union(otherSessGraph.initialSessions)
@@ -445,7 +444,6 @@ class sessionGraph(object):
         #to initialize, set the offset of the initial sessions, and then add them to the queue
 
         initialSessions = sorted([sessId for sessId,sessDict in self.sessionChain.items() if None in sessDict["prev"].keys()], key=lambda id: self.sessionChain[id]["latestInThread"], reverse=True)
-
         queue=[]
         offsets=0
         # find the offsets of the initialSessions
@@ -453,13 +451,9 @@ class sessionGraph(object):
             self.sessionChain[sess]["yPos"] = offsets #will be 0
             offsets+=self.sessionChain[sess]["childTreeWidth"]
             queue.append(sess) #add THIS sess to the queue, so that its children can be checked in the while loop
-
-
-
         while(queue):
             thisSess = queue.pop(0)
             children = sorted([childId for childId in self.sessionChain[thisSess]["next"].keys() if childId], key=lambda id: self.sessionChain[id]["latestInThread"], reverse=True)
-
             try:
                 offsets=self.sessionChain[thisSess]["yPos"]
             except:
@@ -516,7 +510,13 @@ class sessionGraph(object):
 
 
 
-@localTextInput
+
+
+
+
+
+
+@orphUtils.localTextInput()
 @healthreportutils.FHRMapper()
 def map(partId,fhrPayload,context):
     context.write(partId,fhrPayload)
@@ -540,8 +540,9 @@ def reduce(partId, iterOfFhrPayloads, context):
     #     print numMergedStr
 
     # print "\n------------------------"
-    # print sessionGraphOut
+    # print str(sessionGraphOut.sessionChain)
     try:
+        # context.write(partId,sessionGraphOut.sessionChain)
         context.write(partId,sessionGraphOut.d3NodesLinksJson())
     except:
         print "failedToJsonify",partId

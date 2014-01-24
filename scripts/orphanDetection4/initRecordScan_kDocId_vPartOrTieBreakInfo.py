@@ -85,7 +85,12 @@ def map(docId, rawJsonIn, context):
     context.write("docId"+docId,
         (thisPingDate, numAppSessionsPreviousOnThisPingDate, currentSessionTime) )
 
-    datePrints = [str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ]
+    datePrints = []
+    for date in payload["data"]["days"].keys():
+        if 'org.mozilla.appSessions.previous' in payload["data"]["days"][date].keys():
+            datePrints.append( str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) )
+    # [str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ]
+    # [str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() if ('org.mozilla.appSessions.previous' in payload["data"]["days"][date].keys())]
 
 
     ### emit datePrints
@@ -96,7 +101,7 @@ def map(docId, rawJsonIn, context):
     ### emit unlinkable 
     if not datePrints:
         # NOTE: if there are NO date prints in a record, the record cannot be linked to any others. pass it through with it's own part already determined
-        context.getCounter("MAPPER", "unlinkable record with no dates").increment(1)
+        context.getCounter("MAPPER", "unlinkable; no dates appSessions").increment(1)
         context.write("unlinkable_"+docId,"p"+docId)
 
 

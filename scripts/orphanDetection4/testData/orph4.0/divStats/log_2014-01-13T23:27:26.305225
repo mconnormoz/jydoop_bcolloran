@@ -1,0 +1,9 @@
+
+======= Command issued:  python /home/bcolloran/Desktop/projects/jydoop_bcolloran/FileDriver.py scripts/orphanDetection4/initRecordScan_kDocId_vPartOrTieBreakInfo.py /home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt /home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/orph4.0/divStats/kDocId_vPartOrTieBreakInfo
+         ===stdout=== None
+
+         ===stderr=== None
+
+
+BATCH FAILED :-(
+

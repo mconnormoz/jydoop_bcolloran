@@ -10,40 +10,29 @@ import datetime
 
 if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     print "================ PEACH RUN ================"
- 
     batchEnv = jydoopBatch.env(jydoopRoot="/home/bcolloran/jydoop_bcolloran2/jydoop/",
         scriptRoot="scripts/orphanDetection4/",
-        dataRoot="/user/bcolloran/orphanDetection4/test_full_dumb_export/",
+        dataRoot="/user/bcolloran/orphanDetection4/divStats/",
         logPath="outData/orphIterLogs4/",
         verbose=True,
         onCluster=True)
         #HDFS paths
-    initInDataPath = "/tmp/full_dumb_export"
-    # "/tmp/full_dumb_export/part-m-*01"
+    initInDataPath = "/tmp/full_dumb_export/part-m-*01"
+    # "/tmp/full_dumb_export"
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
-    # 
 else:
     print "================ LOCAL RUN ================"
     rootPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/"
     batchEnv = jydoopBatch.env(jydoopRoot=rootPath,
         scriptRoot="scripts/orphanDetection4/",
-        dataRoot=rootPath+"testData/orph4.0/",
-        logPath="testData/orph4.0/",
+        dataRoot=rootPath+"testData/orph4.0/divStats/",
+        logPath="testData/orph4.0/divStats/",
         verbose=True,
         onCluster=False)
 
     initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
     # initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfFhrPacketsWithDuplicatedFingerprint_afterMultiDelete_2013-08-05.jydoopRaw"
-
-
-
-
-##### compare to fingerprint-based algorithm
-# jydoopBatch.job(batchEnv,
-#     "getHeadRecordDocIdPerFingerprint__OLD.py",
-#     initInDataPath,
-#     "oldFingerprintAlgorithmDocIds.txt").run()
 
 
 
@@ -102,48 +91,18 @@ else:
 
 
 
-
-'''
-now that the graph has converged, we have:
-kDocId_vPartOrTieBreakInfo
-kPart_vObjTouchingPart_${finalIter}
-
-we want final_kNaiveHeadRecordDocId_vPart
-
-to get there,
-final_kNaiveHeadRecordDocId_vPart needs INPUT:
-    kPartId_vDocId-tieBreakInfo
-with vDocId-tieBreakInfo like: ("docId",(thisPingDate, numAppSessionsPreviousOnThisPingDate, currentSessionTime))
-
-to get kPartId_vDocId-tieBreakInfo, need to join 
-    kDocId_vPartOrTieBreakInfo
-with
-    kPart_vObjTouchingPart_${finalIter}
-'''
-
-
-print "==== join kDocId_vPartOrTieBreakInfo with kPart_vObjTouchingPart_${finalIter}"
+print "==== join kPart_vObjTouchingPart_${finalIter} with initInData (kDocId,vRawFhr) -> kPart_vFhrJson"
 jydoopBatch.job(batchEnv,
-    "join_kDocIdVPartId_toTieBreakinfo.py",
-    ["kDocId_vPartOrTieBreakInfo","kPart_vObjTouchingPart_"+str(graphIter)],
-    "kPartId_vDocId-tieBreakInfo").run()
+    "join_kDocIdVPartId_to_initInData.py",
+    ["kPart_vObjTouchingPart_"+str(graphIter),initInDataPath],
+    "kPartId_vFhrJson").run()
 
 
-
-
-'''
-next take the tie breaker info for each part, and emit the head doc id for that part
-
-    input must be:
-      k: "partId"
-      v: ("docId",(thisPingDate, numAppSessionsPreviousOnThisPingDate, currentSessionTime))
-'''
-
-print "\n==== get naive head doc id for each part"
+print "==== generate divergence stats per part"
 jydoopBatch.job(batchEnv,
-    "final_kNaiveHeadRecordDocId_vPartId.py",
-    "kPartId_vDocId-tieBreakInfo",
-    "final_kNaiveHeadRecordDocId_vPart").run()
+    "kPartId_vDayDivergenceStats.py",
+    "kPartId_vFhrJson",
+    "kPartId_vPartStats").run()
 
 
 

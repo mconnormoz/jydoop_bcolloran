@@ -4,6 +4,9 @@
     <list default="true" id="f5674ac3-6239-4412-ae28-44a405b0bf20" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/../dummy test file" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../org/mozilla/jydoop/HadoopDriver.java" afterPath="$PROJECT_DIR$/../../org/mozilla/jydoop/HadoopDriver.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../batches/jydoopBatch_naiveHeadRecord_v4.py" afterPath="$PROJECT_DIR$/../../batches/jydoopBatch_naiveHeadRecord_v4.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py" afterPath="$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../orphanDetection4/kPartId_vSessionDivergenceInfo.py" afterPath="$PROJECT_DIR$/../orphanDetection4/kPartId_vSessionDivergenceInfo.py" />
     </list>
     <ignored path="orphanDetection2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,10 +32,8 @@
       <file leaf-file-name="kPartId_vDayDataDivergenceGraph.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="8415">
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
+            <state line="1" column="0" selection-start="14" selection-end="14" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="8415">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -52,9 +53,16 @@
       <MyDateState />
     </option>
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="138" />
-    <option name="y" value="135" />
+    <option name="x" value="283" />
+    <option name="y" value="116" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -111,10 +119,10 @@
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../orphanDetection4/tests" />
     <property name="FullScreen" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -272,7 +280,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="138" y="135" width="1400" height="1000" extended-state="0" />
+    <frame x="283" y="116" width="1400" height="1000" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -309,9 +317,14 @@
     <entry file="file://$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="8415">
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="8415">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -327,10 +340,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kPartId_vDayDataDivergenceGraph.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="8415">
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+        <state line="1" column="0" selection-start="14" selection-end="14" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="8415">
+          <folding />
         </state>
       </provider>
     </entry>

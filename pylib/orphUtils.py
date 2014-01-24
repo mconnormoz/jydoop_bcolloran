@@ -65,6 +65,17 @@ def dictToSortedTupList(objIn):
         return objIn
 
 
+def dictToSortedJsonish(objIn):
+    """ This is only designed to work on JSON-like structures that contain only: dicts, lists, strings, numbers. """
+    if isinstance(objIn,dict):
+        strOut=""
+        for key,val in sorted(objIn.items(),key=lambda item:item[0]):
+            strOut += "{" + str(key) + ":" + dictToSortedJsonish(val) + "}"
+        return strOut
+    else:
+        return "{"+str(objIn)+"}"
+
+
 class partSet(object):
     def __init__(self,partId):
         self.parts = set([partId])

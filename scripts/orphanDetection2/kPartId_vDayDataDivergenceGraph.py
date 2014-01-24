@@ -54,6 +54,7 @@ def counterLocal(context,counterGroup,countername,value):
         pass
 
 
+
 class bag(object):
     def __add__(self, other):
         result = self.copy()
@@ -220,7 +221,6 @@ def getSessionsWithNum(fhrPayload):
 
 def unixDayToIsoDate(unixDay):
     return datetime.datetime.utcfromtimestamp(86400*unixDay).strftime('%Y-%m-%d')
-
 
 
 
