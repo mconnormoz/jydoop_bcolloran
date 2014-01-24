@@ -6,10 +6,11 @@ import datetime
 import orphUtils
 import poset2
 
+
 output = orphUtils.outputTabSep
 
 
-setupjob = orphUtils.hdfsjobByType("HDFS")
+setupjob = orphUtils.hdfsjobByType("JYDOOP")
 
 
 def sortedDayInfoToDagInfo(sortedDayInfo):
@@ -34,7 +35,7 @@ def map(partId,fhrPayload,context):
         dayGraphOut = poset2.DayGraph(nodes)
         dayGraphOut.addChildTreeWidths()
         dayGraphOut.addWidthOffsets()
-        
+
         context.write(partId,dayGraphOut)
         context.getCounter("MAPPER", "day chain out").increment(1)
     else:

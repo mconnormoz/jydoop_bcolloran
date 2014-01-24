@@ -17,9 +17,9 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
         verbose=True,
         onCluster=True)
         #HDFS paths
-    initInDataPath = "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
-    # "/tmp/full_dumb_export/part-m-*01"
+    initInDataPath = "/tmp/full_dumb_export/part-m-0001*"
     # "/tmp/full_dumb_export"
+    # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
 else:
     print "================ LOCAL RUN ================"

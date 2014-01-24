@@ -21,7 +21,7 @@ make ARGS="scripts/orphanDetection2/docIdsInParts.py ./outData/finalDocIdsInPart
 
 
 
-setupjob = orphUtils.hdfsjobByType("HDFS")
+setupjob = orphUtils.hdfsjobByType("JYDOOP")
 
 
 

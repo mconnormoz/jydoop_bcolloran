@@ -9,7 +9,7 @@ import poset
 output = orphUtils.outputTabSep
 
 
-setupjob = orphUtils.hdfsjobByType("HDFS")
+setupjob = orphUtils.hdfsjobByType("JYDOOP")
 
 
 def sortedDayInfoToDagInfo(sortedDayInfo):
