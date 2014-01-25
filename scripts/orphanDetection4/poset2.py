@@ -145,9 +145,9 @@ class TooManyMinEltsError(Exception):
 
 
 
-class MyEncoder(json.JSONEncoder):
-    def default(self, o):
-        return o.__json__()
+# class MyEncoder(json.JSONEncoder):
+#     def default(self, o):
+#         return o.__json__()
 
 
 
