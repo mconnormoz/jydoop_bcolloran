@@ -78,24 +78,29 @@ def reduce(docId,iterOfPartId_orDayGraphInfo, context):
     # for each docId, the iter should have exactly two elements:
     #   partId
     #   dayGraphInfo tuple
+    partFlag=False
+    dayGraphFlag=False
     numItems=0
     for item in iterOfPartId_orDayGraphInfo:
         numItems+=1
         if item[0]=="p":
             partId=item
+            partFlag=True
         elif type(item)==type(()):
             dayGraphInfo=item
+            dayGraphFlag=True
         else:
             print "bad reducer iter contents:",item
             raise ValueError()
 
     if numItems==2:
-        context.getCounter("REDUCER", "(partId,dayGraphInfo)  out").increment(1)
+        context.getCounter("REDUCER", "(partId,dayGraphInfo) out").increment(1)
         context.write(partId,dayGraphInfo)
     else:
-        print "iter in reducer does not have 2 elts. each docId key should correspond to exactly one partId and one dayGraphInfo"
-        print docId, list(iterOfPartId_orDayGraphInfo)
-        raise ValueError()
+        context.getCounter("REDUCER", "partFlag:"+str(partFlag)+" dayGraphFlag"+str(dayGraphFlag)).increment(1)
+        # print "iter in reducer does not have 2 elts. each docId key should correspond to exactly one partId and one dayGraphInfo"
+        # print docId, list(iterOfPartId_orDayGraphInfo)
+        # raise ValueError()
 
 
 
