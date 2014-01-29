@@ -206,18 +206,21 @@ class DayNode(Node):
         self.maxDateInThread = maxDateInThread
         self.minDateInThread = minDateInThread
     def __str__(self):
-        return json.dumps({"id":self.id,"date":self.date,"childWidth":self.childTreeWidth,"widthOffset":self.widthOffset,"data":self.data},cls=MyEncoder)
+        # return json.dumps({"id":self.id,"date":self.date,"childWidth":self.childTreeWidth,"widthOffset":self.widthOffset,"data":self.data},cls=MyEncoder)
+        return json.dumps({"id":self.id,"date":self.date,"data":self.data})
+
     def __repr__(self):
-        return json.dumps({"id":self.id,"date":self.date,"nodeCount":self.nodeCount,"childWidth":self.childTreeWidth,"widthOffset":self.widthOffset,"maxDateInThread":self.maxDateInThread,"children":[node.id for node in self.children()],"parents":[node.id for node in self.parents()]})
+        # return json.dumps({"id":self.id,"date":self.date,"nodeCount":self.nodeCount,"childWidth":self.childTreeWidth,"widthOffset":self.widthOffset,"maxDateInThread":self.maxDateInThread,"children":[node.id for node in self.children()],"parents":[node.id for node in self.parents()]})
+        return json.dumps({"id":self.id,"date":self.date,"data":self.data})
     def __json__(self):
         return {"id":self.id,"date":self.date,"width":self.nodeCount,"yOffset":self.widthOffset,"data":self.data}
         # ,"childIds":self.childIds,"parentIds":self.parentIds})
     def mergeNode(self,other):
         Node.mergeNode(self,other)
         if self.date!=other.date:
-            raise nodeDateMismatch(self.date,other.date)
+            raise nodeDateMismatch(self,other)
         if self.data!=other.data:
-            raise nodeDateMismatch(self.data,other.data)
+            raise nodeDateMismatch(self,other)
         self.maxDateInThread = max(self.maxDateInThread,other.maxDateInThread)
         self.minDateInThread = min(self.minDateInThread,other.minDateInThread)
 
