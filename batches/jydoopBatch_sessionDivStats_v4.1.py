@@ -92,11 +92,11 @@ else:
 
 
 
-print "==== join kPart_vObjTouchingPart_${finalIter} with kDocId_vPartOrDayGraphInfo -> kPart_vFhrJson"
-jydoopBatch.job(batchEnv,
-    "join_kDocIdVPartId_to_dayGraphInfo.py",
-    ["kPart_vObjTouchingPart_"+str(graphIter),"kDocId_vPartOrDayGraphInfo"],
-    "kPartId_vDayGraphInfo").run()
+# print "==== join kPart_vObjTouchingPart_${finalIter} with kDocId_vPartOrDayGraphInfo -> kPart_vFhrJson"
+# jydoopBatch.job(batchEnv,
+#     "join_kDocIdVPartId_to_dayGraphInfo.py",
+#     ["kPart_vObjTouchingPart_"+str(graphIter),"kDocId_vPartOrDayGraphInfo"],
+#     "kPartId_vDayGraphInfo").run()
 
 
 print "==== generate divergence stats per part"
