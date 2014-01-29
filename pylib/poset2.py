@@ -215,11 +215,29 @@ class DayNode(Node):
     def mergeNode(self,other):
         Node.mergeNode(self,other)
         if self.date!=other.date:
-            raise TypeError
+            raise nodeDateMismatch(self.date,other.date)
         if self.data!=other.data:
-            raise TypeError
+            raise nodeDateMismatch(self.data,other.data)
         self.maxDateInThread = max(self.maxDateInThread,other.maxDateInThread)
         self.minDateInThread = min(self.minDateInThread,other.minDateInThread)
+
+
+
+
+
+class nodeDateMismatch(Exception):
+    def __init__(self, date1,date2):
+        self.dates = (date1,date2)
+    def __str__(self):
+        return repr(self.dates)
+
+class nodeDataMismatch(Exception):
+    def __init__(self, data1,data2):
+        self.data = (data1,data2)
+    def __str__(self):
+        return repr(self.data)
+
+
 
 
 

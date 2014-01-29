@@ -58,7 +58,11 @@ def reduce(partId, iterOfDayInfo, context):
             else:
                 nodes = sortedDayInfoToDagInfo(sortedDayInfo)
                 dayGraphToMerge = poset2.DayGraph(nodes)
-                dayGraphOut.merge(dayGraphToMerge)
+                try:
+                    dayGraphOut.merge(dayGraphToMerge)
+                except:
+                    context.getCounter("REDUCER", "records FAILED to merge").increment(1)
+                    return
                 context.getCounter("REDUCER", "records merged").increment(1)
         else:
             context.getCounter("REDUCER", "record with no appSessions").increment(1)
