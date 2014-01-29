@@ -9,8 +9,8 @@ import poset2
 output = orphUtils.outputTabSep
 
 ######## to OUTPUT TO HDFS
-# def skip_local_output():
-#     return True
+def skip_local_output():
+    return True
 
 
 setupjob = orphUtils.hdfsjobByType("JYDOOP")
