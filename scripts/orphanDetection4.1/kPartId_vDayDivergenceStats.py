@@ -35,7 +35,7 @@ def sortedDayInfoToDagInfo(sortedDayInfoStrings):
 
     maxDateInThread = max( tup[1] for  tup in sortedDayInfo)
     minDateInThread = min( tup[1] for  tup in sortedDayInfo)
-    return [poset2.DayNode(id=int(tup[2]),date=tup[1],minDateInThread=minDateInThread,maxDateInThread=maxDateInThread,data=None) for tup in sortedDayInfo]
+    return [poset2.DayNode(id=hash(tup),date=tup[1],minDateInThread=minDateInThread,maxDateInThread=maxDateInThread,data=None) for tup in sortedDayInfo]
 
 
 @orphUtils.localTextInput(evalTup=True)
@@ -61,7 +61,7 @@ def reduce(partId, iterOfDayInfo, context):
                 try:
                     dayGraphOut.merge(dayGraphToMerge)
                 except:
-                    context.getCounter("REDUCER", "records FAILED to merge").increment(1)
+                    context.getCounter("REDUCER", "parts FAILED to merge").increment(1)
                     return
                 context.getCounter("REDUCER", "records merged").increment(1)
         else:
