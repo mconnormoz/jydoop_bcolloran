@@ -106,6 +106,13 @@ jydoopBatch.job(batchEnv,
     "kPartId_vPartStats").run()
 
 
+print "==== count divergence levels by num records linked"
+jydoopBatch.job(batchEnv,
+    "countDivergenceLevel.py",
+    "kPartId_vPartStats",
+    "kPartId_vOverallDivStats").run()
+
+
 
 batchEnv.log("Batch complete: "+ datetime.datetime.utcnow().isoformat()+"\n")
 batchEnv.logger.durationStamp().write().email()

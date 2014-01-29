@@ -65,7 +65,7 @@ def reduce(partId, iterOfDayInfo, context):
 
     if dayGraphOut:
         numHeadRecords = len(dayGraphOut.maxElts())
-        context.write(partId, [numRecordsThisPart,numHeadRecords])
+        context.write(partId, (numRecordsThisPart,numHeadRecords))
         context.getCounter("REDUCER", "partsMerged").increment(1)
     else:
         context.getCounter("REDUCER", "PART with no appSessions").increment(1)
