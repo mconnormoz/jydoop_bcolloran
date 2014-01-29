@@ -35,7 +35,11 @@ def sortedDayInfoToDagInfo(sortedDayInfoStrings):
 
     maxDateInThread = max( tup[1] for  tup in sortedDayInfo)
     minDateInThread = min( tup[1] for  tup in sortedDayInfo)
-    return [poset2.DayNode(id=hash(tup),date=tup[1],minDateInThread=minDateInThread,maxDateInThread=maxDateInThread,data=None) for tup in sortedDayInfo]
+    return [poset2.DayNode(id=hashlib.md5(s).hexdigest(),
+                            date=s.split("_")[1],
+                            minDateInThread=minDateInThread,
+                            maxDateInThread=maxDateInThread,
+                            data=None) for s in sortedDayInfoStrings]
 
 
 @orphUtils.localTextInput(evalTup=True)
