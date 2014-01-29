@@ -1,10 +1,6 @@
-import jydoop
-import healthreportutils
-import json
-import datetime
-
 import orphUtils
 import poset2
+import hashlib
 
 output = orphUtils.outputTabSep
 
