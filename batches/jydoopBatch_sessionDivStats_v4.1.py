@@ -25,7 +25,7 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
 else:
     print "================ LOCAL RUN ================"
-    rootPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/"
+    rootPath = "/data/mozilla/jydoop_bcolloran/"
     batchEnv = jydoopBatch.env(jydoopRoot=rootPath,
         scriptRoot="scripts/orphanDetection4.1/",
         dataRoot=rootPath+"testData/orph4.1/divStats/",
@@ -33,7 +33,7 @@ else:
         verbose=True,
         onCluster=False)
 
-    initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
+    initInDataPath = "/data/mozilla/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
     # initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfFhrPacketsWithDuplicatedFingerprint_afterMultiDelete_2013-08-05.jydoopRaw"
 
 
