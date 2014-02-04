@@ -13,12 +13,13 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
  
     batchEnv = jydoopBatch.env(jydoopRoot="/home/bcolloran/jydoop_bcolloran2/jydoop/",
         scriptRoot="scripts/orphanDetection4/",
-        dataRoot="/user/bcolloran/orphanDetection4/test_full_dumb_export/",
+        dataRoot="/user/bcolloran/orphanDetection4/test_fullExport__2014-01-31/",
         logPath="outData/orphIterLogs4/",
         verbose=True,
         onCluster=True)
         #HDFS paths
-    initInDataPath = "/tmp/full_dumb_export"
+    initInDataPath = "/user/bcolloran/data/fhrFullDump_2014-01-31/part-m-0000*"
+    #"/tmp/full_dumb_export"
     # "/tmp/full_dumb_export/part-m-*01"
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
