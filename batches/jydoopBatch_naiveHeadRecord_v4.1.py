@@ -18,7 +18,7 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
         verbose=True,
         onCluster=True)
         #HDFS paths
-    initInDataPath = "/user/bcolloran/data/fhrFullDump_2014-01-31/part-m-00001"
+    initInDataPath = "/user/bcolloran/data/fhrFullDump_2014-01-31/part-m-0003*"
     #"/tmp/full_dumb_export"
     # "/tmp/full_dumb_export/part-m-*01"
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/part-r-0001*"

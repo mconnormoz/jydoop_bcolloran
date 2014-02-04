@@ -9,6 +9,9 @@ import random
 def skip_local_output():
     return True
 
+def num_reduce_tasks():
+    return 10
+
 
 setupjob = jydoop.setupjob
 
