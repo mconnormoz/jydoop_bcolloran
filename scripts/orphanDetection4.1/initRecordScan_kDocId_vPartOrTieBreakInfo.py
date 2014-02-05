@@ -87,11 +87,14 @@ def map(docId, rawJsonIn, context):
 
     datePrints = []
     for date in payload["data"]["days"].keys():
-        if 'org.mozilla.appSessions.previous' in payload["data"]["days"][date].keys():
-            datePrints.append( str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) )
-    # [str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() ]
-    # [str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) for date in payload["data"]["days"].keys() if ('org.mozilla.appSessions.previous' in payload["data"]["days"][date].keys())]
-
+        try:
+            if 'org.mozilla.appSessions.previous' in payload["data"]["days"][date].keys():
+                datePrints.append( str(profileCreation)+"_"+date+"_"+str(hash(str(orphUtils.dictToSortedTupList(payload["data"]["days"][date])))) )
+        except:
+            # was getting  "AttributeError: 'float' object has no attribute 'keys'"
+            context.getCounter("MAP ERROR", "$data$days[date] is a float").increment(1)
+            context.getCounter("MAP ERROR", "REJECTED RECORDS").increment(1)
+            return
 
     ### emit datePrints
     for d in datePrints:
