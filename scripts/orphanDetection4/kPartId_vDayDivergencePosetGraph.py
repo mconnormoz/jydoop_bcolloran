@@ -39,9 +39,6 @@ def reduce(partId, iterOfDayInfo, context):
     i=0
     dayGraphOut=None
     for sortedDayInfo in iterOfDayInfo:
-        # print sortedDayInfo
-        print i
-        # print sortedDayInfo
         if not graphInit:
             nodes = sortedDayInfoToDagInfo(sortedDayInfo)
             if nodes:
@@ -60,6 +57,7 @@ def reduce(partId, iterOfDayInfo, context):
         # print "dayGraph",dayGraphOut
         # print 'dayGraphOut._possibleMaxEltIds',dayGraphOut._possibleMaxEltIds
         # print 'dayGraphOut.maxElts()',dayGraphOut.maxElts()
+        # print dayGraphOut.numMerged
         dayGraphOut.addChildTreeWidths()
         dayGraphOut.addWidthOffsets()
         try:

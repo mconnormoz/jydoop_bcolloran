@@ -1,6 +1,5 @@
 import subprocess
 import re
-import socket
 import datetime
 import os
 import smtplib

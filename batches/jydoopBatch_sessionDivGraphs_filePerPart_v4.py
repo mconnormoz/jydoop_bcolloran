@@ -23,7 +23,7 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
     # "/user/bcolloran/data/samples/fhr/v2/withOrphans/2013-11-05/"
 else:
     print "================ LOCAL RUN ================"
-    rootPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/"
+    rootPath = "/data/mozilla/jydoop_bcolloran/"
     batchEnv = jydoopBatch.env(jydoopRoot=rootPath,
         scriptRoot="scripts/orphanDetection4/",
         dataRoot=rootPath+"testData/orph4.0/divStats/",
@@ -31,71 +31,71 @@ else:
         verbose=True,
         onCluster=False)
 
-    initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
+    initInDataPath = "/data/mozilla/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
     # initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfFhrPacketsWithDuplicatedFingerprint_afterMultiDelete_2013-08-05.jydoopRaw"
 
 
 
 
 
-print "\n==== initialize graph parts"
-jydoopBatch.job(batchEnv,
-    "initRecordScan_kDocId_vPartOrTieBreakInfo.py",
-    initInDataPath,
-    "kDocId_vPartOrTieBreakInfo").run()
+# print "\n==== initialize graph parts"
+# jydoopBatch.job(batchEnv,
+#     "initRecordScan_kDocId_vPartOrTieBreakInfo.py",
+#     initInDataPath,
+#     "kDocId_vPartOrTieBreakInfo").run()
 
 
-print "\n==== find initial part overlaps, skip tieBreakInfo"
-numOverlapping = jydoopBatch.job(batchEnv,
-        "findTouchingDocsAndParts.py",
-        "kDocId_vPartOrTieBreakInfo",
-        "kPart_vObjTouchingPart_0")\
-    .run().getCounterVal("OVERLAPPING_PARTS")
+# print "\n==== find initial part overlaps, skip tieBreakInfo"
+# numOverlapping = jydoopBatch.job(batchEnv,
+#         "findTouchingDocsAndParts.py",
+#         "kDocId_vPartOrTieBreakInfo",
+#         "kPart_vObjTouchingPart_0")\
+#     .run().getCounterVal("OVERLAPPING_PARTS")
 
-print "==initial number overlapping:",numOverlapping
+# print "==initial number overlapping:",numOverlapping
 
 
 
-graphIter = 0
-print "\n================ iteration ================",graphIter
-while graphIter<10:
+# graphIter = 0
+# print "\n================ iteration ================",graphIter
+# while graphIter<10:
     
-    if numOverlapping==0:
-        convergedFlag=True
-        break
+#     if numOverlapping==0:
+#         convergedFlag=True
+#         break
 
-    jydoopBatch.job(batchEnv,
-        script="relabelDocsWithLowestPart.py",
-        inPathList="kPart_vObjTouchingPart_"+str(graphIter),
-        outPath="kDoc_vPart_"+str(graphIter+1)).run()
-    graphIter+=1
+#     jydoopBatch.job(batchEnv,
+#         script="relabelDocsWithLowestPart.py",
+#         inPathList="kPart_vObjTouchingPart_"+str(graphIter),
+#         outPath="kDoc_vPart_"+str(graphIter+1)).run()
+#     graphIter+=1
 
-    print "\n==== check for overlaps",graphIter
-    numOverlapping = jydoopBatch.job(batchEnv,
-        "findTouchingDocsAndParts.py",
-        "kDoc_vPart_"+str(graphIter),
-        "kPart_vObjTouchingPart_"+str(graphIter+1))\
-    .run().getCounterVal("OVERLAPPING_PARTS")
-    graphIter+=1
-    print "==number overlapping:",numOverlapping
-
-
-
-if convergedFlag:
-    print "\n================ graph converged ================ iter:",graphIter,"\n"
-    batchEnv.log("\n================ graph converged ================ iter: "+str(graphIter)+"\n")
-else:
-    print "\n====== graph FAILED TO converge on iter:",graphIter
-    print "(some kind of error occurred)\n"
-    exit()
+#     print "\n==== check for overlaps",graphIter
+#     numOverlapping = jydoopBatch.job(batchEnv,
+#         "findTouchingDocsAndParts.py",
+#         "kDoc_vPart_"+str(graphIter),
+#         "kPart_vObjTouchingPart_"+str(graphIter+1))\
+#     .run().getCounterVal("OVERLAPPING_PARTS")
+#     graphIter+=1
+#     print "==number overlapping:",numOverlapping
 
 
 
-print "==== join kPart_vObjTouchingPart_${finalIter} with initInData (kDocId,vRawFhr) -> kPart_vFhrJson"
-jydoopBatch.job(batchEnv,
-    "join_kDocIdVPartId_to_initInData.py",
-    ["kPart_vObjTouchingPart_"+str(graphIter),initInDataPath],
-    "kPartId_vFhrJson").run()
+# if convergedFlag:
+#     print "\n================ graph converged ================ iter:",graphIter,"\n"
+#     batchEnv.log("\n================ graph converged ================ iter: "+str(graphIter)+"\n")
+# else:
+#     print "\n====== graph FAILED TO converge on iter:",graphIter
+#     print "(some kind of error occurred)\n"
+#     exit()
+
+
+
+# print "==== join kPart_vObjTouchingPart_${finalIter} with initInData (kDocId,vRawFhr) -> kPart_vFhrJson"
+# jydoopBatch.job(batchEnv,
+#     "join_kDocIdVPartId_to_initInData.py",
+#     ["kPart_vObjTouchingPart_"+str(graphIter),initInDataPath],
+#     "kPartId_vFhrJson").run()
 
 
 
@@ -129,8 +129,7 @@ print "==== output one file per each partId with all the dayGraphs for each doc 
 jydoopBatch.job(batchEnv,
     "daysAndDayDivGraph_filePerPartId.py",
     ["kPartId_vDayPosetGraph","kPartId_vDayDivergencePosetGraph"],
-    "../../../../orphanDetectionV2/similarityTimeline/data/daysAndDayDivergence/daysAndDayDivergence").run()
-
+    "../../../../orphanDetectionV2/dayDivergenceGraph/data/graphs").run()
 
 
 batchEnv.log("Batch complete: "+ datetime.datetime.utcnow().isoformat()+"\n")

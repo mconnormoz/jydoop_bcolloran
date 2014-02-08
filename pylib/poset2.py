@@ -6,7 +6,7 @@ class Poset(object):
     idea: insert a chain of ordered nodes into a graph.
     each node should know which other nodes are above/below it
     """
-    def __init__(self,nodeList):
+    def __init__(self,nodeList,data=None):
         nodeChain = self._nodeListToChain(nodeList)
         if not nodeChain[0].parentIds:
             #nodeChain[0] must not have a parents elt
@@ -22,6 +22,8 @@ class Poset(object):
         self._minElts = None
         self._maxElts = None
         self._edges=None
+        self.numMerged=0
+        self.data=data
 
         for node in nodeChain:
             self.addNode(node)
@@ -75,6 +77,7 @@ class Poset(object):
         self._minElts=None
         self._maxElts=None
         self._edges=None
+        self.numMerged+=1
 
     def edges(self):
         if not self._edges:
@@ -145,9 +148,9 @@ class TooManyMinEltsError(Exception):
 
 
 
-# class MyEncoder(json.JSONEncoder):
-#     def default(self, o):
-#         return o.__json__()
+class MyEncoder(json.JSONEncoder):
+    def default(self, o):
+        return o.__json__()
 
 
 
@@ -246,10 +249,14 @@ class nodeDataMismatch(Exception):
 
 class DayGraph(Poset):
     """docstring for DayGraph"""
-    def __init__(self,dayNodeList):
+    def __init__(self,dayNodeList,data=None):
         Poset.__init__(self,dayNodeList)
+        self.data=data
     def __json__(self):
-        return {"minDate":self.minDate(),"maxDate":self.maxDate(),"nodes":self.nodes(),"edges":self.edges(),"graphWidth":self.graphWidth(),"finalThreads":len(self.maxElts())}
+        if self.data:
+            return {"minDate":self.minDate(),"maxDate":self.maxDate(),"nodes":self.nodes(),"edges":self.edges(),"graphWidth":self.graphWidth(),"finalThreads":len(self.maxElts()),"graphData":self.data,"recordsInGraph":self.numMerged+1}
+        else:
+            return {"minDate":self.minDate(),"maxDate":self.maxDate(),"nodes":self.nodes(),"edges":self.edges(),"graphWidth":self.graphWidth(),"finalThreads":len(self.maxElts()),"recordsInGraph":self.numMerged+1}
 
     def __repr__(self):
         return json.dumps(self.__json__(),cls=MyEncoder)
