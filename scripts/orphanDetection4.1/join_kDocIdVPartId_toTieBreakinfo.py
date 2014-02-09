@@ -81,13 +81,17 @@ def reduce(docId,iterOfPartId_orTieBreakInfo, context):
     # for docIds that are on the server twice (exact copies),
     # there may be more than one copy of partId or tieBreakInfo
     # in this case, we'll just choose the last instance of each
+    hasPart=False
+    hasTieBreakInfo=False
     numItems=0
     for item in iterOfPartId_orTieBreakInfo:
         numItems+=1
         if item[0]=="p":
             partId=item
+            hasPart=True
         elif type(item)==type(tuple()):
             tieBreakInfo=item
+            hasTieBreakInfo=True
         else:
             print "bad reducer iter contents:",item
             raise ValueError()
@@ -96,9 +100,16 @@ def reduce(docId,iterOfPartId_orTieBreakInfo, context):
         context.getCounter("REDUCER", "partId,(docId,tieBreakInfo)  out").increment(1)
         context.write(partId,(docId,tieBreakInfo))
     else:
-        context.getCounter("REDUCER", "partId,(docId,tieBreakInfo)  out").increment(1)
-        context.write(partId,(docId,tieBreakInfo))
-        context.getCounter("REDUCER", "WARNING: docId with "+str(numItems)+" elts in val iter" ).increment(1)
+        if hasTieBreakInfo and hasPart:
+            context.getCounter("REDUCER", "partId,(docId,tieBreakInfo)  out").increment(1)
+            context.write(partId,(docId,tieBreakInfo))
+            context.getCounter("REDUCER", "WARNING: docId with "+str(numItems)+" elts in val iter" ).increment(1)
+        elif hasPart and (not hasTieBreakInfo):
+            context.getCounter("REDUCER", "ERROR: missing tieBreakInfo").increment(1)
+            context.getCounter("REDUCER", "WARNING: docId with "+str(numItems)+" elts in val iter" ).increment(1)
+        elif (not hasPart) and hasTieBreakInfo:
+            context.getCounter("REDUCER", "ERROR: missing partId").increment(1)
+            context.getCounter("REDUCER", "WARNING: docId with "+str(numItems)+" elts in val iter" ).increment(1)
         # print "iter in reducer does not have 2 elts. each docId key should correspond to exactly one partId and one tieBreakInfo"
         # print docId, list(iterOfPartId_orTieBreakInfo)
         # raise ValueError()
