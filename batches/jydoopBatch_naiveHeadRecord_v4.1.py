@@ -50,56 +50,56 @@ else:
 
 
 
-print "\n==== initialize graph parts"
-jydoopBatch.job(batchEnv,
-    "initRecordScan_kDocId_vPartOrTieBreakInfo.py",
-    initInDataPath,
-    "kDocId_vPartOrTieBreakInfo").run()
+# print "\n==== initialize graph parts"
+# jydoopBatch.job(batchEnv,
+#     "initRecordScan_kDocId_vPartOrTieBreakInfo.py",
+#     initInDataPath,
+#     "kDocId_vPartOrTieBreakInfo").run()
 
 
-print "\n==== find initial part overlaps, skip tieBreakInfo"
-numOverlapping = jydoopBatch.job(batchEnv,
-        "findTouchingDocsAndParts.py",
-        "kDocId_vPartOrTieBreakInfo",
-        "kPart_vObjTouchingPart_0")\
-    .run().getCounterVal("OVERLAPPING_PARTS")
+# print "\n==== find initial part overlaps, skip tieBreakInfo"
+# numOverlapping = jydoopBatch.job(batchEnv,
+#         "findTouchingDocsAndParts.py",
+#         "kDocId_vPartOrTieBreakInfo",
+#         "kPart_vObjTouchingPart_0")\
+#     .run().getCounterVal("OVERLAPPING_PARTS")
 
-print "==initial number overlapping:",numOverlapping
+# print "==initial number overlapping:",numOverlapping
 
 
 
-graphIter = 0
-print "\n================ iteration ================",graphIter
-while graphIter<10:
+# graphIter = 0
+# print "\n================ iteration ================",graphIter
+# while graphIter<10:
     
-    if numOverlapping==0:
-        convergedFlag=True
-        break
+#     if numOverlapping==0:
+#         convergedFlag=True
+#         break
 
-    jydoopBatch.job(batchEnv,
-        script="relabelDocsWithLowestPart.py",
-        inPathList="kPart_vObjTouchingPart_"+str(graphIter),
-        outPath="kDoc_vPart_"+str(graphIter+1)).run()
-    graphIter+=1
+#     jydoopBatch.job(batchEnv,
+#         script="relabelDocsWithLowestPart.py",
+#         inPathList="kPart_vObjTouchingPart_"+str(graphIter),
+#         outPath="kDoc_vPart_"+str(graphIter+1)).run()
+#     graphIter+=1
 
-    print "\n==== check for overlaps",graphIter
-    numOverlapping = jydoopBatch.job(batchEnv,
-        "findTouchingDocsAndParts.py",
-        "kDoc_vPart_"+str(graphIter),
-        "kPart_vObjTouchingPart_"+str(graphIter+1))\
-    .run().getCounterVal("OVERLAPPING_PARTS")
-    graphIter+=1
-    print "==number overlapping:",numOverlapping
+#     print "\n==== check for overlaps",graphIter
+#     numOverlapping = jydoopBatch.job(batchEnv,
+#         "findTouchingDocsAndParts.py",
+#         "kDoc_vPart_"+str(graphIter),
+#         "kPart_vObjTouchingPart_"+str(graphIter+1))\
+#     .run().getCounterVal("OVERLAPPING_PARTS")
+#     graphIter+=1
+#     print "==number overlapping:",numOverlapping
 
 
 
-if convergedFlag:
-    print "\n================ graph converged ================ iter:",graphIter,"\n"
-    batchEnv.log("\n================ graph converged ================ iter: "+str(graphIter)+"\n")
-else:
-    print "\n====== graph FAILED TO converge on iter:",graphIter
-    print "(some kind of error occurred)\n"
-    exit()
+# if convergedFlag:
+#     print "\n================ graph converged ================ iter:",graphIter,"\n"
+#     batchEnv.log("\n================ graph converged ================ iter: "+str(graphIter)+"\n")
+# else:
+#     print "\n====== graph FAILED TO converge on iter:",graphIter
+#     print "(some kind of error occurred)\n"
+#     exit()
 
 
 

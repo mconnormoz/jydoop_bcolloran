@@ -75,9 +75,12 @@ def map(partId_orDocId, docId_orPartIdOrTieBreakInfo, context):
 
 
 def reduce(docId,iterOfPartId_orTieBreakInfo, context):
-    # for each docId, the iter should have exactly two elements:
-    #   partId
-    #   tieBreakInfo tuple
+    # for each docId, the iter should contain:
+    #       partId
+    #       tieBreakInfo tuple
+    # for docIds that are on the server twice (exact copies),
+    # there may be more than one copy of partId or tieBreakInfo
+    # in this case, we'll just choose the last instance of each
     numItems=0
     for item in iterOfPartId_orTieBreakInfo:
         numItems+=1
@@ -93,9 +96,12 @@ def reduce(docId,iterOfPartId_orTieBreakInfo, context):
         context.getCounter("REDUCER", "partId,(docId,tieBreakInfo)  out").increment(1)
         context.write(partId,(docId,tieBreakInfo))
     else:
-        print "iter in reducer does not have 2 elts. each docId key should correspond to exactly one partId and one tieBreakInfo"
-        print docId, list(iterOfPartId_orTieBreakInfo)
-        raise ValueError()
+        context.getCounter("REDUCER", "partId,(docId,tieBreakInfo)  out").increment(1)
+        context.write(partId,(docId,tieBreakInfo))
+        context.getCounter("REDUCER", "WARNING: docId with "+str(numItems)+" elts in val iter" ).increment(1)
+        # print "iter in reducer does not have 2 elts. each docId key should correspond to exactly one partId and one tieBreakInfo"
+        # print docId, list(iterOfPartId_orTieBreakInfo)
+        # raise ValueError()
 
 
 
