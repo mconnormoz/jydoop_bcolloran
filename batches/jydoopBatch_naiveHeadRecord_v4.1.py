@@ -123,6 +123,15 @@ with
 '''
 
 
+
+
+
+
+graphIter=2 ###################### WARNING!!!!
+
+
+
+
 print "==== join kDocId_vPartOrTieBreakInfo with kPart_vObjTouchingPart_${finalIter}"
 jydoopBatch.job(batchEnv,
     "join_kDocIdVPartId_toTieBreakinfo.py",
