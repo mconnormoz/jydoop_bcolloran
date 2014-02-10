@@ -51,7 +51,7 @@ def reduce(partId,iterOfDocIds,context):
     listOfDocIds=list(iterOfDocIds)
     context.getCounter("REDUCER", "docs in").increment(len(listOfDocIds))
 
-    if 1<len(listOfDocIds)<101 and random.random()<.2:
+    if 1<len(listOfDocIds)<101 and random.random()<.001:
         context.getCounter("REDUCER", "sampled parts out").increment(1)
         for docId in listOfDocIds:
             context.getCounter("REDUCER", "sampled docs out").increment(1)
