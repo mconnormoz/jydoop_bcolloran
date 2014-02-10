@@ -12,6 +12,18 @@ def outputTabSep(path, results):
                 f.write("\n"+str(k)+"\t"+str(v))
 
 
+def outputKeysOnly(path, results):
+    firstLine = True
+    with open(path, 'w') as f:
+        for k, v in results:
+            if firstLine:
+                f.write(str(k))
+                firstLine=False
+            else:
+                f.write("\n"+str(k))
+
+
+
 
 def hdfsjobByType(hdfsType):
 

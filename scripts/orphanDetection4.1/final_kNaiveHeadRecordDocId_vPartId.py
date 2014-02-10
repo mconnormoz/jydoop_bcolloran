@@ -2,6 +2,7 @@ import json
 import jydoop
 import healthreportutils
 import random
+import orphUtils
 
 
 
@@ -13,40 +14,13 @@ def num_reduce_tasks():
     return 25
 
 
-setupjob = jydoop.setupjob
+setupjob = orphUtils.hdfsjobByType("JYDOOP")
 
-
-def output(path, results):
-    # just dump tab separated key/vals
-    firstLine = True
-    with open(path, 'w') as f:
-        for k, v in results:
-            if firstLine:
-                f.write(str(k)+"\t"+str(v))
-                firstLine=False
-            else:
-                f.write("\n"+str(k)+"\t"+str(v))
-
-
-def localTextInput(mapper):
-    #local feeds a line of text input to the function after cleaning it up
-    #just ignore the line key. split
-    if jydoop.isJython():
-        return mapper
-    else:
-        def localMapper(lineKey,inputLine,context):
-            keyValList = inputLine.split("\t")
-            key = keyValList[0]
-
-            val = eval(keyValList[1])
-
-            return mapper(key,val,context)
-        return localMapper
+output = orphUtils.outputKeysOnly
 
 
 
-
-@localTextInput
+@orphUtils.localTextInput(evalTup=True)
 def map(partId, docId_tieBreakInfo, context):
     # this must be:
     #   k: "partId"
