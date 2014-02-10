@@ -154,9 +154,7 @@ next take the tie breaker info for each part, and emit the head doc id for that 
 #     "final_kNaiveHeadRecordDocId_vPartId.py",
 #     "kPartId_vDocId-tieBreakInfo",
 #     "final_kNaiveHeadRecordDocId_vPart").run()
-'''the above actually has to be run by hand, because jydoop requires relative path names to save locally.
-also, 
-
+'''the above actually has to be run by hand when on peach, because jydoop requires relative path names to save locally.
 ex:
 make ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/test_fullExport_2014-01-31_final_kNaiveHeadRecordDocId_vPart /user/bcolloran/orphanDetection4/test_fullExport__2014-01-31/kPartId_vDocId-tieBreakInfo" hadoop
 '''

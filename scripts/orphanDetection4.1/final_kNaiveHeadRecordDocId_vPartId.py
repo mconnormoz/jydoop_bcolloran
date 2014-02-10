@@ -63,7 +63,7 @@ def reduce(partId, iter_docId_tieBreakInfo, context):
             context.getCounter("REDUCER", "records tied for naive head").increment(len(maxRecordDocIdList))
             context.getCounter("REDUCER", "FINAL HEAD RECORD docIds OUT").increment(1)
 
-        context.write(docIdOut, partId)
+        context.write(docIdOut, 1)
 
 
 
