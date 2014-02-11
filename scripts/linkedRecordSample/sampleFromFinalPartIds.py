@@ -4,15 +4,13 @@ import orphUtils
 import random
 
 
-output = orphUtils.outputTabSep
+# output = orphUtils.outputTabSep
+output = orphUtils.outputKeysOnly
 
 
 ######## to OUTPUT TO HDFS
-def skip_local_output():
-    return True
-
-def hdfs_text_output():
-    return True
+# def skip_local_output():
+#     return True
 
 def num_reduce_tasks():
     return 23
@@ -24,7 +22,7 @@ setupjob = orphUtils.hdfsjobByType("JYDOOP")
 """
 this script will process a file of:
 kPart_vObjTouchingPart_${finalIter}
-which must be in final form, which means that it should be onl (docId,partId) pairs.
+which must be in final form, which means that it should be only (docId,partId) pairs.
 
 it will return a sample of
 (docId,partId) pairs
