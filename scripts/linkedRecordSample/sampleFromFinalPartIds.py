@@ -8,9 +8,9 @@ import random
 output = orphUtils.outputKeysOnly
 
 
-######## to OUTPUT TO HDFS
-# def skip_local_output():
-#     return True
+####### to OUTPUT TO HDFS
+def skip_local_output():
+    return True
 
 def num_reduce_tasks():
     return 23
