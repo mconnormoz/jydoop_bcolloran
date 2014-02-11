@@ -9,7 +9,7 @@ import datetime
 
 actually, a batch job is not needed. we just need to run one script that returns
 
-make ARGS="scripts/orphanDetection4.1/sampleFromFinalPartIds.py outData/orphanDetection4/linkedRecordSampleFromFinalPartIds.txt /user/bcolloran/orphanDetection4/test_fullExport__2014-01-31/kPart_vObjTouchingPart_2" hadoop
+make ARGS="scripts/linkedRecordSample/sampleFromFinalPartIds.py outData/orphanDetection4/linkedRecordSampleFromFinalPartIds.txt /user/bcolloran/orphanDetection4/test_fullExport__2014-01-31/kPart_vObjTouchingPart_2" hadoop
 '''
 
 
