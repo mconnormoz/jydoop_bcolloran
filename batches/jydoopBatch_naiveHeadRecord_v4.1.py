@@ -13,7 +13,7 @@ if socket.gethostname()=='peach-gw.peach.metrics.scl3.mozilla.com':
  
     batchEnv = jydoopBatch.env(jydoopRoot="/home/bcolloran/jydoop_bcolloran2/jydoop/",
         scriptRoot="scripts/orphanDetection4.1/",
-        dataRoot="/user/bcolloran/data/fhrDeorphaning_2014-02-12",
+        dataRoot="/user/bcolloran/data/fhrDeorphaning_2014-02-12/",
         logPath="outData/orphIterLogs4.1/",
         verbose=True,
         onCluster=True)
