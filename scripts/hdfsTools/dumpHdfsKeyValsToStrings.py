@@ -5,7 +5,7 @@ import orphUtils
 '''
 in following commands, UPDATE DATES
 
-make ARGS="scripts/dumpHdfsKeyValsToStrings.py ./outData/PATH_ON_PEACH_TO_DUMP_TO ./PATH_ON_HDFS_TO_DUMP" hadoop
+make ARGS="scripts/hdfsTools/dumpHdfsKeyValsToStrings.py ./outData/PATH_ON_PEACH_TO_DUMP_TO ./PATH_ON_HDFS_TO_DUMP" hadoop
 '''
 
 setupjob = orphUtils.hdfsjobByType("TEXT")
