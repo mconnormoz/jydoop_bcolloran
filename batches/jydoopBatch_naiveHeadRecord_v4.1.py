@@ -39,13 +39,13 @@ else:
 
 
 
-
-#### compare to fingerprint-based algorithm
-jydoopBatch.job(batchEnv,
-    "getHeadRecordDocIdPerFingerprint__OLD.py",
-    initInDataPath,
-    "oldFingerprintAlgorithmDocIds.txt").run()
-
+'''
+# ### compare to fingerprint-based algorithm
+# jydoopBatch.job(batchEnv,
+#     "getHeadRecordDocIdPerFingerprint__OLD.py",
+#     initInDataPath,
+#     "oldFingerprintAlgorithmDocIds.txt").run()
+'''
 
 
 
