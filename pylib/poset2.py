@@ -123,7 +123,8 @@ class Poset(object):
 
         #traverse the graph starting with the minElts; throw an error if there is more than 1
         if len(self.minElts())!=1:
-            raise TooManyMinEltsError
+            # raise TooManyMinEltsError
+            print "minElts>1"
         else:
             offset=0
             queue=self.minElts()

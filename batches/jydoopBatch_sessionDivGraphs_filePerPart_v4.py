@@ -26,12 +26,13 @@ else:
     rootPath = "/data/mozilla/jydoop_bcolloran/"
     batchEnv = jydoopBatch.env(jydoopRoot=rootPath,
         scriptRoot="scripts/orphanDetection4/",
-        dataRoot=rootPath+"testData/orph4.0/divStats/",
-        logPath="testData/orph4.0/divStats/",
+        dataRoot=rootPath+"testData/fhrExtract_2014-02-03/",
+        logPath="testData/fhrExtract_2014-02-03/",
         verbose=True,
         onCluster=False)
 
-    initInDataPath = "/data/mozilla/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
+    initInDataPath = "/data/mozilla/jydoop_bcolloran/testData/sampleOfLinkedRecords_2014-02-03.fhrRaw"
+    # "/data/mozilla/jydoop_bcolloran/testData/sampleOfRecordsWithOrphans_2013-11-05_1000rec.txt"
     # initInDataPath = "/home/bcolloran/Desktop/projects/jydoop_bcolloran/testData/sampleOfFhrPacketsWithDuplicatedFingerprint_afterMultiDelete_2013-08-05.jydoopRaw"
 
 
@@ -99,37 +100,39 @@ else:
 
 
 
-# print "==== generate raw Session Divergence Graph file per part"
-# jydoopBatch.job(batchEnv,
-#     "kPartId_vSessionDivergenceInfo.py",
-#     "kPartId_vFhrJson",
-#     "kPartId_vDivGraph").run()
+# # print "==== generate raw Session Divergence Graph file per part"
+# # jydoopBatch.job(batchEnv,
+# #     "kPartId_vSessionDivergenceInfo.py",
+# #     "kPartId_vFhrJson",
+# #     "kPartId_vDivGraph").run()
 
 
-# print "==== generate raw fhrJson and Session Divergence Graph file per part"
-# jydoopBatch.job(batchEnv,
-#     "fhrRawAndSessionDivergenceGraph_filePerPartId.py",
-#     ["kPartId_vDivGraph","kPartId_vFhrJson"],
-#     "docsAndDivGraphsPerPart/fhrJsonsWithDivGraph").run()
+# # print "==== generate raw fhrJson and Session Divergence Graph file per part"
+# # jydoopBatch.job(batchEnv,
+# #     "fhrRawAndSessionDivergenceGraph_filePerPartId.py",
+# #     ["kPartId_vDivGraph","kPartId_vFhrJson"],
+# #     "docsAndDivGraphsPerPart/fhrJsonsWithDivGraph").run()
 
 
+#running .5-1
+#done: 0.5,1,2,3,4
 print "==== generate Day Graph per doc"
 jydoopBatch.job(batchEnv,
     "kPartId_vDayPosetGraph.py",
-    "kPartId_vFhrJson",
+    "kPartId_vFhrJson_0.75-1",
     "kPartId_vDayPosetGraph").run()
 
 print "==== generate Day Divergence graph per doc"
 jydoopBatch.job(batchEnv,
     "kPartId_vDayDivergencePosetGraph.py",
-    "kPartId_vFhrJson",
+    "kPartId_vFhrJson_0.75-1",
     "kPartId_vDayDivergencePosetGraph").run()
 
 print "==== output one file per each partId with all the dayGraphs for each doc in the part, and the merged dayDivergencePosetGraph for the entire part"
 jydoopBatch.job(batchEnv,
     "daysAndDayDivGraph_filePerPartId.py",
     ["kPartId_vDayPosetGraph","kPartId_vDayDivergencePosetGraph"],
-    "../../../../orphanDetectionV2/dayDivergenceGraph/data/graphs").run()
+    "graphFilePerPart/").run()
 
 
 batchEnv.log("Batch complete: "+ datetime.datetime.utcnow().isoformat()+"\n")
