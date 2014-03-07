@@ -13,7 +13,7 @@ pig -param OUTPUT=/user/bcolloran/data/fhrFullExtract_####DATE##### hbase_export
 '''
 
 
-extractDate="2014-02-27"
+extractDate="2014-03-06"
 
 
 
@@ -170,14 +170,14 @@ next take the tie breaker info for each part, and emit the head doc id for that 
 ex:
 make ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_2014-01-31_final_naiveHeadRecordDocId.txt /user/bcolloran/orphanDetection4/test_fullExport__2014-01-31/kPartId_vDocId-tieBreakInfo" hadoop
 
-make ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_2014-02-20_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_2014-02-20/kPartId_vDocId-tieBreakInfo" hadoop
+make ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_2014-02-27_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_2014-02-27/kPartId_vDocId-tieBreakInfo" hadoop
 
 
 # then load to HDFS
-hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/fullExport_2014-02-20_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_2014-02-20/headRecordsFinalDocIds_2014-02-20.txt
+hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/fullExport_2014-02-27_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_2014-02-27/headRecordsFinalDocIds_2014-02-27.txt
 
 # then extract Head record docs with pig script
-pig -param orig=/user/bcolloran/data/fhrFullExtract_2014-02-20/ -param fetchids=/user/bcolloran/data/fhrDeorphaning_2014-02-20/headRecordsFinalDocIds_2014-02-20.txt -param jointype=merge -param output=fhrDeorphaned_2014-02-20 fetch_reports.aphadke.pig
+pig -param orig=/user/bcolloran/data/fhrFullExtract_2014-02-27/ -param fetchids=/user/bcolloran/data/fhrDeorphaning_2014-02-27/headRecordsFinalDocIds_2014-02-27.txt -param jointype=merge -param output=fhrDeorphaned_2014-02-27 fetch_reports.aphadke.pig
 '''
 
 
