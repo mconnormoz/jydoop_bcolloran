@@ -36,21 +36,17 @@ class logger(object):
         if self.env.onCluster:
             sender = 'bcolloran@mozilla.com'
             receivers = ['bcolloran@mozilla.com']
-            if success:
-                message = """From: jydoop batch bot <bcolloran@mozilla.com>
+            succOrFail= "SUCCESS" if success else "FAILED"
+            message = """From: jydoop batch bot <bcolloran@mozilla.com>
 To: <bcolloran@mozilla.com>
-Subject: Naive head record extraction -SUCCESS-
+Subject: -%s- %s
 
-Jydoop batch succeeded. Logs follow.
+%s %s. Jydoop batch logs follow.
+------------------------------------------
 
-"""
-            else:
-                message = """From: jydoop batch bot <bcolloran@mozilla.com>
-To: <bcolloran@mozilla.com>
-Subject: Naive head record extraction -FAILURE-
+"""%(succOrFail,self.env.batchName,self.env.batchName,succOrFail)
 
-Jydoop batch failed. Logs follow.
-"""
+
             try:
                 smtpObj = smtplib.SMTP('localhost')
                 smtpObj.sendmail(sender, receivers, message+self.logString)         
@@ -75,13 +71,15 @@ Jydoop batch failed. Logs follow.
 
 
 class env(object):
-    def __init__(self,jydoopRoot,scriptRoot,dataRoot,logPath=None,verbose=False,onCluster=False):
+    def __init__(self,jydoopRoot,scriptRoot,dataRoot,logPath=None,verbose=False,onCluster=False,
+        batchName="(no batch name given)"):
         self.jydoopRoot=jydoopRoot
         self.scriptRoot=scriptRoot
         self.dataRoot=dataRoot
         self.verbose=verbose
         self.onCluster=onCluster
         self.logPath=logPath
+        self.batchName=batchName
         if logPath:
             self.logger=logger(self)
         else:
@@ -203,6 +201,28 @@ class job(object):
 
 
 
+
+def runCommand(batchEnv,command):
+    print "\nCommand issued:\n",command
+    p = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    retcode = p.wait()
+    stdout,stderr = p.communicate()
+    if batchEnv.logger:
+        logger=batchEnv.logger
+        logger.log("\n======= Command issued:  "+command)
+        logger.log("\n         ===stdout==="+(("\n"+stdout) if stdout else " None\n"))
+        logger.log("\n         ===stderr==="+(("\n"+stderr) if stderr else " None\n"))
+    if retcode: #process returns 0 on success
+        print "\n         ===stdout===\n",stdout
+        print "\n         ===stderr===\n",stderr
+        print
+        if batchEnv.logger:
+            logger.log("\n\nBATCH FAILED :-(\n\n")
+            logger.write().email(success=False)
+        raise subprocess.CalledProcessError(retcode, command)
+    if self.env.verbose:
+        print "\n         ===stdout===\n",stdout
+        print "\n         ===stderr===\n",stderr
 
 
 
