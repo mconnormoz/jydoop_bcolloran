@@ -202,10 +202,10 @@ class job(object):
 
 
 
-def runCommand(batchEnv,commandList):
-    command = " ".join(commandList)
+def runCommand(batchEnv,command):
+    # command = " ".join(commandList)
     print "\nCommand issued:\n",command
-    p = subprocess.Popen(commandList,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    p = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     retcode = p.wait()
     stdout,stderr = p.communicate()
     if batchEnv.logger:
