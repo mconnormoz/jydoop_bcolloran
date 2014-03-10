@@ -51,8 +51,8 @@ pig -param OUTPUT=/user/bcolloran/data/fhrFullExtract_%s hbase_export.pig -D pig
 '''
 if batchEnv.onCluster:
     os.chdir("/home/bcolloran/pig/")
-    jydoopBatch.runCommand(batchEnv,
-        ["pig","-param","OUTPUT=/user/bcolloran/data/fhrFullExtract_%s"%extractDate,"hbase_export.pig","-D","pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar"])
+    commandList = ["pig","-param","OUTPUT=/user/bcolloran/data/fhrFullExtract_%s"%extractDate,"hbase_export.pig","-D","pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar"]
+    jydoopBatch.runCommand(batchEnv,commandList)
     os.chdir("/home/bcolloran/jydoop_bcolloran2/jydoop/")
 
 
