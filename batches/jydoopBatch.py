@@ -221,7 +221,7 @@ def runCommand(batchEnv,command):
             logger.log("\n\nBATCH FAILED :-(\n\n")
             logger.write().email(success=False)
         raise subprocess.CalledProcessError(retcode, command)
-    if self.env.verbose:
+    if batchEnv.verbose:
         print "\n         ===stdout===\n",stdout
         print "\n         ===stderr===\n",stderr
 
