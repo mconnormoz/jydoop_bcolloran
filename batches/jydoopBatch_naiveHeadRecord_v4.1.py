@@ -2,6 +2,7 @@ import jydoopBatch
 import socket
 import datetime
 import os
+import subprocess
 
 
 
@@ -49,14 +50,19 @@ to make a snapshot on peach:
 cd /home/bcolloran/pig
 pig -param OUTPUT=/user/bcolloran/data/fhrFullExtract_%s hbase_export.pig -D pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar
 '''
+# if batchEnv.onCluster:
+#     os.chdir("/home/bcolloran/pig/")
+#     commandList = ["pig","-param","OUTPUT=/user/bcolloran/data/fhrFullExtract_%s"%extractDate,"hbase_export.pig","-D","pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar"]
+#     command = "pig -param OUTPUT=/user/bcolloran/data/fhrFullExtract_%s hbase_export.pig -D pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar"%extractDate
+#     jydoopBatch.runCommand(batchEnv,command)
+#     os.chdir("/home/bcolloran/jydoop_bcolloran2/jydoop/")
+
+
 if batchEnv.onCluster:
     os.chdir("/home/bcolloran/pig/")
-    commandList = ["pig","-param","OUTPUT=/user/bcolloran/data/fhrFullExtract_%s"%extractDate,"hbase_export.pig","-D","pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar"]
     command = "pig -param OUTPUT=/user/bcolloran/data/fhrFullExtract_%s hbase_export.pig -D pig.additional.jars=./elephant-bird-core-4.3.jar:./elephant-bird-hadoop-compat-4.3.jar:./elephant-bird-pig-4.3.jar"%extractDate
-    jydoopBatch.runCommand(batchEnv,command)
+    p=subprocess.call(command,shell=True)
     os.chdir("/home/bcolloran/jydoop_bcolloran2/jydoop/")
-
-
 
 
 
@@ -169,11 +175,14 @@ if batchEnv.onCluster:
     """this has to be run "by hand" when on peach, because jydoop requires relative path names to save locally (to peach-gw).
 ex:
 make ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_2014-02-27_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_2014-02-27/kPartId_vDocId-tieBreakInfo" hadoop"""
-    
-    jydoopBatch.runCommand(batchEnv,
-        ["make",
-        'ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_%s/kPartId_vDocId-tieBreakInfo"'%(extractDate,extractDate),
-        "hadoop"])
+    os.chdir("/home/bcolloran/jydoop_bcolloran2/jydoop/")
+    command = 'make ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_%s/kPartId_vDocId-tieBreakInfo" hadoop'%(extractDate,extractDate)
+    p=subprocess.call(command,shell=True)
+
+    # jydoopBatch.runCommand(batchEnv,
+    #     ["make",
+    #     'ARGS="scripts/orphanDetection4.1/final_kNaiveHeadRecordDocId_vPartId.py outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_%s/kPartId_vDocId-tieBreakInfo"'%(extractDate,extractDate),
+    #     "hadoop"])
 else:
     '''if running locally, the absolute'''
     print "\n==== get naive head doc id for each part"
@@ -194,18 +203,11 @@ hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/
 # then extract Head record docs with pig script
 pig -param orig=/user/bcolloran/data/fhrFullExtract_2014-02-27/ -param fetchids=/user/bcolloran/data/fhrDeorphaning_2014-02-27/headRecordsFinalDocIds_2014-02-27.txt -param jointype=merge -param output=fhrDeorphaned_2014-02-27 fetch_reports.aphadke.pig
 '''
-    jydoopBatch.runCommand(batchEnv,
-        ["hdfs","dfs","-put",
-        "/home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt"%extractDate,
-        "/user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt"%extractDate])
+    command = 'hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt'%(extractDate,extractDate)
+    p=subprocess.call(command,shell=True)
     os.chdir("/home/bcolloran/pig/")
-    jydoopBatch.runCommand(batchEnv,
-        ["pig",
-        "-param", "orig=/user/bcolloran/data/fhrFullExtract_%s/"%extractDate,
-        "-param", "fetchids=/user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt"%extractDate,
-        "-param", "jointype=merge",
-        "-param", "output=fhrDeorphaned_%s"%extractDate,
-        "fetch_reports.aphadke.pig"])
+    command = 'pig -param orig=/user/bcolloran/data/fhrFullExtract_%s/ -param fetchids=/user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt -param jointype=merge -param output=fhrDeorphaned_%s fetch_reports.aphadke.pig'%(extractDate,extractDate)
+    p=subprocess.call(command,shell=True)
 
 
 
