@@ -146,10 +146,6 @@ with
 
 
 
-# graphIter=2 ###################### WARNING!!!!
-
-
-
 
 print "==== join kDocId_vPartOrTieBreakInfo with kPart_vObjTouchingPart_${finalIter}"
 jydoopBatch.job(batchEnv,
@@ -207,8 +203,8 @@ hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/
 # then extract Head record docs with pig script
 pig -param orig=/user/bcolloran/data/fhrFullExtract_2014-02-27/ -param fetchids=/user/bcolloran/data/fhrDeorphaning_2014-02-27/headRecordsFinalDocIds_2014-02-27.txt -param jointype=merge -param output=fhrDeorphaned_2014-02-27 fetch_reports.aphadke.pig
 '''
-    # command = 'hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt'%(extractDate,extractDate)
-    # p=subprocess.call(command,shell=True)
+    command = 'hdfs dfs -put /home/bcolloran/jydoop_bcolloran2/jydoop/outData/orphanDetection4/fullExport_%s_final_naiveHeadRecordDocId.txt /user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt'%(extractDate,extractDate)
+    p=subprocess.call(command,shell=True)
     os.chdir("/home/bcolloran/pig/")
     command = 'pig -param orig=/user/bcolloran/data/fhrFullExtract_%s/ -param fetchids=/user/bcolloran/data/fhrDeorphaning_%s/headRecordsFinalDocIds.txt -param jointype=merge -param output=fhrDeorphaned_%s fetch_reports.aphadke.pig'%(extractDate,extractDate,extractDate)
     os.chdir("/home/bcolloran/jydoop_bcolloran2/jydoop/")
