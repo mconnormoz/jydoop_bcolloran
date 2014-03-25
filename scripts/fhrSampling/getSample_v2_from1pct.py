@@ -1,5 +1,6 @@
 import json
 import orphUtils
+import random
 
 
 setupjob = orphUtils.hdfsjobByType("TEXT")
