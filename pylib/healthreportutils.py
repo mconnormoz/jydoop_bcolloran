@@ -100,6 +100,12 @@ class FHRPayload(object):
 
         return g.get('platformBuildID', None)
 
+    @property
+    def app_version(self):
+        g = self._o.get('geckoAppInfo', {})
+
+        return g.get('platformVersion', None)		
+		
     @CachedProperty
     def this_ping_date(self):
         y, m, d = self._o['thisPingDate'].split('-')
@@ -276,7 +282,7 @@ class FHRPayload(object):
 
     def daily_search_counts(self):
         for day, counts in self.daily_provider_data('org.mozilla.searches.counts'):
-            if counts['_v'] != 2:
+            if counts['_v'] < 2:
                 continue
 
             for k, v in counts.iteritems():
