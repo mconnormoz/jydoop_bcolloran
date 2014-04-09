@@ -113,6 +113,14 @@ class FHRPayload(object):
         return datetime.date(int(y), int(m), int(d))
 
     @CachedProperty
+    def country(self):
+        return self._o.get('geoCountry', 'Unknown')        
+
+    @CachedProperty
+    def locale(self):
+        return self._o.get('data', {}).get('last', {}).get('org.mozilla.appInfo.appinfo',{}).get('locale','Unknown')
+        
+    @CachedProperty
     def last_ping_date(self):
         last = self._o.get('lastPingDate', None)
 
